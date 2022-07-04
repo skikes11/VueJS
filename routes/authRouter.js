@@ -12,11 +12,10 @@ authRouter.get('/facebook', passport.authenticate('facebook', {scope: ['email']}
 
 authRouter.get('/facebook/callback',
     passport.authenticate('facebook', {
-        successRedirect: 'api/users/home',
-        failureRedirect: '/'
+        successRedirect: '/api/users/home',
+        failureRedirect: '/api/users/home'
     })
-);
-
+)
 
 
 // authRouter.get('/facebook/callback',(req,res) =>{

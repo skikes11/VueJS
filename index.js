@@ -1,6 +1,8 @@
 const passport = require('passport');
 const express = require("express");
+
 require('./controllers/passport')(passport);
+const session = require('express-session');
 const cors = require("cors");
 const app = express();
 const mongoose = require("mongoose");
@@ -9,7 +11,7 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const myRouter = require("./routes");
 const cookieParser = require('cookie-parser');
-
+var flash = require('connect-flash');
 dotenv.config();    
 //connect database
 mongoose.connect((process.env.MONGODB_URL),()=>{
@@ -26,7 +28,18 @@ app.use(express.json());
 
 
 app.use(bodyParser.json());
+
+
+app.use(session({secret: 'ilovescodetheworld'})); // chuối bí mật đã mã hóa coookie
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
+
+
+
 app.use(cookieParser());
+
+
 app.use(bodyParser.urlencoded({ extended: true }))
 //Static files
 app.use(express.static(__dirname + '/public'));

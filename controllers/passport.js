@@ -50,16 +50,15 @@ module.exports = function (passport) {
         },
 
         // Facebook sẽ gửi lại chuối token và thông tin profile của user
-        function (res,token, refreshToken, profile, done) {
+       async function (res,token, refreshToken, profile, done) {
 
-            console.log("profile user FB :" + profile);
+                 console.log("profile user FB :" + profile);
             
-            // asynchronous
-            process.nextTick(function () {
+
+                try{
+
                 // tìm trong db xem có user nào đã sử dụng facebook id này chưa
-                AuthAccount.findOne({'facebook.id': profile.id}, async (res,err, user) => {
-                    if (err)
-                        return done(err);
+                const user = await AuthAccount.findOne({'facebook.id': profile.id});
 
                     // Nếu tìm thấy user, cho họ đăng nhập
                     if (user) {
@@ -86,7 +85,8 @@ module.exports = function (passport) {
                             //secure: true; //ssl nếu có, nếu chạy localhost thì comment nó lại
                         })
 
-                        res.redirect("/api/users/home");
+                        res.redirect("/api/user/register");
+                        return done(null,user);
 
                     } else {
                         // nếu chưa có, tạo mới user
@@ -105,12 +105,16 @@ module.exports = function (passport) {
                             if (err)
                                 throw err;
                             // nếu thành công, trả lại user
-                            console.log(authAccount);
+                            return done(null,user);
                         });
                     }
 
-                });
-            });
+
+
+
+                }catch (err){
+                    console.log(err.message)
+                }
 
         }));
 
