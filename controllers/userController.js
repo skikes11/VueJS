@@ -1,4 +1,4 @@
-const { UserAccount, Userrole } = require("../model/userModel");
+const { UserAccount, AuthAccount,   Userrole } = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const e = require("express");
@@ -307,9 +307,11 @@ const userController = {
             });
         }
     },
-    UpdateUserByToken: async (req, res, id) => {
+    UpdateUserByToken: async (req, res, id, checkAuth) => {
         try {
 
+
+            if(checkAuth==0){
             const user = await UserAccount.findById(id);
 
             if (!user) {
@@ -326,8 +328,7 @@ const userController = {
             if(!user.avatar){
                 user.avatar = "default"
             }
-
-           else if (req.file) {
+            else if (req.file) {
                 if (!validateURL(user.avatar)&& user.avatar != "default") {
                     var oldPath = "." + user.avatar;
                     var getPath = oldPath.replace('static', 'public')
@@ -350,7 +351,56 @@ const userController = {
             }
 
             await user.save();
-            res.redirect("./home");
+
+        }else if(checkAuth == 1){
+
+            const user_FB = await AuthAccount.findById(id);
+
+            if (!user_FB) {
+                return res.status(500).json({
+                    "success": false,
+                    "message": "did not found user"
+                });
+            }
+            user_FB.facebook.name = req.body.name;
+            user_FB.facebook.phone = req.body.phone;
+            user_FB.facebook.dob = req.body.dob;
+
+
+            if(!user_FB.facebook.avatar){
+                user_FB.facebook.avatar = "default"
+            }
+            else if (req.file) {
+                if (!validateURL(user_FB.facebook.avatar)&& user_FB.facebook.avatar != "default") {
+                    var oldPath = "." + user_FB.facebook.avatar;
+                    var getPath = oldPath.replace('static', 'public')
+                    await fs.unlinkSync(getPath);
+                    console.log("unlink path" + getPath);
+                }
+                user_FB.facebook.avatar = `/static/images/avatar/${req.file.filename}`
+            } else {
+                if (isImage(req.body.url)) {
+
+                    if (!validateURL(user_FB.facebook.avatar) && user_FB.facebook.avatar != "default" ) {
+                        var oldPath = "." + user_FB.facebook.avatar;
+                        var getPath = oldPath.replace('static', 'public')
+                        await fs.unlinkSync(getPath);
+                        console.log("unlink path" + getPath);
+                    }
+
+                    user_FB.facebook.avatar = req.body.url
+                }
+            }
+
+            await user_FB.save();
+            
+        }
+
+
+        res.redirect("./home");
+
+
+
         } catch (err) {
             res.status(404).json({
                 "success": false,

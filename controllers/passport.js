@@ -1,8 +1,7 @@
-// config/passport.js
 
-// load những thứ chúng ta cần
-var FacebookStrategy = require('passport-facebook').Strategy;
 
+const FacebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // load  user model
 const {AuthAccount, Userrole}  = require("../model/userModel") 
@@ -34,8 +33,6 @@ module.exports = function (passport) {
         });
     });
 
-    // code for login (use('local-login', new LocalStategy))
-    // code for signup (use('local-signup', new LocalStategy))
 
     // =========================================================================
     // FACEBOOK ================================================================
@@ -46,11 +43,11 @@ module.exports = function (passport) {
             clientID: process.env.FACEBOOK_CLIENT_ID,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
             callbackURL: "http://localhost:8000/api/auth/facebook/callback",
-            profileFields: ['id','displayName','email','first_name','last_name','middle_name']
+            profileFields: ['id','displayName','email','first_name','last_name','middle_name', 'picture.type(large)']
         },
 
         // Facebook sẽ gửi lại chuối token và thông tin profile của user
-       async function (res,token, refreshToken, profile, done) {
+       async function (token, refreshToken, profile, done) {
 
                  console.log("profile user FB :" + profile);
             
@@ -63,29 +60,7 @@ module.exports = function (passport) {
                     // Nếu tìm thấy user, cho họ đăng nhập
                     if (user) {
                         console.log("da tim thay user")
-                        console.log(user.facebook);
-
-                        // create token if found user 
-
-                        const role = await Userrole.findById(user.facebook.role._id)
-
-                        const Facebook_tokenAccess = jwt.sign({
-                            id: user.id,
-                            role: role.name
-                        }, process.env.JWT_ACCESS_KEY, {
-                            expiresIn: "1d"
-                        });
-                        
-                        console.log("FB_token: " + Facebook_tokenAccess)
-                        // save token to cookie
-
-                        res.cookie('facebook_access_token', Facebook_tokenAccess, {
-                            maxAge: 365 * 24 * 60 * 60 * 100, // thời gian sống 
-                            httpOnly: true, // chỉ có http mới đọc được token
-                            //secure: true; //ssl nếu có, nếu chạy localhost thì comment nó lại
-                        })
-
-                        res.redirect("/api/user/register");
+                       
                         return done(null,user);
 
                     } else {
@@ -98,15 +73,23 @@ module.exports = function (passport) {
                         authAccount.facebook.id = profile.id;
                         authAccount.facebook.name = profile.name.givenName + ' ' + profile.name.familyName; // bạn có thể log đối tượng profile để xem cấu trúc
                         authAccount.facebook.email = profile.emails[0].value; // fb có thể trả lại nhiều email, chúng ta lấy cái đầu tiền
-                      //  authAccount.facebook.avatar = profile.photos[0].value;
+                        authAccount.facebook.avatar = profile.photos[0].value;
                         authAccount.facebook.role = Iuser._id;
                         // lưu vào db
-                       await authAccount.save(function (err) {
-                            if (err)
-                                throw err;
-                            // nếu thành công, trả lại user
-                            return done(null,user);
-                        });
+                    //    await authAccount.save(function (err) {
+                    //         if (err)
+                    //             throw err;
+                    //         // nếu thành công, trả lại user
+                    //         return done(null,user);
+                    //     });
+
+                    await authAccount.save(() => {
+                        console.log("save user completed");
+                        return done(null,user);
+                    });
+
+                   
+                
                     }
 
 
@@ -117,5 +100,66 @@ module.exports = function (passport) {
                 }
 
         }));
+
+
+   // =========================================================================
+    // GOOGLE ================================================================
+    // =========================================================================
+
+    passport.use(new GoogleStrategy({
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: "http://localhost:8000/api/auth/google/callback",
+           // profileFields: ['id','displayName','email','first_name','last_name','middle_name', 'picture.type(large)']
+    },
+      // Google sẽ gửi lại chuối token và thông tin profile của user
+      async function (token, refreshToken, profile, done) {
+
+        console.log("profile user GG :" + profile);
+        
+        try{
+
+       // tìm trong db xem có user nào đã sử dụng google id này chưa
+       const user = await AuthAccount.findOne({'google.id': profile.id});
+
+       console.log(user);
+
+           // Nếu tìm thấy user, cho họ đăng nhập
+           if (user) {
+               console.log("da tim thay user")
+              
+               return done(null,user);
+
+           } else {
+               // nếu chưa có, tạo mới user
+               const authAccount = new AuthAccount();
+
+               Iuser = await Userrole.findOne({ name: new RegExp('^' + "user" + '$', "i") });
+              
+               // lưu các thông tin cho user
+               authAccount.google.id = profile.id;
+               authAccount.google.name = profile.name.givenName + ' ' + profile.name.familyName; // bạn có thể log đối tượng profile để xem cấu trúc
+               authAccount.google.email = profile.emails[0].value; // gg có thể trả lại nhiều email, chúng ta lấy cái đầu tiền
+               authAccount.google.avatar = profile.photos[0].value;
+               authAccount.google.role = Iuser._id;
+               // lưu vào db
+              await authAccount.save();
+              return done(null, user);
+           }
+
+
+
+
+       }catch (err){
+           console.log(err.message)
+       }
+
+}));
+
+
+
+
+
+
 
 };
