@@ -9,7 +9,8 @@ const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
-const myRouter = require("./routes");
+const myRouter = require("./routes/index");
+const homeRouter = require("./routes/homeRouter")
 const cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
 dotenv.config();    
@@ -55,6 +56,7 @@ app.use(morgan("common"));
 
 // API
 app.use("/api", myRouter);   
+app.use("/", homeRouter);  
 // app.use("/userInfor", userInforRoute);
         
 app.listen(8000, ()=>{

@@ -11,70 +11,6 @@ const { AuthAccount, Userrole } = require("../model/userModel")
 
 
 
-//User login View
-userRouter.get("/home", async (req, res) => {
-
-    console.log("get in home");
-    const token = req.cookies.access_token;
-
-    const facebook_token = req.cookies.facebook_access_token;
-
-    const google_token = req.cookies.google_access_token;
-
-    if (token) {
-        const user_token = await middlewareController.verifyTokenAccount(token);
-
-        if (user_token) {
-            const user = await UserAccount.findById(user_token.id);
-
-            console.log("token ++" + user);
-
-            if (user) {
-                return res.render("userProfile", {
-                    user: user
-                })
-            }
-        }
-    } else if (facebook_token) {
-
-        const user_facebook_token = await middlewareController.verifyTokenAccount(facebook_token);
-
-        console.log("$$$" + user_facebook_token)
-
-        if (user_facebook_token) {
-
-            console.log("user FB ###" + user_facebook_token)
-            const user_facebook = await AuthAccount.findById(user_facebook_token.id)
-
-            if (user_facebook) {
-                console.log("token ++" + user_facebook.facebook);
-                return res.render("userProfile", {
-                    user: user_facebook.facebook
-                })
-            }
-        }
-    }else if(google_token){
-        const user_google_token = await middlewareController.verifyTokenAccount(google_token);
-
-        console.log("$$$" + user_google_token)
-
-        if (user_google_token) {
-
-            console.log("user GG ###" + user_google_token)
-            const user_google = await AuthAccount.findById(user_google_token.id)
-
-            if (user_google) {
-                console.log("token ++" + user_google.google);
-                return res.render("userProfile", {
-                    user: user_google.google
-                })
-            }
-        }
-    }
-
-    res.render("index");
-})
-
 //Forgot Password View
 userRouter.get("/forgot-password", function (req, res) {
     res.render("forgotPassword", {
@@ -209,7 +145,7 @@ userRouter.get("/logout", async (req, res) => {
     res.clearCookie('access_token');
     res.clearCookie('facebook_access_token');
     res.clearCookie('google_access_token');
-    res.redirect('./home')
+    res.redirect('/')
 
 });
 
@@ -220,7 +156,9 @@ userRouter.get("/loadUpdate", async (req, res) => {
 
     const token_FB = req.cookies.facebook_access_token;
 
-    if (!token && !token_FB) {
+    const token_GG = req.cookies.google_access_token;
+
+    if (!token && !token_FB && !token_GG ) {
         return res.status(403).json({
             mess: "invalid token access"
         })
@@ -257,6 +195,23 @@ userRouter.get("/loadUpdate", async (req, res) => {
             })
         }
 
+    }else if(token_GG) { 
+
+        const user_GG_Token = await middlewareController.verifyTokenAccount(token_GG);
+
+        const user_GG = await AuthAccount.findById(user_GG_Token.id)
+
+        if (!user_GG) {
+            return res.status(403).json({
+                mess: "invalid token access"
+            })
+        } else {
+            res.render("updateUser", {
+                user: user_GG.google,
+                mess: ""
+            })
+        }
+
     }
 
 });
@@ -267,7 +222,10 @@ userRouter.post("/update", middlewareController.uploadFileImage().single("avatar
 
     const token_FB = req.cookies.facebook_access_token;
 
-    if (!token && !token_FB) {
+    const token_GG = req.cookies.google_access_token;
+
+
+    if (!token && !token_FB && !token_GG) {
         return res.status(403).json({
             mess: "invalid token access"
         })
@@ -297,8 +255,21 @@ userRouter.post("/update", middlewareController.uploadFileImage().single("avatar
             })
         }
 
+    }else if(token_GG){
 
+        const user_GG = await middlewareController.verifyTokenAccount(token_GG);
+        console.log(user_GG);
+        if (user_GG) {
+            userController.UpdateUserByToken(req, res, user_GG.id, 2);
+        } else {
+            res.status(401).json({
+                "success": false,
+                "message": "authentication fail"
+            })
+        }
     }
+
+
 });
 //DELETE USER BY ID (auth: ADMIN)
 userRouter.delete("/:id", async (req, res) => {

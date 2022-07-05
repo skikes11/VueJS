@@ -85,7 +85,7 @@ module.exports = function (passport) {
 
                     await authAccount.save(() => {
                         console.log("save user completed");
-                        return done(null,user);
+                        return done(null,authAccount);
                     });
 
                    
@@ -140,11 +140,10 @@ module.exports = function (passport) {
                authAccount.google.id = profile.id;
                authAccount.google.name = profile.name.givenName + ' ' + profile.name.familyName; // bạn có thể log đối tượng profile để xem cấu trúc
                authAccount.google.email = profile.emails[0].value; // gg có thể trả lại nhiều email, chúng ta lấy cái đầu tiền
-               authAccount.google.avatar = profile.photos[0].value;
                authAccount.google.role = Iuser._id;
                // lưu vào db
               await authAccount.save();
-              return done(null, user);
+              return done(null, authAccount);
            }
 
 

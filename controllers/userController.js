@@ -31,6 +31,7 @@ function checkPass(req){
     if (req.body.password != req.body.rePassword) {
         return false;
     }
+    return true;
 }
 
 const userController = {
@@ -328,7 +329,8 @@ const userController = {
             if(!user.avatar){
                 user.avatar = "default"
             }
-            else if (req.file) {
+
+            if (req.file) {
                 if (!validateURL(user.avatar)&& user.avatar != "default") {
                     var oldPath = "." + user.avatar;
                     var getPath = oldPath.replace('static', 'public')
@@ -370,7 +372,9 @@ const userController = {
             if(!user_FB.facebook.avatar){
                 user_FB.facebook.avatar = "default"
             }
-            else if (req.file) {
+
+
+            if (req.file) {
                 if (!validateURL(user_FB.facebook.avatar)&& user_FB.facebook.avatar != "default") {
                     var oldPath = "." + user_FB.facebook.avatar;
                     var getPath = oldPath.replace('static', 'public')
@@ -394,10 +398,53 @@ const userController = {
 
             await user_FB.save();
             
+        }else if (checkAuth == 2){
+
+            const user_GG = await AuthAccount.findById(id);
+
+            if (!user_GG) {
+                return res.status(500).json({
+                    "success": false,
+                    "message": "did not found user"
+                });
+            }
+            user_GG.google.name = req.body.name;
+            user_GG.google.phone = req.body.phone;
+            user_GG.google.dob = req.body.dob;
+
+
+            if(!user_GG.google.avatar){
+                user_GG.google.avatar = "default"
+            }
+
+
+            if (req.file) {
+                if (!validateURL(user_GG.google.avatar)&& user_GG.google.avatar != "default") {
+                    var oldPath = "." + user_GG.google.avatar;
+                    var getPath = oldPath.replace('static', 'public')
+                    await fs.unlinkSync(getPath);
+                    console.log("unlink path" + getPath);
+                }
+                user_GG.google.avatar = `/static/images/avatar/${req.file.filename}`
+            } else {
+                if (isImage(req.body.url)) {
+
+                    if (!validateURL(user_GG.google.avatar) && user_GG.google.avatar != "default" ) {
+                        var oldPath = "." + user_GG.google.avatar;
+                        var getPath = oldPath.replace('static', 'public')
+                        await fs.unlinkSync(getPath);
+                        console.log("unlink path" + getPath);
+                    }
+
+                    user_GG.google.avatar = req.body.url
+                }
+            }
+
+            await user_GG.save();
         }
 
 
-        res.redirect("./home");
+        res.redirect("/");
 
 
 
@@ -481,23 +528,25 @@ const userController = {
         try {
             const user = await UserAccount.findOne({ email: req.body.email }).populate("role");
             if (!user) {
-                res.status(404).json({
-                    "success": false,
-                    "message": "username or password not match"
-                });
+                
+                res.render("index",{
+                    mess : "username or password not match"
+                })
             } else {
                 const checkPass = await bcrypt.compare(req.body.password, user.password);
                 if (!checkPass) {
-                    res.status(404).json({
-                        "success": false,
-                        "message": "username or password not match"
-                    });
+
+                    res.render("index",{
+                        mess : "username or password not match"
+                    })
                 } else {
                     if (!user.active) {
-                        res.status(402).json({
-                            "success": false,
-                            "message": "your account get blocked"
-                        });
+
+                        res.render("index",{
+                            mess : "your account have not activated or get blocked"
+                        })
+
+                       
                     } else {
 
                         if (!user.role.name) {

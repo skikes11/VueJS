@@ -2,11 +2,33 @@
 const middlewareController = require("../controllers/middlewareController");
 const userRouter = require("express").Router();
 const userController = require("../controllers/userController");
+const TokenModel = require("../model/tokenModel");
+
+
 
 userRouter.get("/account/:token", async(req,res)=>{
     try {
+
+        //check token da su dung roi 
+        const CheckTokenUsed = await TokenModel.findOne({ value : req.params.token})
+
+        if(CheckTokenUsed) { 
+            console.log("check Token " + CheckTokenUsed)
+            return res.render("errorToken");
+        }
+        
+
+
         // check token hop le
-        const user = await middlewareController.verifyTokenAccount(req.params.token)
+        const user = await middlewareController.verifyTokenAccount(req.params.token);
+
+        //sau khi lay duoc user thi luu lai token de check vao lan sau 
+        const TokenUsed = new TokenModel({ value : req.params.token });
+        TokenUsed.save();
+
+
+
+
         console.log(user);
         if (!user){
             return res.status(401).json({
@@ -26,11 +48,17 @@ userRouter.get("/account/:token", async(req,res)=>{
 userRouter.get("/reset-password/:token", async(req,res)=>{
     try {
 
-        if(!req.params.token){
-            return res.status(400).json({
-                "message" : "token invalid"
-            })
-        }
+
+         //check token da su dung roi 
+         const CheckTokenUsed = await TokenModel.findOne({ value : req.params.token})
+
+         if(CheckTokenUsed || !req.params.token) { 
+             console.log("check Token " + CheckTokenUsed)
+             return res.render("errorToken");
+         }
+
+         // check token hop le
+         const user = await middlewareController.verifyTokenAccount(req.params.token);
 
         res.render("resetPassword",{
             token : req.params.token
@@ -45,6 +73,12 @@ userRouter.post("/reset-passwordV1", async(req,res)=>{
     try {
         // check token hop le
         const user = await middlewareController.verifyTokenAccount(req.body.token);
+
+        //sau khi lay duoc user thi luu lai token de check vao lan sau 
+          const TokenUsed = new TokenModel({ value : req.body.token });
+          TokenUsed.save();
+ 
+
         if (!user){
             return res.status(401).json({
                 "success":false,

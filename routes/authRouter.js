@@ -11,9 +11,9 @@ authRouter.get('/google', passport.authenticate('google', { scope: ['profile', '
 
 //xử lý sau khi user cho phép xác thực với facebook
 
-
+//////// FACE BOOK //////////
 authRouter.get('/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/api/users/home' }),
+    passport.authenticate('facebook', { failureRedirect: '/' }),
     async function (req, res) {
         // Successful authentication, redirect home.
         console.log("###" + req.user)
@@ -44,12 +44,15 @@ authRouter.get('/facebook/callback',
             //secure: true; //ssl nếu có, nếu chạy localhost thì comment nó lại
         })
 
-        res.redirect("/api/users/home");
+        res.redirect("/");
 
     });
 
+
+////// GOOGLE /////////
+
  authRouter.get('/google/callback',
-    passport.authenticate('google' , { failureRedirect: '/api/users/home' }),
+    passport.authenticate('google' , { failureRedirect: '/' }),
     async function (req, res) {
         // Successful authentication, redirect home.
         console.log("###" + req.user)
@@ -80,7 +83,7 @@ authRouter.get('/facebook/callback',
             //secure: true; //ssl nếu có, nếu chạy localhost thì comment nó lại
         })
 
-        res.redirect("/api/users/home");
+        res.redirect("/");
 
     });
 
