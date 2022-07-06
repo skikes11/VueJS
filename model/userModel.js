@@ -127,7 +127,7 @@ const userroleSchema = new mongoose.Schema({
 
 
 const PermissionSchema = new mongoose.Schema({
-    role: {
+    Role_ID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Userrole',
         default: null
@@ -148,4 +148,4 @@ let UserAccount = mongoose.model("UserAccount", userAccountSchema);
 let Userrole = mongoose.model("Userrole", userroleSchema);
 let AuthAccount = mongoose.model("AuthAccount", AuthAccountSchema);
 
-module.exports = { UserAccount, Userrole, AuthAccount};
+module.exports = { UserAccount, Userrole, AuthAccount,Permission};

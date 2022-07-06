@@ -9,6 +9,8 @@ const fs = require('fs');
 const { Console } = require("console");
 const { uploadAvatar } = require("./helpers");
 const { boolean } = require("joi");
+const { Order, OrderItems } = require("../model/orderModel");
+const { Product } = require("../model/productModel");
 
 
 
@@ -36,9 +38,7 @@ function checkPass(req){
 
 const userController = {
     addUser: async (req, res) => {
-
         try {
-
             uploadAvatar(req, res, async(err) => {
                 const user = await UserAccount.findOne({ email: req.body.email });
                 console.log( req.body)
@@ -105,26 +105,91 @@ const userController = {
                 }
             })
 
-
-
-            
-
         } catch (err) {
             res.status(400).json(err.message);
         }
     },
-    addRole: async (req, res) => {
+
+    clickBuyProduct: async (req, res, UserID, ProductID) => {
         try {
-            const Role = await new Userrole({
-                "name": req.body.name
-            });
-            await Role.save();
-            res.status(200).json(Role);
-        } catch (err) {
-            res.status(400).json(err.message);
 
+            const order = await  Order.findOne({ User_ID : UserID, status : 0 })     //status order : 0 - Don hang van chua thanh toan (con trong gio hang)  1 - Don hang da thanh toan nhung chua duoc xac nhan  2 - Don hang da duoc xac nhan         
+            if(order){   // Check if order exist in cart then add orderitem to order 
+               
+                const orderItems = await OrderItems.findOne({ Order_ID : order._id, Product_ID: ProductID }); 
+                const product = await Product.findById(ProductID);
+                if(orderItems){ // check if orderItem exist in order and have same product id then just plus quantity in orderItem
+                    orderItems.quantity = orderItems.quantity + 1
+                    orderItems.save();
+
+                    order.totalPrice = order.totalPrice + product.price; // update order price 
+                    order.save();
+                }else{ 
+                    const orderItem = new OrderItems({
+                        Order_ID : order.id,
+                        Product_ID : ProductID,
+                        quantity : 1
+                    })
+                    orderItem.save();
+
+                    order.totalPrice = order.totalPrice + product.price; // update order price 
+                    order.save();
+                }
+            }else{
+                const newOrder = new Order({
+                    User_ID : UserID,
+                    status : 0,
+                    totalPrice : 0,
+                })
+
+                await newOrder.save();
+
+                const newOrderItem = new OrderItems({
+                    Order_ID : newOrder._id,
+                    Product_ID : ProductID,
+                    quantity : 1
+                })
+                newOrderItem.save();
+            }                        
+
+
+                                                                                                 
+        } catch (err) {
+            res.status(500).json({
+                "success": false,
+                "message": "buying product getting error" + err.message
+            });
+            
         }
     },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     forgotPassword: async (req, res) => {
         try {
             const user = await UserAccount.findOne({ "email": req.body.email });
@@ -227,87 +292,8 @@ const userController = {
 
         }
     },
-    getAllRole: async (req, res) => {
-        try {
-            const userrole = await Userrole.find();
-            // Update InforUserID for user
-            res.status(200).json({
-                "success": true,
-                "data": userrole
-            });
-        } catch (err) {
-            res.status(500).json({
-                "success": false,
-                "message": "did not found any userrole" + err.message
-            });
-            logger.info({
-                "success": false,
-                "message": "did not found any userrole"
-            })
-        }
-    },
-    getAllUser: async (req, res) => {
-        try {
-            const users = await UserAccount.find();
-            // Update InforUserID for user
-            const { password, ...others } = users._doc;
-            res.status(200).json({
-                "success": true,
-                "data": { ...others }
-            });
-        } catch (err) {
-            res.status(500).json({
-                "success": false,
-                "message": "did not found any user" + + err.message
-            });
-            logger.info({
-                "success": false,
-                "message": "did not found any user" + + err.message
-            })
-        }
-    },
-    deleteUserByID: async (res, id) => {
-        try {
-            if (await UserAccount.findByIdAndDelete(id)) {
-                res.status(200).json("DELETE USER SUSCESS");
-            } else {
-                res.status(200).json({
-                    "success": false,
-                    "message": "did not found user"
-                });
-            }
-        } catch (err) {
-            res.status(500).json(err.message);
-
-        }
-    },
-    UpdateUserByID: async (req, res, id) => {
-        try {
-            const user = await UserAccount.findById(id);
-            if (!user) {
-                return res.status(500).json({
-                    "success": false,
-                    "message": "did not found user"
-                });
-            }
-            user.name = req.body.name;
-            user.email = req.body.email;
-            user.phone = req.body.phone;
-            user.dob = req.body.dob;
-
-            await user.save();
-            res.status(500).json({
-                "success": true,
-                "data": user
-            });
-        } catch (err) {
-            res.status(404).json({
-                "success": false,
-                "message": "update user failed",
-                "error": err.message
-            });
-        }
-    },
+    
+   
     UpdateUserByToken: async (req, res, id, checkAuth) => {
         try {
 
