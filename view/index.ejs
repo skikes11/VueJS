@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Login V1</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="/images/icons/favicon.ico" />
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/animate/animate.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/css-hamburgers/hamburgers.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/select2/select2.min.css">
+	<!--===============================================================================================-->
+
+
+
+	<link rel="stylesheet" type="text/css" href="/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/css/main.css">
+	<!--===============================================================================================-->
+
+
+
+
+</head>
+
+<body>
+
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="/images/img-01.png" alt="IMG">
+				</div>
+
+				<form action="/api/users/login" class="login100-form validate-form" method="post"  >
+					<span class="login100-form-title">
+						Member Login
+					</span>
+
+					<%if (mess) { %>
+                        <h6 style="color: red; text-align: center;">
+                            <%= mess %>
+                        </h6>
+                    <% } %>
+
+					<div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+						<input class="input100" type="text" name="email" placeholder="Email">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Password is required">
+						<input class="input100" type="password" name="password" placeholder="Password">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button type = "submit" class="login100-form-btn">
+							Login
+						</button>
+					</div>
+
+					<div  class="container-login100-form-btn">
+						<a style= "background-color: blue;" href="/api/auth/facebook" class="login100-form-btn">
+
+							<img width="30px" style="margin-top:2px; margin-right:8px" alt="Google sign-in" 
+									src="https://thuviendohoa.vn/2020/upload/images/items/vector-icon-logo-facebook-4373.jpg?t=20170704_095556" />
+
+							Sign in with facebook
+						</a>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<a class="login100-form-btn" href="/api/auth/google" style="text-transform:none; background-color: slategrey; color: white; ">
+							
+								<img width="30px" style="margin-top:2px; margin-right:8px" alt="Google sign-in" 
+									src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+															
+							Sign in with Google
+						</a>
+					</div>
+
+
+
+
+					<div class="text-center p-t-12">
+
+						<a class="txt2" href="/api/users/forgot-password">
+							Forgot password?
+						</a>
+					</div>
+
+					<div class="text-center p-t-136">
+						<a class="txt2" href="/api/users/register">
+							Create your Account
+							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!--===============================================================================================-->
+	<script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="/vendor/bootstrap/js/popper.js"></script>
+	<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="/vendor/select2/select2.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="/vendor/tilt/tilt.jquery.min.js"></script>
+	<script>
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+	<!--===============================================================================================-->
+	<script src="/js/main.js"></script>
+
+</body>
+
+</html>
