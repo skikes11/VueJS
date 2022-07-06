@@ -8,4 +8,5 @@ router.use('/users', userRouter)
 router.use('/verify',verifyRouter)
 
 router.use('/auth',authRouter)
+
 module.exports = router;

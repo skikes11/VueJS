@@ -293,6 +293,9 @@ userRouter.delete("/:id", async (req, res) => {
     }
 });
 
+// USER
+// MOD
+
 //BLOCK OR UNBLOCK USER BY ID (auth : ADMIN)
 userRouter.put("/:id", async (req, res) => {
     const user = await middlewareController.verifyToken(req, res);
