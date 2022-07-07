@@ -3,6 +3,8 @@ const passport = require('passport');
 const { AuthAccount, Userrole } = require("../model/userModel")
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const userController = require("../controllers/userController");
+
 
 authRouter.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 
@@ -51,8 +53,8 @@ authRouter.get('/facebook/callback',
 
 ////// GOOGLE /////////
 
- authRouter.get('/google/callback',
-    passport.authenticate('google' , { failureRedirect: '/' }),
+authRouter.get('/google/callback',
+    passport.authenticate('google', { failureRedirect: '/' }),
     async function (req, res) {
         // Successful authentication, redirect home.
         console.log("###" + req.user)
@@ -88,15 +90,24 @@ authRouter.get('/facebook/callback',
     });
 
 
-// authRouter.get('/facebook/callback',(req,res) =>{
 
-//     passport.authenticate('facebook', async(req,res) =>{
-//         console.log("chay vao router db callback");
-//         res.redirect("api/users/home");
-//     })
+//LOGIN USER
+authRouter.post("/login", userController.loginUser);
 
-// })
 
+
+//LOG OUT
+authRouter.get("/logout", async (req, res) => {
+
+    res.clearCookie('access_token');
+    res.clearCookie('facebook_access_token');
+    res.clearCookie('google_access_token');
+    res.redirect('/')
+
+});
+
+//Add User 
+authRouter.post("/register", userController.addUser);
 
 
 module.exports = authRouter;

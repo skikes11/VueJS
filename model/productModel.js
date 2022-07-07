@@ -10,8 +10,11 @@ const  ProductSchema= new mongoose.Schema({
         },
         image:{
             type: String,
-        }
-        ,
+        },
+        total_quantity : {
+            type : Number,
+            defaut : 0
+        },
         ProductDetail: {
             brand : {
                 type: String

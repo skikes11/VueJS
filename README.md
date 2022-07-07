@@ -9,3 +9,12 @@ FACEBOOK_CLIENT_SECRET = 8900c33322dd2b65acb6637cd1b40b2a
 
 GOOGLE_CLIENT_ID = 1044223900179-tfsboch1jobrpskea2n3ofnbti75a3vi.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET = 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
+
+
+
+// Tach admin router va user router ra admin router index
+
+// endpoint se~ la model. ex: /products, /orders 
+
+api : /api/users/products
+

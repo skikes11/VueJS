@@ -30,7 +30,7 @@ function validateURL(link) {
 }
 
 function checkPass(req){
-    if (req.body.password != req.body.rePassword) {
+    if (req.body.password !== req.body.rePassword) {
         return false;
     }
     return true;
@@ -52,7 +52,7 @@ const userController = {
                     return res.render("register", {
                         mess : "email already in use"
                     })
-                }else if(!checkPass(req)){
+                }else if(checkPass(req)){
                     return res.render("register", {
                         mess : "password did not match"
                     })
@@ -150,6 +150,45 @@ const userController = {
                     quantity : 1
                 })
                 newOrderItem.save();
+            }
+            
+            
+            res.status(500).json({
+                "success": false,
+                "message": "buying product success, check your cart" + err.message
+            });
+
+                                                                                                 
+        } catch (err) {
+            res.status(500).json({
+                "success": false,
+                "message": "buying product getting error" + err.message
+            });
+            
+        }
+    },
+
+    Cart: async (req, res, UserID) => {
+        try {
+
+            const order = await  Order.findOne({ User_ID : UserID, status : 0 })     //status order : 0 - Don hang van chua thanh toan (con trong gio hang)  1 - Don hang da thanh toan nhung chua duoc xac nhan  2 - Don hang da duoc xac nhan         
+            if(order){   // Check if order exist in cart then add orderitem to order 
+               
+                const orderItems = await OrderItems.findOne({ Order_ID : order._id}).populate('Order_ID').populate('Product_ID'); 
+                // Get all orderItems in order 
+
+                if(orderItems){
+                    res.status(200).json(orderItems);
+                }else{
+                    res.status(200).json({
+                        "message" : "there are no product in your cart" 
+                    })
+                }
+                
+            }else{
+                res.status(200).json({
+                    "message" : "there are no product in your cart" 
+                })
             }                        
 
 
@@ -163,7 +202,84 @@ const userController = {
         }
     },
 
+    DeleteProductInCart: async (req, res, OrderItems_ID) => {
+        try {
 
+            if(await OrderItems.findByIdAndDelete(OrderItems_ID)){
+                res.status(200).json({
+                    "message" : "DELETE ORDER ITEMS SUSSCESS" 
+                })
+            }else{
+                res.status(200).json({
+                    "message" : "there are no product in your cart" 
+                })
+            }                        
+
+
+                                                                                                 
+        } catch (err) {
+            res.status(500).json({
+                "success": false,
+                "message": err.message
+            });
+            
+        }
+    },
+
+    GetAllProducts: async (req, res ) => {
+        try {
+
+            const products = await Product.findOne({ total_quantity :  {$gt: 0} })                 
+
+            if(products){
+                res.status(200).json(products)
+            }else{
+                res.status(401).json({
+                    "message" : "no product found"
+                })
+            }
+
+                                                                                                 
+        } catch (err) {
+            res.status(500).json({
+                "success": false,
+                "message": err.message
+            });
+            
+        }
+    },
+
+    PaymentOrder: async (req, res, User_ID) => {
+        try {
+
+            const order = await  Order.findOne({ User_ID : UserID, status : 0 })     //status order : 0 - Don hang van chua thanh toan (con trong gio hang)  1 - Don hang da thanh toan nhung chua duoc xac nhan  2 - Don hang da duoc xac nhan         
+            if(order){   // Check if order exist in cart then add orderitem to order 
+                
+                order.status = 1 // set status to 1   
+                order.save().then(res.status(200).json({
+                    "message" : "payment order success"
+                }))
+
+        
+                
+            }else{
+                res.status(200).json({
+                    "message" : "there are no product in your cart" 
+                })
+            }                        
+                                                                                  
+        } catch (err) {
+            res.status(500).json({
+                "success": false,
+                "message": err.message
+            });
+            
+        }
+    },
+
+
+
+    
 
 
 
@@ -567,8 +683,12 @@ const userController = {
                             ...others
                         })
 
-                        res.render("userProfile", {
-                            user: { ...others }
+                        // res.render("userProfile", {
+                        //     user: { ...others }
+                        // })
+
+                        res.status(200).json({
+                            ...others, fullToken
                         })
 
 

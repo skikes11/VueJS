@@ -5,10 +5,12 @@ const userController = require("../controllers/userController");
 const userValidate = require("../controllers/validation/userValidateRegister");
 const logger = require("../controllers/logger/winstonLogger");
 const { UserAccount } = require("../model/userModel");
-const { AuthAccount, Userrole } = require("../model/userModel")
+const { AuthAccount, Userrole } = require("../model/userModel");
+const { model } = require("mongoose");
 
 
 
+const endpoint = '/users'
 
 
 //Forgot Password View
@@ -46,8 +48,7 @@ userRouter.get("/registration-completed", function (req, res) {
 })
 
 
-//Add User 
-userRouter.post("/addUser", userController.addUser);
+
 
 //AddRole
 userRouter.post("/r2", async (req, res) => {
@@ -139,15 +140,7 @@ userRouter.put("/v2/:id", async (req, res) => {
     }
 });
 
-//LOG OUT
-userRouter.get("/logout", async (req, res) => {
 
-    res.clearCookie('access_token');
-    res.clearCookie('facebook_access_token');
-    res.clearCookie('google_access_token');
-    res.redirect('/')
-
-});
 
 //Load Profile Update
 userRouter.get("/loadUpdate", async (req, res) => {
@@ -333,7 +326,115 @@ userRouter.put("/u1/pass", async (req, res) => {
     }
 });
 
+//SHOW CART FOR USER
 
-//LOGIN USER
-userRouter.post("/login", userController.loginUser);
+userRouter.get("/cart", async (req, res) => {
+
+    const user = await middlewareController.verifyToken(req, res);
+
+    if (user) {
+
+        userController.Cart(req, res , user._id);
+        
+    } else {
+        res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        })
+    }
+});
+
+//SHOW CART FOR USER
+userRouter.get("/cart", async (req, res) => {
+
+    const user = await middlewareController.verifyToken(req, res);
+
+    if (user) {
+
+        userController.Cart(req, res , user.id);
+        
+    } else {
+        res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        })
+    }
+});
+
+
+//USER CLICK BUY PRODUCT
+userRouter.get("/buyProduct", async (req, res) => {
+
+    const user = await middlewareController.verifyToken(req, res);
+
+    if (user) {
+
+        userController.clickBuyProduct(req, res , user.id);
+        
+    } else {
+        res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        })
+    }
+});
+
+//DELETE PRODUCT IN CART
+
+userRouter.delete("/DeleteProduct/:id", async (req, res) => {
+
+    const user = await middlewareController.verifyToken(req, res);
+
+    if (user) {
+
+        userController.DeleteProductInCart(req, res , req.params.id);
+        
+    } else {
+        res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        })
+    }
+});
+
+//GET ALL PRODUCT
+
+userRouter.get("/product", async (req, res) => {
+
+    const user = await middlewareController.verifyToken(req, res);
+
+    if (user) {
+
+        userController.GetAllProducts(req, res);
+        
+    } else {
+        res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        })
+    }
+});
+
+
+//  PAYMENT ORDER
+
+userRouter.get("/payment", async (req, res) => {
+
+    const user = await middlewareController.verifyToken(req, res);
+
+    if (user) {
+
+        userController.PaymentOrder(req, res , user.id);
+        
+    } else {
+        res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        })
+    }
+});
+
+
+
+
 module.exports = userRouter;

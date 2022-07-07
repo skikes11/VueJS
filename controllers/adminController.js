@@ -26,6 +26,7 @@ const adminController = {
                 name: req.body.name,
                 price: req.body.price,
                 image: req.body.image,
+                total_quantity: req.body.total_quantity,
                 brand: req.body.brand,
                 origin: req.body.origin,
                 description: req.body.description
@@ -61,6 +62,7 @@ const adminController = {
             product.price = req.body.price
             product.image = req.body.image
             product.brand = req.body.brand
+            product.total_quantity = req.body.total_quantity
             product.origin = req.body.origin
             product.description = req.body.description
             await product.save().then(
@@ -279,21 +281,26 @@ const adminController = {
     },
     getAllUser: async (req, res) => {
         try {
-            const users = await UserAccount.find();
-            // Update InforUserID for user
-            const { password, ...others } = users._doc;
-            res.status(200).json({
-                "success": true,
-                "data": { ...others }
-            });
+            const user = await UserAccount.find();
+            
+            // // Update InforUserID for user
+            // const { password, ...others } = users._doc;
+            // res.status(200).json({
+            //     "success": true, 
+            //     "data": { ...others }
+            // });
+           
+            res.status(200).json(users)
+
+
         } catch (err) {
             res.status(500).json({
                 "success": false,
-                "message": "did not found any user" + + err.message
+                "message": "did not found any user" 
             });
             logger.info({
                 "success": false,
-                "message": "did not found any user" + + err.message
+                "message": "did not found any user"
             })
         }
     },
