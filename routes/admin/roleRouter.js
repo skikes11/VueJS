@@ -22,7 +22,7 @@ roleRouter.get("/", async (req, res) => {
 
     const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
@@ -47,9 +47,8 @@ roleRouter.post("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
@@ -77,11 +76,11 @@ roleRouter.put("/:id", async (req, res) => {
 
     const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
-        roleController.UpdateRoleByID(req,res.req.params.id);
+        roleController.UpdateRoleByID(req,res, req.params.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -105,11 +104,11 @@ roleRouter.delete("/:id", async (req, res) => {
 
     const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
-        roleController.deleteRoleByID(req,res,req.params.id);
+        roleController.deleteRoleByID(res,req.params.id);
     } else {
         res.status(403).json({
             "success": false,

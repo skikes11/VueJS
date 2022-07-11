@@ -136,6 +136,7 @@ const userController = {
                         password: hashPass,
                         phone: req.body.phone,
                         dob: req.body.dob,
+                        role: req.body.role
 
                     });
 
@@ -159,17 +160,19 @@ const userController = {
                     console.log('URL', URL)
                     const content = `Click <a href = "${URL}" > here  </a> to activate your account`;
 
+                    if(!newUser.role){
                     Iuser = await Userrole.findOne({ name: new RegExp('^' + "user" + '$', "i") });
                     newUser.role = Iuser._id;
                     console.log(newUser);
+                    }
 
-                    EmailSender(res, newUser.email, "Active Your Account", content);
+                 //   EmailSender(res, newUser.email, "Active Your Account", content);
                     await newUser.save();
-                    // res.status(200).json({
-                    //     newUser,
-                    //     tokenActivate
-                    // });
-                    res.render("registrationComplete");
+                    res.status(200).json({
+                        newUser,
+                        tokenActivate
+                    });
+                   // res.render("registrationComplete");
                 }
             })
 

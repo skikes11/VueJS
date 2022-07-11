@@ -44,7 +44,7 @@ const RoleController = {
     UpdateRoleByID: async (req, res, id) => {
         try {
             const role = await Userrole.findById(id);
-            if (!user) {
+            if (!role) {
                 return res.status(500).json({
                     "success": false,
                     "message": "did not found role"

@@ -22,7 +22,7 @@ orderRouter.get("/", async (req, res) => {
 
     const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
@@ -49,7 +49,7 @@ orderRouter.post("/", async (req, res) => {
 
     const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
@@ -76,7 +76,7 @@ orderRouter.put("/:id", async (req, res) => {
 
     const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
@@ -104,7 +104,7 @@ orderRouter.delete("/:id", async (req, res) => {
 
     const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
 
     console.log(permission)
     if (permission) {
