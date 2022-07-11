@@ -4,7 +4,7 @@ const { AuthAccount, Userrole } = require("../model/userModel")
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const userController = require("../controllers/userController");
-
+const userAuthController = require("../controllers/userAuthController")
 
 authRouter.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 
@@ -92,7 +92,7 @@ authRouter.get('/google/callback',
 
 
 //LOGIN USER
-authRouter.post("/login", userController.loginUser);
+authRouter.post("/login", userAuthController.loginUser);
 
 
 

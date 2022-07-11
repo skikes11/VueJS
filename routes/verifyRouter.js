@@ -3,6 +3,7 @@ const middlewareController = require("../controllers/middlewareController");
 const userRouter = require("express").Router();
 const userController = require("../controllers/userController");
 const TokenModel = require("../model/tokenModel");
+const userAuthController = require("../controllers/userAuthController")
 
 
 
@@ -86,14 +87,14 @@ userRouter.post("/reset-passwordV1", async(req,res)=>{
             })
         }
 
-       userController.resetPassword(req,res,user.id);
+       userAuthController.resetPassword(req,res,user.id);
 
     } catch (error) {
             res.status(404).json(error.message);
     }
 })
 
-userRouter.post("/forgot-password", userController.forgotPassword);
+userRouter.post("/forgot-password", userAuthController.forgotPassword);
 
 
 

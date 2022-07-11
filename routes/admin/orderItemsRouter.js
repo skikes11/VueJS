@@ -1,15 +1,15 @@
-const productRouter = require("express").Router();
+const orderItemsRouter = require("express").Router();
 const middlewareController = require("../../controllers/middlewareController");
 
 const { UserAccount } = require("../../model/userModel");
 const {  Permission } = require("../../model/userModel");
-const productController = require ( "../../controllers/productController")
+const orderController = require ( "../../controllers/orderController")
+const orderItemsController = require ( "../../controllers/orderItemsController")
 
+const endpoint = '/orderItems'
 
-const endpoint = '/products'
-
-//Get All Product (auth: ADMIN)
-productRouter.get("/", async (req, res) => {
+//Get All ORDER ITEMS BY ORDER ID (auth: ADMIN)
+orderItemsRouter.get("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -26,7 +26,7 @@ productRouter.get("/", async (req, res) => {
 
     console.log(permission)
     if (permission) {
-        productController.getAllProduct(req,res);
+        orderItemsController.getOrderItems_ByOrderID(req,res,req.params.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -35,8 +35,8 @@ productRouter.get("/", async (req, res) => {
     }
 });
 
-//ADD Product (auth: ADMIN)
-productRouter.post("/", async (req, res) => {
+//ADD ORDER ITEM (auth: ADMIN)
+orderItemsRouter.post("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -53,7 +53,7 @@ productRouter.post("/", async (req, res) => {
 
     console.log(permission)
     if (permission) {
-        productController.addProduct(req,res);
+       orderItemsController.addOrderItems(req,res);
     } else {
         res.status(403).json({
             "success": false,
@@ -62,8 +62,8 @@ productRouter.post("/", async (req, res) => {
     }
 });
 
-//UPDATE Product (auth: ADMIN)
-productRouter.put("/:id", async (req, res) => {
+//UPDATE ORDER ITEM (auth: ADMIN)
+orderItemsRouter.put("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -80,7 +80,7 @@ productRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission) {
-        productController.updateProduct(req,res.req.params.id);
+        orderItemsController.UpdateOrderItemsByID(req,res,req.params.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -91,7 +91,7 @@ productRouter.put("/:id", async (req, res) => {
 
 
 //DELETE Product (auth: ADMIN)
-productRouter.delete("/:id", async (req, res) => {
+orderItemsRouter.delete("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -108,7 +108,7 @@ productRouter.delete("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission) {
-        productController.deleteProduct(req,res,req.params.id);
+        orderItemsController.DeleteOrderItemsByID(req,res,req.params.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -118,6 +118,5 @@ productRouter.delete("/:id", async (req, res) => {
 });
 
 
-
-module.exports= productRouter;
+module.exports= orderItemsRouter;
 

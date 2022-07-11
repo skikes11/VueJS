@@ -37,6 +37,74 @@ function checkPass(req){
 }
 
 const userController = {
+    getAllUser: async (req, res) => {
+        try {
+            const user = await UserAccount.find();
+            
+            // // Update InforUserID for user
+            // const { password, ...others } = users._doc;
+            // res.status(200).json({
+            //     "success": true, 
+            //     "data": { ...others }
+            // });
+           
+            res.status(200).json(users)
+
+
+        } catch (err) {
+            res.status(500).json({
+                "success": false,
+                "message": "did not found any user" 
+            });
+            logger.info({
+                "success": false,
+                "message": "did not found any user"
+            })
+        }
+    },
+
+    deleteUserByID: async (res, id) => {
+        try {
+            if (await UserAccount.findByIdAndDelete(id)) {
+                res.status(200).json("DELETE USER SUSCESS");
+            } else {
+                res.status(200).json({
+                    "success": false,
+                    "message": "did not found user"
+                });
+            }
+        } catch (err) {
+            res.status(500).json(err.message);
+
+        }
+    },
+    UpdateUserByID: async (req, res, id) => {
+        try {
+            const user = await UserAccount.findById(id);
+            if (!user) {
+                return res.status(500).json({
+                    "success": false,
+                    "message": "did not found user"
+                });
+            }
+            user.name = req.body.name;
+            user.email = req.body.email;
+            user.phone = req.body.phone;
+            user.dob = req.body.dob;
+
+            await user.save();
+            res.status(500).json({
+                "success": true,
+                "data": user
+            });
+        } catch (err) {
+            res.status(404).json({
+                "success": false,
+                "message": "update user failed",
+                "error": err.message
+            });
+        }
+    },
     addUser: async (req, res) => {
         try {
             uploadAvatar(req, res, async(err) => {
@@ -110,274 +178,7 @@ const userController = {
         }
     },
 
-    clickBuyProduct: async (req, res, UserID, ProductID) => {
-        try {
-
-            const order = await  Order.findOne({ User_ID : UserID, status : 0 })     //status order : 0 - Don hang van chua thanh toan (con trong gio hang)  1 - Don hang da thanh toan nhung chua duoc xac nhan  2 - Don hang da duoc xac nhan         
-            if(order){   // Check if order exist in cart then add orderitem to order 
-               
-                const orderItems = await OrderItems.findOne({ Order_ID : order._id, Product_ID: ProductID }); 
-                const product = await Product.findById(ProductID);
-                if(orderItems){ // check if orderItem exist in order and have same product id then just plus quantity in orderItem
-                    orderItems.quantity = orderItems.quantity + 1
-                    orderItems.save();
-
-                    order.totalPrice = order.totalPrice + product.price; // update order price 
-                    order.save();
-                }else{ 
-                    const orderItem = new OrderItems({
-                        Order_ID : order.id,
-                        Product_ID : ProductID,
-                        quantity : 1
-                    })
-                    orderItem.save();
-
-                    order.totalPrice = order.totalPrice + product.price; // update order price 
-                    order.save();
-                }
-            }else{
-                const newOrder = new Order({
-                    User_ID : UserID,
-                    status : 0,
-                    totalPrice : 0,
-                })
-
-                await newOrder.save();
-
-                const newOrderItem = new OrderItems({
-                    Order_ID : newOrder._id,
-                    Product_ID : ProductID,
-                    quantity : 1
-                })
-                newOrderItem.save();
-            }
-            
-            
-            res.status(500).json({
-                "success": false,
-                "message": "buying product success, check your cart" + err.message
-            });
-
-                                                                                                 
-        } catch (err) {
-            res.status(500).json({
-                "success": false,
-                "message": "buying product getting error" + err.message
-            });
-            
-        }
-    },
-
-    Cart: async (req, res, UserID) => {
-        try {
-
-            const order = await  Order.findOne({ User_ID : UserID, status : 0 })     //status order : 0 - Don hang van chua thanh toan (con trong gio hang)  1 - Don hang da thanh toan nhung chua duoc xac nhan  2 - Don hang da duoc xac nhan         
-            if(order){   // Check if order exist in cart then add orderitem to order 
-               
-                const orderItems = await OrderItems.findOne({ Order_ID : order._id}).populate('Order_ID').populate('Product_ID'); 
-                // Get all orderItems in order 
-
-                if(orderItems){
-                    res.status(200).json(orderItems);
-                }else{
-                    res.status(200).json({
-                        "message" : "there are no product in your cart" 
-                    })
-                }
-                
-            }else{
-                res.status(200).json({
-                    "message" : "there are no product in your cart" 
-                })
-            }                        
-
-
-                                                                                                 
-        } catch (err) {
-            res.status(500).json({
-                "success": false,
-                "message": "buying product getting error" + err.message
-            });
-            
-        }
-    },
-
-    DeleteProductInCart: async (req, res, OrderItems_ID) => {
-        try {
-
-            if(await OrderItems.findByIdAndDelete(OrderItems_ID)){
-                res.status(200).json({
-                    "message" : "DELETE ORDER ITEMS SUSSCESS" 
-                })
-            }else{
-                res.status(200).json({
-                    "message" : "there are no product in your cart" 
-                })
-            }                        
-
-
-                                                                                                 
-        } catch (err) {
-            res.status(500).json({
-                "success": false,
-                "message": err.message
-            });
-            
-        }
-    },
-
-    GetAllProducts: async (req, res ) => {
-        try {
-
-            const products = await Product.findOne({ total_quantity :  {$gt: 0} })                 
-
-            if(products){
-                res.status(200).json(products)
-            }else{
-                res.status(401).json({
-                    "message" : "no product found"
-                })
-            }
-
-                                                                                                 
-        } catch (err) {
-            res.status(500).json({
-                "success": false,
-                "message": err.message
-            });
-            
-        }
-    },
-
-    PaymentOrder: async (req, res, User_ID) => {
-        try {
-
-            const order = await  Order.findOne({ User_ID : UserID, status : 0 })     //status order : 0 - Don hang van chua thanh toan (con trong gio hang)  1 - Don hang da thanh toan nhung chua duoc xac nhan  2 - Don hang da duoc xac nhan         
-            if(order){   // Check if order exist in cart then add orderitem to order 
-                
-                order.status = 1 // set status to 1   
-                order.save().then(res.status(200).json({
-                    "message" : "payment order success"
-                }))
-
-        
-                
-            }else{
-                res.status(200).json({
-                    "message" : "there are no product in your cart" 
-                })
-            }                        
-                                                                                  
-        } catch (err) {
-            res.status(500).json({
-                "success": false,
-                "message": err.message
-            });
-            
-        }
-    },
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    forgotPassword: async (req, res) => {
-        try {
-            const user = await UserAccount.findOne({ "email": req.body.email });
-            if (!user) {
-                return res.render("forgotPassword", {
-                    mess: "Invalid Email"
-                })
-            } else {
-                console.log("userID: " + user._id);
-
-                const tokenActivate = jwt.sign({
-                    id: user._id
-                }, process.env.JWT_ACCESS_KEY, {
-                    expiresIn: "30m"
-                });
-
-                fullTokenActivate = "Bearer " + tokenActivate;
-
-                const URL = "http://localhost:8000/api/verify/reset-password/" + fullTokenActivate;
-                console.log('URL', URL)
-                const content = `Click <a href = "${URL}" > here  </a> to reset your password`;
-
-                await EmailSender(res, req.body.email, "Reset your password", content);
-                res.render("forgotPasswordV1");
-
-            }
-        } catch (err) {
-            res.status(400).json(err.message);
-
-        }
-    },
-
-
-
-
-    resetPassword: async (req, res, id) => {
-        try {
-            const user = await UserAccount.findById(id);
-
-            if (!user) {
-                return res.status(403).json({
-                    "success": false,
-                    "message": "Invalid token"
-                })
-            } else {
-
-                if (!req.body.NewPassword || !req.body.reNewPassword) {
-                    return res.status(403).json({
-                        "success": false,
-                        "message": "you need to fill in require text box"
-                    })
-                }
-
-                if (req.body.NewPassword == req.body.reNewPassword) {
-                    const salt = await bcrypt.genSalt(10);
-                    const newPassword = await bcrypt.hash(req.body.NewPassword, salt);
-                    user.password = newPassword;
-                    await user.save();
-                    res.render("resetPasswordCompleted");
-                } else {
-                    return res.status(403).json({
-                        "success": false,
-                        "message": "New Password and Comfirm Password does not match"
-                    })
-                }
-            }
-
-        } catch (err) {
-            res.status(400).json(err.message);
-
-        }
-    },
+   
 
     activeUserAccountByToken: async (req, res, id) => {
         try {
@@ -626,85 +427,7 @@ const userController = {
         }
     }
     ,
-    loginUser: async (req, res) => {
-        try {
-            const user = await UserAccount.findOne({ email: req.body.email }).populate("role");
-            if (!user) {
-                
-                res.render("index",{
-                    mess : "username or password not match"
-                })
-            } else {
-                const checkPass = await bcrypt.compare(req.body.password, user.password);
-                if (!checkPass) {
-
-                    res.render("index",{
-                        mess : "username or password not match"
-                    })
-                } else {
-                    if (!user.active) {
-
-                        res.render("index",{
-                            mess : "your account have not activated or get blocked"
-                        })
-
-                       
-                    } else {
-
-                        if (!user.role.name) {
-                            return res.status(403).json({
-                                "success": false,
-                                "message": "userrole is Null"
-                            })
-                        }
-
-                        //Tao Token
-                        const tokenAccess = jwt.sign({
-                            id: user._id,
-                            role: user.role.name
-                        }, process.env.JWT_ACCESS_KEY, {
-                            expiresIn: "1d"
-                        });
-
-
-
-
-                        const { password, ...others } = user._doc;
-                        const fullToken = `Bearer ${tokenAccess}`
-
-                        // Luu Token vao Cokie
-                        res.cookie('access_token', fullToken, {
-                            maxAge: 365 * 24 * 60 * 60 * 100, // thời gian sống 
-                            httpOnly: true, // chỉ có http mới đọc được token
-                            //secure: true; //ssl nếu có, nếu chạy localhost thì comment nó lại
-                        })
-
-                        console.log("userRender" + {
-                            ...others
-                        })
-
-                        // res.render("userProfile", {
-                        //     user: { ...others }
-                        // })
-
-                        res.status(200).json({
-                            ...others, fullToken
-                        })
-
-
-                    }
-                }
-            }
-
-        } catch (err) {
-            console.log("err ", err);
-            res.status(400).json({
-                "success": false,
-                "message": err.message
-            });
-
-        }
-    }
+    
 };
 
 module.exports = userController;

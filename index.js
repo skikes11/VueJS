@@ -10,6 +10,7 @@ var bodyParser = require("body-parser");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const myRouter = require("./routes/index");
+const viewRouter = require("./routes/viewRouter");
 const homeRouter = require("./routes/homeRouter")
 const cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
@@ -56,7 +57,9 @@ app.use(morgan("common"));
 
 // API
 app.use("/api", myRouter);   
-app.use("/", homeRouter);  
+app.use("/", homeRouter);
+app.use("/", viewRouter);
+
 // app.use("/userInfor", userInforRoute);
         
 app.listen(8000, ()=>{

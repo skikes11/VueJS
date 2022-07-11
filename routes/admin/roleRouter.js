@@ -1,42 +1,15 @@
-const productRouter = require("express").Router();
+const roleRouter = require("express").Router();
 const middlewareController = require("../../controllers/middlewareController");
-
 const { UserAccount } = require("../../model/userModel");
-const {  Permission } = require("../../model/userModel");
-const productController = require ( "../../controllers/productController")
+const { Permission } = require("../../model/userModel");
+const roleController = require ( "../../controllers/roleController");
 
 
-const endpoint = '/products'
 
-//Get All Product (auth: ADMIN)
-productRouter.get("/", async (req, res) => {
+const endpoint = '/roles'
 
-    const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
-    if (!userToken) {
-        return res.status(401).json({
-            "success": false,
-            "message": "authentication fail"
-        });
-    }
-
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
-
-    console.log(permission)
-    if (permission) {
-        productController.getAllProduct(req,res);
-    } else {
-        res.status(403).json({
-            "success": false,
-            "message": "permission deny"
-        })
-    }
-});
-
-//ADD Product (auth: ADMIN)
-productRouter.post("/", async (req, res) => {
+//Get All ROLE (auth: ADMIN)
+roleRouter.get("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -53,7 +26,7 @@ productRouter.post("/", async (req, res) => {
 
     console.log(permission)
     if (permission) {
-        productController.addProduct(req,res);
+        roleController.getAllRole(req,res);
     } else {
         res.status(403).json({
             "success": false,
@@ -62,8 +35,8 @@ productRouter.post("/", async (req, res) => {
     }
 });
 
-//UPDATE Product (auth: ADMIN)
-productRouter.put("/:id", async (req, res) => {
+//ADD ROLE (auth: ADMIN)
+roleRouter.post("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -80,7 +53,7 @@ productRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission) {
-        productController.updateProduct(req,res.req.params.id);
+        roleController.addRole(req,res);
     } else {
         res.status(403).json({
             "success": false,
@@ -90,8 +63,8 @@ productRouter.put("/:id", async (req, res) => {
 });
 
 
-//DELETE Product (auth: ADMIN)
-productRouter.delete("/:id", async (req, res) => {
+//UPDATE ROLE(auth: ADMIN)
+roleRouter.put("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -108,7 +81,7 @@ productRouter.delete("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission) {
-        productController.deleteProduct(req,res,req.params.id);
+        roleController.UpdateRoleByID(req,res.req.params.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -118,6 +91,33 @@ productRouter.delete("/:id", async (req, res) => {
 });
 
 
+//DELETE ROLE (auth: ADMIN)
+roleRouter.delete("/:id", async (req, res) => {
 
-module.exports= productRouter;
+    const userToken = await middlewareController.verifyToken(req, res)
+    console.log(userToken)
+    if (!userToken) {
+        return res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        });
+    }
+
+    const user = await UserAccount.findById(userToken.id);
+
+    const permission = await Permission.findOne({ role : user.role, endpoint : endpoint, method : req.method });
+
+    console.log(permission)
+    if (permission) {
+        roleController.deleteRoleByID(req,res,req.params.id);
+    } else {
+        res.status(403).json({
+            "success": false,
+            "message": "permission deny"
+        })
+    }
+});
+
+
+module.exports= roleRouter;
 

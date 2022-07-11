@@ -12,9 +12,9 @@ GOOGLE_CLIENT_SECRET = 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
 
 
 
-// Tach admin router va user router ra admin router index
 
-// endpoint se~ la model. ex: /products, /orders 
 
-api : /api/users/products
-
+ENDPOINT: 
+- /products : Get all product have quantity greater than 0 
+- /orders : get all order of user
+- /cart : get all product in user cart 
