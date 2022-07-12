@@ -26,11 +26,11 @@ CREATE AUDIT LOG(DATABASE)
 - WHO ? 
 - WHAT API ?
 - DATABASE UPDATE ? 
-    + if(UPDATE){
-        OLD ITEM
++ if(UPDATE){
+        OLD ITEM,
         NEW ITEM
-    }else if(DELETE){
+}else if(DELETE){
         ITEM DELELE
-    }else if(CREATE){
+}else if(CREATE){
         NEW ITEM
-    }
+}
