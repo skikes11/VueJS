@@ -48,7 +48,7 @@ const userController = {
             //     "data": { ...others }
             // });
            
-            res.status(200).json(users)
+            res.status(200).json(user)
 
 
         } catch (err) {
@@ -56,14 +56,11 @@ const userController = {
                 "success": false,
                 "message": "did not found any user" 
             });
-            logger.info({
-                "success": false,
-                "message": "did not found any user"
-            })
+            
         }
     },
 
-    deleteUserByID: async (res, id) => {
+    deleteUserByID: async (req,res, id) => {
         try {
             if (await UserAccount.findByIdAndDelete(id)) {
                 res.status(200).json("DELETE USER SUSCESS");
@@ -88,7 +85,6 @@ const userController = {
                 });
             }
             user.name = req.body.name;
-            user.email = req.body.email;
             user.phone = req.body.phone;
             user.dob = req.body.dob;
 

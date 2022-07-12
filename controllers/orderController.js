@@ -9,7 +9,7 @@ const orderController = {
         try {
             try {
                 const order = await Order.findOne({ User_ID : id }).populate('User_ID');
-                res.status(200).json(product);
+                res.status(200).json(order);
             } catch (err) {
                 res.status(400).json(err.message);
 
@@ -24,7 +24,7 @@ const orderController = {
         try {
             try {
                 const order = await Order.find().populate('User_ID');
-                res.status(200).json(product);
+                res.status(200).json(order);
             } catch (err) {
                 res.status(400).json(err.message);
 
@@ -42,6 +42,7 @@ const orderController = {
                 status: req.body.status,
                 created: req.body.created
             })
+            await order.save();
             res.status(200).json(order);
 
         } catch (err) {

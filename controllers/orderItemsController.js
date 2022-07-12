@@ -8,8 +8,8 @@ const orderItemsController = {
     getOrderItems_ByOrderID: async (req, res, id) => {
         try {
             try {
-                const order = await Order.findOne({ Order_ID: id });
-                res.status(200).json(order);
+                const orderItems = await OrderItems.findOne({ Order_ID: id });
+                res.status(200).json(orderItems);
             } catch (err) {
                 res.status(400).json(err.message);
 
@@ -19,6 +19,21 @@ const orderItemsController = {
             res.status(400).json(err.message);
         }
     },
+    getAllOrderItems: async (req, res) => {
+        try {
+            try {
+                const orderItems = await OrderItems.find().populate('Order_ID').populate('Product_ID');
+                res.status(200).json(orderItems);
+            } catch (err) {
+                res.status(400).json(err.message);
+
+            }
+
+        } catch (err) {
+            res.status(400).json(err.message);
+        }
+    },
+
     addOrderItems: async (req, res) => {
         try {
             const orderItem = await new OrderItems({

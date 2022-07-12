@@ -20,12 +20,10 @@ orderRouter.get("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
        orderController.getAllOrder(req,res);
     } else {
         res.status(403).json({
@@ -47,12 +45,10 @@ orderRouter.post("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         orderController.addOrder(req,res);
     } else {
         res.status(403).json({
@@ -74,12 +70,10 @@ orderRouter.put("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         orderController.UpdateOrder(req,res,req.params.id);
     } else {
         res.status(403).json({
@@ -102,12 +96,10 @@ orderRouter.delete("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         orderController.deleteOrder(req,res,req.params.id);
     } else {
         res.status(403).json({

@@ -65,7 +65,7 @@ const userAuthController = {
                         //Tao Token
                         const tokenAccess = jwt.sign({
                             id: user._id,
-                            role: user.role.name
+                            role: user.role
                         }, process.env.JWT_ACCESS_KEY, {
                             expiresIn: "1d"
                         });

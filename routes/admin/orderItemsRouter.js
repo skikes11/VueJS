@@ -20,12 +20,11 @@ orderItemsRouter.get("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         orderItemsController.getOrderItems_ByOrderID(req,res,req.params.id);
     } else {
         res.status(403).json({
@@ -34,6 +33,34 @@ orderItemsRouter.get("/:id", async (req, res) => {
         })
     }
 });
+
+//Get All ORDER ITEMS 
+orderItemsRouter.get("/", async (req, res) => {
+
+    const userToken = await middlewareController.verifyToken(req, res)
+    console.log(userToken)
+    if (!userToken) {
+        return res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        });
+    }
+
+
+     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+
+    console.log(permission)
+    if (permission[0]) {
+        orderItemsController.getAllOrderItems(req,res);
+    } else {
+        res.status(403).json({
+            "success": false,
+            "message": "permission deny"
+        })
+    }
+});
+
+
 
 //ADD ORDER ITEM (auth: ADMIN)
 orderItemsRouter.post("/", async (req, res) => {
@@ -47,12 +74,10 @@ orderItemsRouter.post("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
        orderItemsController.addOrderItems(req,res);
     } else {
         res.status(403).json({
@@ -74,12 +99,10 @@ orderItemsRouter.put("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         orderItemsController.UpdateOrderItemsByID(req,res,req.params.id);
     } else {
         res.status(403).json({
@@ -102,12 +125,10 @@ orderItemsRouter.delete("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         orderItemsController.DeleteOrderItemsByID(req,res,req.params.id);
     } else {
         res.status(403).json({

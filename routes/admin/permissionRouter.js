@@ -3,6 +3,7 @@ const middlewareController = require("../../controllers/middlewareController");
 const { UserAccount } = require("../../model/userModel");
 const { Permission } = require("../../model/userModel");
 const permissionController = require ( "../../controllers/permissionController");
+const { ObjectId } = require("mongodb");
 
 
 
@@ -20,12 +21,14 @@ permissionRouter.get("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
 
-    const permission = await Permission.findOne({ role : userToken.id, endpoint : endpoint, method : req.method });
+    const permission = await Permission.find({ Role_ID : userToken.role._id  , endpoint : endpoint, method : req.method });
 
+
+
+    console.log(userToken.role._id);
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         permissionController.getAllPermission(req,res);
     } else {
         res.status(403).json({
@@ -47,12 +50,12 @@ permissionRouter.post("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
+    console.log(userToken.role._id);
 
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         permissionController.addPermission(req,res);
     } else {
         res.status(403).json({
@@ -75,12 +78,10 @@ permissionRouter.put("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         permissionController.UpdatePermissionByID(req,res,req.params.id);
     } else {
         res.status(403).json({
@@ -103,12 +104,11 @@ permissionRouter.delete("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
-
+    console.log(userToken.role._id);
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         permissionController.deletePermissionByID(req,res,req.params.id);
     } else {
         res.status(403).json({

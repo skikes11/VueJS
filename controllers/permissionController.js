@@ -66,7 +66,7 @@ const permissionController = {
 
         }
     },
-    deletePermissionByID: async (res, id) => {
+    deletePermissionByID: async (req,res, id) => {
         try {
             if (await Permission.findByIdAndDelete(id)) {
                 res.status(200).json("DELETE PERMISSION SUSCESS");

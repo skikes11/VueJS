@@ -20,12 +20,10 @@ productRouter.get("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         productController.getAllProduct(req,res);
     } else {
         res.status(403).json({
@@ -47,12 +45,10 @@ productRouter.post("/", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         productController.addProduct(req,res);
     } else {
         res.status(403).json({
@@ -74,13 +70,11 @@ productRouter.put("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
-        productController.updateProduct(req,res.req.params.id);
+    if (permission[0]) {
+        productController.updateProduct(req,res,req.params.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -102,12 +96,10 @@ productRouter.delete("/:id", async (req, res) => {
         });
     }
 
-    const user = await UserAccount.findById(userToken.id);
-
-    const permission = await Permission.findOne({ role : userToken.role, endpoint : endpoint, method : req.method });
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
-    if (permission) {
+    if (permission[0]) {
         productController.deleteProduct(req,res,req.params.id);
     } else {
         res.status(403).json({
