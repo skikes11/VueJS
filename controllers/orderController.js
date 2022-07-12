@@ -8,7 +8,7 @@ const orderController = {
     getAllOrder_User: async (req, res, id) => {
         try {
             try {
-                const order = await Order.findOne({ User_ID : id }).populate('User_ID');
+                const order = await Order.findOne({ User_ID : id, status : [1,2] }).populate('User_ID');
                 res.status(200).json(order);
             } catch (err) {
                 res.status(400).json(err.message);
@@ -23,7 +23,7 @@ const orderController = {
     getAllOrder: async (req, res) => {
         try {
             try {
-                const order = await Order.find().populate('User_ID');
+                const order = await Order.find({ status : [1,2]  }).populate('User_ID');
                 res.status(200).json(order);
             } catch (err) {
                 res.status(400).json(err.message);

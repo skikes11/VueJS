@@ -2,9 +2,10 @@ const cartRouter = require("express").Router();
 
 const orderController = require("../../controllers/orderController");
 const userActionController = require("../../controllers/userActionController");
-
+const middlewareController = require("../../controllers/middlewareController");
 const UserActionController = require("../../controllers/userActionController");
-const { OrderItems } = require("../../model/orderModel");
+const { OrderItems,Order } = require("../../model/orderModel");
+const { Product } = require("../../model/productModel");
 
 // GET ALL PRODUCT IN USER CART
 cartRouter.get("/", async (req, res) => {
@@ -21,7 +22,7 @@ cartRouter.get("/", async (req, res) => {
         });
     }
 
-        orderController.getAllOrderByUserID(req,res,userToken.id);
+       userActionController.Cart(req,res,userToken.id);
     
 });
 
@@ -46,6 +47,12 @@ cartRouter.get("/delete/:id", async (req, res) => {
 
     if(orderItem){   // security check 
         if(orderItem._id == req.params.id ){
+
+            const product = await Product.findById(orderItem.Product_ID); // get product to get price 
+
+            order.totalPrice = order.totalPrice - (product.price * orderItem.quantity); // minus totalpice order
+
+            order.save();
             userActionController.DeleteProductInCart(req,res,req.params.id);
         }else{
             res.status(403).json({

@@ -8,7 +8,7 @@ const orderItemsController = {
     getOrderItems_ByOrderID: async (req, res, id) => {
         try {
             try {
-                const orderItems = await OrderItems.findOne({ Order_ID: id });
+                const orderItems = await OrderItems.findOne({ Order_ID: id }).populate('Order_ID').populate('Product_ID');
                 res.status(200).json(orderItems);
             } catch (err) {
                 res.status(400).json(err.message);

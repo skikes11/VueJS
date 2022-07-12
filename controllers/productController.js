@@ -35,7 +35,7 @@ const productController = {
     GetAllProductsExits: async (req, res ) => {
         try {
 
-            const products = await Product.findOne({ total_quantity :  {$gt: 0} })                 
+            const products = await Product.find({ total_quantity :  {$gt: 0} })                 
 
             if(products){
                 res.status(200).json(products)
