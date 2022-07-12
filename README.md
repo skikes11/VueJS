@@ -18,3 +18,19 @@ ENDPOINT:
 - /products : Get all product have quantity greater than 0 
 - /orders : get all order of user
 - /cart : get all product in user cart 
+- /orderItems ...
+
+
+CREATE AUDIT LOG(DATABASE)
+- TIME ? 
+- WHO ? 
+- WHAT API ?
+- DATABASE UPDATE ? 
+    + if(UPDATE){
+        OLD ITEM
+        NEW ITEM
+    }else if(DELETE){
+        ITEM DELELE
+    }else if(CREATE){
+        NEW ITEM
+    }
