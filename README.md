@@ -26,7 +26,7 @@ CREATE AUDIT LOG(DATABASE)
 - WHO ? 
 - WHAT API ?
 - DATABASE UPDATE ? 
-+ if(UPDATE){
+=> if(UPDATE){
         OLD ITEM,
         NEW ITEM
 }else if(DELETE){
