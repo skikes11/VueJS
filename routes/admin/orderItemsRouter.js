@@ -78,7 +78,7 @@ orderItemsRouter.post("/", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-       orderItemsController.addOrderItems(req,res);
+       orderItemsController.addOrderItems(req,res, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -103,7 +103,7 @@ orderItemsRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        orderItemsController.UpdateOrderItemsByID(req,res,req.params.id);
+        orderItemsController.UpdateOrderItemsByID(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -129,7 +129,7 @@ orderItemsRouter.delete("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        orderItemsController.DeleteOrderItemsByID(req,res,req.params.id);
+        orderItemsController.DeleteOrderItemsByID(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,

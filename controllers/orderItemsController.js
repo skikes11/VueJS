@@ -34,7 +34,7 @@ const orderItemsController = {
         }
     },
 
-    addOrderItems: async (req, res) => {
+    addOrderItems: async (req, res, idUser) => {
         try {
             const orderItem = await new OrderItems({
                 Order_ID: req.body.Order_ID,
@@ -48,7 +48,7 @@ const orderItemsController = {
             res.status(400).json(err.message);
         }
     },
-    UpdateOrderItemsByID: async (req, res, id) => {
+    UpdateOrderItemsByID: async (req, res, id, idUser) => {
         try {
 
             const orderItem = await OrderItems.findById(id)
@@ -72,7 +72,7 @@ const orderItemsController = {
         }
     },
 
-    DeleteOrderItemsByID: async(req,res,id) => {
+    DeleteOrderItemsByID: async(req,res,id, idUser) => {
         if(await OrderItems.findByIdAndDelete(id)){
             res.status(200).json({
                 "message" : "DELETE ORDER ITEM SUCCESS"

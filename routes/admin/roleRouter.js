@@ -9,7 +9,7 @@ const roleController = require ( "../../controllers/roleController");
 const endpoint = '/roles'
 
 //Get All ROLE (auth: ADMIN)
-roleRouter.get("/", async (req, res) => {
+roleRouter.get("/" ,  async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -103,7 +103,7 @@ roleRouter.delete("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        roleController.deleteRoleByID(res,req.params.id, userToken.id);
+        roleController.deleteRoleByID(req, res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,

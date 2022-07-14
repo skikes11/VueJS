@@ -1,7 +1,7 @@
 
 const { Order, OrderItems } = require("../model/orderModel");
 const { Product } = require("../model/productModel");
-
+const {AuditLog} = require("../model/auditLogModel")
 const userActionController = {
 
     clickBuyProduct: async (req, res, UserID, ProductID) => {

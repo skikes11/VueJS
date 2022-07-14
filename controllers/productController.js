@@ -16,7 +16,8 @@ const productController = {
 
             await product.save().then(() => {
 
-               const auditLog = new AuditLog(); auditLog.method = req.method
+               const auditLog = new AuditLog();
+                auditLog.method = req.method
                 // SAVE OLD ITEM
                 var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                 //CREATE AUDIT LOG
@@ -91,7 +92,8 @@ const productController = {
 
             await product.save().then(()=>{
 
-               const auditLog = new AuditLog(); auditLog.method = req.method
+               const auditLog = new AuditLog(); 
+               auditLog.method = req.method
                 // SAVE OLD ITEM
                 var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                 //CREATE AUDIT LOG
@@ -117,7 +119,8 @@ const productController = {
             if (product) {
                 Product.findByIdAndDelete(id).then(()=>{
 
-                   const auditLog = new AuditLog(); auditLog.method = req.method
+                   const auditLog = new AuditLog();
+                    auditLog.method = req.method
                     // SAVE OLD ITEM
                     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                     //CREATE AUDIT LOG

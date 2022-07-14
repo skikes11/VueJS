@@ -3,7 +3,7 @@ const middlewareController = require("../controllers/middlewareController");
 const { getAllUser } = require("../controllers/userController");
 const userController = require("../controllers/userController");
 const userValidate = require("../controllers/validation/userValidateRegister");
-const logger = require("../controllers/logger/winstonLogger");
+
 const { UserAccount } = require("../model/userModel");
 const { AuthAccount, Userrole } = require("../model/userModel");
 const { model } = require("mongoose");

@@ -2,7 +2,7 @@ const { UserAccount} = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const EmailSender = require("../controllers/email/emailSender");
-
+const {AuditLog} = require("../model/auditLogModel")
 
 
 

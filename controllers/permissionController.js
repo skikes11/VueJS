@@ -11,7 +11,8 @@ const permissionController = {
                 method: req.body.method
             });
              //CREATE AUDIT LOG
-            const auditLog = new AuditLog(); auditLog.method = req.method
+            const auditLog = new AuditLog(); 
+            
              // SAVE OLD ITEM
              var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
              auditLog.User_ID = idUser
@@ -36,7 +37,8 @@ const permissionController = {
             }
 
             //CREATE AUDIT LOG
-           const auditLog = new AuditLog(); auditLog.method = req.method
+           const auditLog = new AuditLog();
+            auditLog.method = req.method
             const oldPermission = await Permission.findById(id);
             console.log("#old"+oldPermission)
             // SAVE OLD ITEM
@@ -106,7 +108,8 @@ const permissionController = {
 
             const permission = await Permission.findById(id);
               //CREATE AUDIT LOG
-             const auditLog = new AuditLog(); auditLog.method = req.method
+             const auditLog = new AuditLog();
+              auditLog.method = req.method
               const oldPermission = await Permission.findById(id);
               console.log("#old"+oldPermission)
               

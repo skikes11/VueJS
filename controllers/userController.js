@@ -2,7 +2,7 @@ const { UserAccount, AuthAccount,   Userrole } = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const e = require("express");
-const logger = require("../controllers/logger/winstonLogger");
+
 const EmailSender = require("../controllers/email/emailSender");
 const middlewareController = require("./middlewareController");
 const fs = require('fs');

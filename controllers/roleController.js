@@ -1,5 +1,6 @@
 const {  Userrole } = require("../model/userModel");
 const {AuditLog} = require("../model/auditLogModel")
+
 const RoleController = { 
 
     addRole: async (req, res, idUser) => {
@@ -9,7 +10,8 @@ const RoleController = {
                 description: req.body.description
             });
             await Role.save().then(()=>{
-               const auditLog = new AuditLog(); auditLog.method = req.method
+               const auditLog = new AuditLog();
+                auditLog.method = req.method
                 // SAVE OLD ITEM
                 var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                 //CREATE AUDIT LOG
@@ -34,6 +36,7 @@ const RoleController = {
                     "success": false,
                     "message": "did not found role"
                 });
+                logger.info()
             }
 
             // Update InforUserID for user
@@ -69,7 +72,8 @@ const RoleController = {
             role.description = req.body.description
 
             await role.save().then(()=>{
-               const auditLog = new AuditLog(); auditLog.method = req.method
+               const auditLog = new AuditLog();
+                auditLog.method = req.method
                 // SAVE OLD ITEM
                 var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                 //CREATE AUDIT LOG
@@ -93,7 +97,7 @@ const RoleController = {
         }
     },
 
-    deleteRoleByID: async (res, id, idUser) => {
+    deleteRoleByID: async (req, res, id, idUser) => {
         try {
 
             const role = await Userrole.findById(id)
@@ -101,7 +105,8 @@ const RoleController = {
             if (role) {
 
                 Userrole.findByIdAndDelete(id).then(()=>{
-                   const auditLog = new AuditLog(); auditLog.method = req.method
+                   const auditLog = new AuditLog();
+                    auditLog.method = req.method
                     // SAVE OLD ITEM
                     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                     //CREATE AUDIT LOG

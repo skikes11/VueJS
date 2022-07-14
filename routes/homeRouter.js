@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const middlewareController = require("../controllers/middlewareController");
-const logger = require("../controllers/logger/winstonLogger");
+
 const { UserAccount } = require("../model/userModel");
 const { AuthAccount, Userrole } = require("../model/userModel")
 router.get("/", async (req, res) => {
