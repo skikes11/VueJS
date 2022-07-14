@@ -1,8 +1,8 @@
 const { Product } = require("../model/productModel");
-
+const { AuditLog } = require("../model/auditLogModel")
 const productController = {
 
-    addProduct: async (req, res) => {
+    addProduct: async (req, res, idUser) => {
         try {
             const product = await new Product({
                 name: req.body.name,
@@ -13,9 +13,19 @@ const productController = {
                 origin: req.body.origin,
                 description: req.body.description
             });
-            await product.save().then(
+
+            await product.save().then(() => {
+
+               const auditLog = new AuditLog(); auditLog.method = req.method
+                // SAVE OLD ITEM
+                var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+                //CREATE AUDIT LOG
+                auditLog.User_ID = idUser
+                auditLog.newItem = product
+                auditLog.url = fullUrl
+                auditLog.save();
                 console.log("save product successfully")
-            );
+            });
             res.status(200).json(product);
         } catch (err) {
             res.status(400).json(err.message);
@@ -32,56 +42,91 @@ const productController = {
         }
     },
 
-    GetAllProductsExits: async (req, res ) => {
+    GetAllProductsExits: async (req, res) => {
         try {
 
-            const products = await Product.find({ total_quantity :  {$gt: 0} })                 
+            const products = await Product.find({ total_quantity: { $gt: 0 } })
 
-            if(products){
+            if (products) {
                 res.status(200).json(products)
-            }else{
+            } else {
                 res.status(401).json({
-                    "message" : "no product found"
+                    "message": "no product found"
                 })
             }
 
-                                                                                                 
+
         } catch (err) {
             res.status(500).json({
                 "success": false,
                 "message": err.message
             });
-            
+
         }
     },
-    updateProduct: async (req, res, id) => {
+    updateProduct: async (req, res, id, idUser) => {
         try {
             const product = await Product.findById(id);
+            const oldProduct = await Product.findById(id);
             if (!product) {
                 return res.status(500).json({
                     "success": false,
                     "message": "did not found product"
                 });
             }
-            product.name = req.body.name
-            product.price = req.body.price
-            product.image = req.body.image
-            product.brand = req.body.brand
-            product.total_quantity = req.body.total_quantity
-            product.origin = req.body.origin
-            product.description = req.body.description
-            await product.save().then(
+            if(req.body.name)
+                product.name = req.body.name
+            if(req.body.price)
+                product.price = req.body.price
+            if(req.body.image)
+                product.image = req.body.image
+            if(req.body.brand)
+                product.brand = req.body.brand
+            if(req.body.total_quantity)
+                product.total_quantity = req.body.total_quantity
+            if(req.body.origin)
+                roduct.origin = req.body.origin
+            if(req.body.description)
+                product.description = req.body.description
+
+            await product.save().then(()=>{
+
+               const auditLog = new AuditLog(); auditLog.method = req.method
+                // SAVE OLD ITEM
+                var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+                //CREATE AUDIT LOG
+                auditLog.User_ID = idUser
+                auditLog.oldItem = oldProduct
+                auditLog.newItem = product
+                auditLog.url = fullUrl
+                auditLog.save();
+
                 console.log("update product successfully")
-            );
+            });
             res.status(200).json(product);
         } catch (err) {
             res.status(400).json(err.message);
 
         }
     },
-    deleteProduct: async (req, res, id) => {
+    deleteProduct: async (req, res, id, idUser) => {
         try {
-            if (await Product.findByIdAndDelete(id)) {
+
+            const product = await Product.findById(id)
+
+            if (product) {
+                Product.findByIdAndDelete(id).then(()=>{
+
+                   const auditLog = new AuditLog(); auditLog.method = req.method
+                    // SAVE OLD ITEM
+                    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+                    //CREATE AUDIT LOG
+                    auditLog.User_ID = idUser
+                    auditLog.oldItem = product
+                    auditLog.url = fullUrl
+                    auditLog.save();
+    
+                })
                 res.status(200).json("DELETE PRODUCT SUSCESS");
             } else {
                 res.status(200).json({

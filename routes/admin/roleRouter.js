@@ -51,7 +51,7 @@ roleRouter.post("/", async (req, res) => {
      console.log("****" + permission)
     console.log(permission[0])
     if (permission[0]) {
-        roleController.addRole(req,res);
+        roleController.addRole(req,res, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -77,7 +77,7 @@ roleRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        roleController.UpdateRoleByID(req,res, req.params.id);
+        roleController.UpdateRoleByID(req,res, req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -103,7 +103,7 @@ roleRouter.delete("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        roleController.deleteRoleByID(res,req.params.id);
+        roleController.deleteRoleByID(res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,

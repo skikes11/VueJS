@@ -134,7 +134,7 @@ const PermissionSchema = new mongoose.Schema({
     },
     endpoint: {
         type: String,
-        required: true
+        
     },
     method: { 
         type: String,

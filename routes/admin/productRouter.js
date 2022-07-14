@@ -49,7 +49,7 @@ productRouter.post("/", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        productController.addProduct(req,res);
+        productController.addProduct(req,res, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -74,7 +74,7 @@ productRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        productController.updateProduct(req,res,req.params.id);
+        productController.updateProduct(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -100,7 +100,7 @@ productRouter.delete("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        productController.deleteProduct(req,res,req.params.id);
+        productController.deleteProduct(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,

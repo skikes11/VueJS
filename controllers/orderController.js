@@ -35,7 +35,7 @@ const orderController = {
         }
     },
 
-    addOrder: async (req, res) => {
+    addOrder: async (req, res, idUser) => {
         try {
             const order = await new Order({
                 User_ID: req.body.User_ID,
@@ -49,7 +49,7 @@ const orderController = {
             res.status(400).json(err.message);
         }
     },
-    UpdateOrder: async (req, res, id) => {
+    UpdateOrder: async (req, res, id, idUser) => {
         try {
 
             const order = await Order.findById(id)
@@ -72,7 +72,7 @@ const orderController = {
             res.status(400).json(err.message);
         }
     },
-    deleteOrder: async (req, res, id) => {
+    deleteOrder: async (req, res, id, idUser) => {
         try {
             if (await Order.findByIdAndDelete(id)) {
                 res.status(200).json("DELETE ORDER SUSCESS");

@@ -49,7 +49,7 @@ orderRouter.post("/", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        orderController.addOrder(req,res);
+        orderController.addOrder(req,res, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -74,7 +74,7 @@ orderRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        orderController.UpdateOrder(req,res,req.params.id);
+        orderController.UpdateOrder(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -100,7 +100,7 @@ orderRouter.delete("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-        orderController.deleteOrder(req,res,req.params.id);
+        orderController.deleteOrder(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,

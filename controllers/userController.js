@@ -6,12 +6,10 @@ const logger = require("../controllers/logger/winstonLogger");
 const EmailSender = require("../controllers/email/emailSender");
 const middlewareController = require("./middlewareController");
 const fs = require('fs');
-const { Console } = require("console");
-const { uploadAvatar } = require("./helpers");
-const { boolean } = require("joi");
-const { Order, OrderItems } = require("../model/orderModel");
-const { Product } = require("../model/productModel");
 
+const { uploadAvatar } = require("./helpers");
+
+const {AuditLog} = require("../model/auditLogModel")
 
 
 
@@ -60,7 +58,7 @@ const userController = {
         }
     },
 
-    deleteUserByID: async (req,res, id) => {
+    deleteUserByID: async (req,res, id, idUser) => {
         try {
             if (await UserAccount.findByIdAndDelete(id)) {
                 res.status(200).json("DELETE USER SUSCESS");
@@ -75,7 +73,7 @@ const userController = {
 
         }
     },
-    UpdateUserByID: async (req, res, id) => {
+    UpdateUserByID: async (req, res, id, idUser) => {
         try {
             const user = await UserAccount.findById(id);
             if (!user) {

@@ -55,8 +55,12 @@ permissionRouter.post("/", async (req, res) => {
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
     console.log(permission)
+
+    console.log(endpoint)
+
+
     if (permission[0]) {
-        permissionController.addPermission(req,res);
+        permissionController.addPermission(req,res, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -80,9 +84,18 @@ permissionRouter.put("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+      console.log(userToken.role._id)
+
+      console.log(endpoint)
+
+
+      const permissionCheck = await Permission.find({ Role_ID : userToken.role._id})
+
+      console.log(permissionCheck)
+
+    console.log(permission[0])
     if (permission[0]) {
-        permissionController.UpdatePermissionByID(req,res,req.params.id);
+        permissionController.UpdatePermissionByID(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -109,7 +122,7 @@ permissionRouter.delete("/:id", async (req, res) => {
     console.log(userToken.role._id);
     console.log(permission)
     if (permission[0]) {
-        permissionController.deletePermissionByID(req,res,req.params.id);
+        permissionController.deletePermissionByID(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,

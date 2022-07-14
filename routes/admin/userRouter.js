@@ -51,7 +51,7 @@ userRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-       userController.UpdateUserByID(req,res,req.params.id);
+       userController.UpdateUserByID(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
@@ -73,13 +73,13 @@ userRouter.delete("/:id", async (req, res) => {
         });
     }
 
-      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+    const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
      
     console.log(userToken.role)
     console.log(permission)
     if (permission[0]) {
-        userController.deleteUserByID(req,res,req.params.id);
+        userController.deleteUserByID(req,res,req.params.id, userToken.id);
     } else {
         res.status(403).json({
             "success": false,
