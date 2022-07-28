@@ -1,4 +1,6 @@
 <template>
+<div class="flexible-content">
+  <SlideBar/>
   <table class="table align-middle mb-0 bg-white">
     <thead class="bg-light">
       <tr>
@@ -54,14 +56,20 @@
       </tr>
     </tbody>
   </table>
-</template>
+  </div>
+  </template>
 
 <script>
 import { ref } from 'vue'
 import api from '../api/apiServices.ts'
+import SlideBar from './SlideBar.vue'
 //import axios from "axios";
 export default {
   name: 'Users',
+  components: {
+      SlideBar,
+  },
+
   setup() {
     const users = ref([])
 
@@ -75,14 +83,7 @@ export default {
       })
 
 
-      // const res = await axios
-      // .get(`http://localhost:8000/api/admin/users`, {
-      //   headers: {
-      //     token:
-      //       "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyY2JmNmNjYWY2ZWE2ODMyODc2MDk2MCIsInJvbGUiOnsiX2lkIjoiNjJjNjljNDFmNTg5ZDY5YTk5YjYzNmRhIiwibmFtZSI6ImFkbWluIn0sImlhdCI6MTY1ODkwNTMwNSwiZXhwIjoxNjU4OTkxNzA1fQ.kgcjIbIF8v7MoFbUcGs8m0nwgmK4yV8x47JJlnctz1A"
-      //   }
-      // })
-
+  
         console.log(res.data)
         users.value = res.data
       } catch (error) {

@@ -1,6 +1,10 @@
 <template>
+   <div class="flexible-content">
+     <SlideBar/>
   <section id="dashboard">
+   
     <mdb-card class="mb-4">
+        
       <mdb-card-body class="d-sm-flex justify-content-between">
         <h4 class="mb-sm-0 pt-2">
           <a href="https://mdbootstrap.com/material-design-for-bootstrap/" target="_blank">Home Page</a><span>/</span><span>Dashboard</span>
@@ -12,6 +16,7 @@
       </mdb-card-body>
     </mdb-card>
     <section class="mt-lg-5">
+     
       <mdb-row>
         <mdb-col xl="3" md="6" class="mb-r">
           <mdb-card cascade class="cascading-admin-card">
@@ -36,6 +41,7 @@
         <mdb-col xl="3" md="6" class="mb-r">
           <mdb-card cascade class="cascading-admin-card">
             <div class="admin-up">
+             
               <mdb-icon icon="chart-line" class="warning-color"/>
               <div class="data">
                 <p>SUBSCRIPTIONS</p>
@@ -534,15 +540,17 @@
       </mdb-row>
     </section>
   </section>
+ </div>
 </template>
 
 <script>
 import { mdbRow, mdbCol, mdbBtn, mdbCard, mdbCardBody, mdbCardHeader, mdbCardText, mdbIcon, mdbTbl, mdbBarChart, mdbPieChart, mdbLineChart, mdbRadarChart, mdbDoughnutChart, mdbListGroup, mdbListGroupItem, mdbBadge, mdbModal, mdbModalHeader, mdbModalTitle, mdbModalBody, mdbModalFooter } from 'mdbvue'
-
+import SlideBar from './SlideBar.vue'
 export default {
   name: 'Dashboard',
   components: {
     mdbRow,
+    SlideBar,
     mdbCol,
     mdbBtn,
     mdbCard,

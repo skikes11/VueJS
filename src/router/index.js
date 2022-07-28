@@ -2,10 +2,11 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Dashboard from '../components/Dashboard'
 import Profile from '../components/Profile'
-import Tables from '../components/Tables'
-import Maps from '../components/Maps'
+import Users from '../components/Users'
 import BadGateway from '../components/BadGateway'
-import DashBoard from './DashBoard'
+import Hello from '../components/HelloWorld.vue'
+import Login  from '../components/Login.vue'
+import Index from '../components/Index.vue'
 
 Vue.use(Router);
 
@@ -13,11 +14,33 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/v1',
-      name: 'Dashboard',
-      component: DashBoard,
+      path: '/',
+      redirect : '/login'
+    },
+
+
+    {
+      path: '/index',
+      name: 'Index',
+      component: Index,
       alias: '/'
     },
+
+
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login,
+      alias: '/'
+    },
+
+    {
+      path: '/hello',
+      name: 'Hello',
+      component: Hello,
+      alias: '/'
+    },
+
     {
       path: '/dashboard',
       name: 'Dashboard',
@@ -32,16 +55,10 @@ export default new Router({
       component: Profile
     },
     {
-      path: '/tables',
-      name: 'Tables',
+      path: '/users',
+      name: 'Users',
       props: { page: 3 },
-      component: Tables
-    },
-    {
-      path: '/maps',
-      name: 'Maps',
-      props: { page: 4 },
-      component: Maps
+      component: Users
     },
     {
       path: '/404',

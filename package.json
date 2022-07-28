@@ -15,6 +15,7 @@
     "mdbvue": "6.5.0",
     "terser-webpack-plugin": "^5.3.3",
     "vue": "^2.6.11",
+    "vue-axios": "^3.4.1",
     "vue2-google-maps": "^0.10.7"
   },
   "devDependencies": {
