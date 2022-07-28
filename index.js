@@ -15,6 +15,10 @@ const viewRouter = require("./routes/viewRouter");
 const homeRouter = require("./routes/homeRouter")
 const cookieParser = require('cookie-parser');
 const auditLogMiddleware = require('@ozawa/express-audit-log-middleware');
+
+mongoose.plugin(require('./controllers/auditlog/plugin'))
+
+
 const fs = require('fs');
 var path = require('path')
 var rfs = require('rotating-file-stream') // version 2.x

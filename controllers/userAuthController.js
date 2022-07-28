@@ -33,11 +33,16 @@ const userAuthController = {
     loginUser: async (req, res) => {
         try {
             const user = await UserAccount.findOne({ email: req.body.email }).populate("role");
+            console.log("@@user", user)
             if (!user) {
                 
-                res.render("index",{
-                    mess : "username or password not match"
-                })
+
+            
+
+                // res.render("index",{
+                //     mess : "username or password not match"
+                // })
+
             } else {
                 const checkPass = await bcrypt.compare(req.body.password, user.password);
                 if (!checkPass) {
@@ -83,6 +88,9 @@ const userAuthController = {
                             //secure: true; //ssl nếu có, nếu chạy localhost thì comment nó lại
                         })
 
+
+                        console.log(user)
+
                         console.log("userRender" + {
                             ...others
                         })
@@ -91,9 +99,12 @@ const userAuthController = {
                         //     user: { ...others }
                         // })
 
+
                         res.status(200).json({
                             ...others, fullToken
                         })
+
+                        
 
 
                     }
