@@ -23,20 +23,31 @@
             />Dashboard</mdb-list-group-item
           >
         </router-link>
-        <!-- <router-link to="/profile" @click.native="activeItem = 2">
+        
+        <router-link to="/users" @click.native="activeItem = 2">
           <mdb-list-group-item
             :action="true"
             :class="activeItem === 2 && 'active'"
-            ><mdb-icon icon="user" class="mr-3" />Profile</mdb-list-group-item
-          >
-        </router-link> -->
-        <router-link to="/users" @click.native="activeItem = 3">
-          <mdb-list-group-item
-            :action="true"
-            :class="activeItem === 3 && 'active'"
             ><mdb-icon icon="user" class="mr-3" />Users</mdb-list-group-item
           >
         </router-link>
+
+        <router-link to="/products" @click.native="activeItem = 3">
+          <mdb-list-group-item
+            :action="true"
+            :class="activeItem === 3 && 'active'"
+            ><mdb-icon icon="list" class="mr-3" />Products</mdb-list-group-item
+          >
+        </router-link>
+
+        <router-link to="/roles" @click.native="activeItem = 4">
+          <mdb-list-group-item
+            :action="true"
+            :class="activeItem === 4 && 'active'"
+            ><mdb-icon icon="wrench" class="mr-3" />Roles</mdb-list-group-item
+          >
+        </router-link>
+
         <router-link to="/404" @click.native="activeItem = 5">
           <mdb-list-group-item
             :action="true"

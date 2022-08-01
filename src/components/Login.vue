@@ -73,24 +73,34 @@
 import "../assets/styles/index.css";
 import "../assets/styles/tailwind.css";
 import api from "../api/apiServices.ts";
+import router from "../router";
 export default {
   name: "Login",
 
   data() {
     return {
-      email : "",
-      password : ""
+      email: "",
+      password: "",
     };
   },
   methods: {
     async login() {
       try {
-        console.warn(this.email, this.password)
-        let apiLogin =  await api.post('/api/auth/login', { 
-                email : this.email,
-                password : this.password
-        })
-        console.warn(apiLogin)
+        // console.warn(this.email, this.password)
+        let apiLogin = await api
+          .post("/api/auth/login", {
+            email: this.email,
+            password: this.password,
+          })
+          .then(() => {
+            localStorage.setItem("b", "aaaaaaaaavac");
+            console.warn(apiLogin.data);
+            console.warn("success: " + apiLogin.data.success);
+            if (apiLogin.data.success) {
+              localStorage.setItem("userToken", apiLogin.data.userToken);
+              router.go({ name: "Dashboard" });
+            }
+          });
       } catch (err) {
         console.error(err);
       }

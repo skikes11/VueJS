@@ -1,14 +1,14 @@
 <template>
   <div class="flexible-content">
     <SlideBar />
-    <p class="h3" style="text-align: center">Users</p>
+    <p class="h3" style="text-align: center">Products</p>
     <button
       type="button"
       class="btn btn-outline-success"
       data-mdb-ripple-color="dark"
       v-on:click="addUser()"
     >
-      Add user
+      Add product
     </button>
 
    
@@ -17,14 +17,13 @@
       <thead class="bg-light">
         <tr>
           <th>Name</th>
-          <th>Phone</th>
-          <th>Activate</th>
-          <th>Role</th>
+          <th>Price</th>
+          <th>Total quantity</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user._id">
+        <tr v-for="product in products" :key="product._id">
           <td>
             <div class="d-flex align-items-center">
               <img
@@ -34,21 +33,17 @@
                 style="width: 45px; height: 45px"
               />
               <div class="ms-3">
-                <p class="fw-bold mb-1">{{ user.name }}</p>
-                <p class="text-muted mb-0">{{ user.email }}</p>
+                <p class="fw-bold mb-1">{{ product.name }} </p>  
               </div>
             </div>
           </td>
           <td>
-            <p class="fw-normal mb-1">{{ user.phone }}</p>
+            <p class="fw-normal mb-1">{{ product.price }}</p>
             
           </td>
           <td>
-            <span class="badge badge-warning rounded-pill d-inline"
-              >{{ user.active }}</span
-            >
+            <p class="fw-normal mb-1">{{ product.total_quantity }}</p>
           </td>
-          <td><p class="fw-normal mb-1">{{ user.role.name }}</p></td>
           <td>
             <button
               type="button"
@@ -79,7 +74,7 @@ import SlideBar from "./SlideBar.vue";
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
 //import axios from "axios";
 export default {
-  name: "Users",
+  name: "Products",
   components: {
     SlideBar,
    // AddUserDiaLog
@@ -93,22 +88,22 @@ export default {
 
 
   setup() {
-    const users = ref([]);
+    const products = ref([]);
 
-    const getAllUser = async () => {
+    const getAllProduct = async () => {
       try {
-        const res = await api.get("/api/admin/users");
+        const res = await api.get("/api/admin/products");
         console.log(res.data);
-        users.value = res.data;
+        products.value = res.data;
       } catch (error) {
         console.log(error);
       }
     };
 
-    getAllUser();
+    getAllProduct();
 
     return {
-      users,
+      products,
     };
   },
 };

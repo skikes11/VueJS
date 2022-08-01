@@ -1,14 +1,14 @@
 <template>
   <div class="flexible-content">
     <SlideBar />
-    <p class="h3" style="text-align: center">Users</p>
+    <p class="h3" style="text-align: center">Roles</p>
     <button
       type="button"
       class="btn btn-outline-success"
       data-mdb-ripple-color="dark"
       v-on:click="addUser()"
     >
-      Add user
+      Add Role
     </button>
 
    
@@ -17,38 +17,15 @@
       <thead class="bg-light">
         <tr>
           <th>Name</th>
-          <th>Phone</th>
-          <th>Activate</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user._id">
+        <tr v-for="role in roles" :key="role._id">
           <td>
-            <div class="d-flex align-items-center">
-              <img
-                src="https://mdbootstrap.com/img/new/avatars/7.jpg"
-                class="rounded-circle"
-                alt=""
-                style="width: 45px; height: 45px"
-              />
-              <div class="ms-3">
-                <p class="fw-bold mb-1">{{ user.name }}</p>
-                <p class="text-muted mb-0">{{ user.email }}</p>
-              </div>
-            </div>
+                <p class="fw-bold mb-1">{{ role.name }} </p>  
+                
           </td>
-          <td>
-            <p class="fw-normal mb-1">{{ user.phone }}</p>
-            
-          </td>
-          <td>
-            <span class="badge badge-warning rounded-pill d-inline"
-              >{{ user.active }}</span
-            >
-          </td>
-          <td><p class="fw-normal mb-1">{{ user.role.name }}</p></td>
           <td>
             <button
               type="button"
@@ -79,7 +56,7 @@ import SlideBar from "./SlideBar.vue";
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
 //import axios from "axios";
 export default {
-  name: "Users",
+  name: "Products",
   components: {
     SlideBar,
    // AddUserDiaLog
@@ -93,22 +70,22 @@ export default {
 
 
   setup() {
-    const users = ref([]);
+    const roles = ref([]);
 
-    const getAllUser = async () => {
+    const getAllRoles = async () => {
       try {
-        const res = await api.get("/api/admin/users");
+        const res = await api.get("/api/admin/roles");
         console.log(res.data);
-        users.value = res.data;
+        roles.value = res.data;
       } catch (error) {
         console.log(error);
       }
     };
 
-    getAllUser();
+    getAllRoles();
 
     return {
-      users,
+      roles,
     };
   },
 };
