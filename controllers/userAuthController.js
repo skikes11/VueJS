@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const EmailSender = require("../controllers/email/emailSender");
 const {AuditLog} = require("../model/auditLogModel")
-
+const helperFunc = require("./helperFunc")
 
 
 
@@ -32,80 +32,42 @@ function checkPass(req){
 const userAuthController = { 
     loginUser: async (req, res) => {
         try {
+            console.log(req.body)
             const user = await UserAccount.findOne({ email: req.body.email }).populate("role");
             console.log("@@user", user)
             if (!user) {
                 
-
-            
-
-                // res.render("index",{
-                //     mess : "username or password not match"
-                // })
+                helperFunc.status(res,false, null, 'did not found any user')
 
             } else {
                 const checkPass = await bcrypt.compare(req.body.password, user.password);
                 if (!checkPass) {
 
-                    res.render("index",{
-                        mess : "username or password not match"
-                    })
+                    helperFunc.status(res,false, null, 'user or password does not match')
                 } else {
                     if (!user.active) {
 
-                        res.render("index",{
-                            mess : "your account have not activated or get blocked"
-                        })
-
+                        helperFunc.status(res,false, null, 'your account does not activate or got blocked')
                        
                     } else {
-
-                        if (!user.role.name) {
-                            return res.status(403).json({
-                                "success": false,
-                                "message": "userrole is Null"
-                            })
-                        }
 
                         //Tao Token
                         const tokenAccess = jwt.sign({
                             id: user._id,
                             role: user.role
                         }, process.env.JWT_ACCESS_KEY, {
-                            expiresIn: "1d"
+                            expiresIn: "365d"
                         });
 
-
-
-
                         const { password, ...others } = user._doc;
-                        const fullToken = `Bearer ${tokenAccess}`
-
-                        // Luu Token vao Cokie
-                        res.cookie('access_token', fullToken, {
-                            maxAge: 365 * 24 * 60 * 60 * 100, // thời gian sống 
-                            httpOnly: true, // chỉ có http mới đọc được token
-                            //secure: true; //ssl nếu có, nếu chạy localhost thì comment nó lại
-                        })
-
 
                         console.log(user)
 
-                        console.log("userRender" + {
-                            ...others
-                        })
-
-                        // res.render("userProfile", {
-                        //     user: { ...others }
-                        // })
-
-
                         res.status(200).json({
-                            ...others, fullToken
+                            "success" : true,
+                            "data" : {...others},
+                            "userToken" : tokenAccess
                         })
-
-                        
-
 
                     }
                 }

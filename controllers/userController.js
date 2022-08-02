@@ -9,7 +9,8 @@ const fs = require('fs');
 
 const { uploadAvatar } = require("./helpers");
 
-const {AuditLog} = require("../model/auditLogModel")
+const {AuditLog} = require("../model/auditLogModel");
+const helperFunc = require("./helperFunc");
 
 
 
@@ -37,7 +38,7 @@ function checkPass(req){
 const userController = {
     getAllUser: async (req, res) => {
         try {
-            const user = await UserAccount.find();
+            const user = await UserAccount.find().populate('role');
             
             // // Update InforUserID for user
             // const { password, ...others } = users._doc;
@@ -57,6 +58,10 @@ const userController = {
             
         }
     },
+
+
+
+
 
     deleteUserByID: async (req,res, id, idUser) => {
         try {
@@ -99,6 +104,63 @@ const userController = {
             });
         }
     },
+
+    addUserByAdmin: async (req, res) => {
+        try {
+            uploadAvatar(req, res, async(err) => {
+                const user = await UserAccount.findOne({ email: req.body.email });
+                console.log( req.body)
+                console.log("####check Pass : "+checkPass(req))
+
+                if (err) {
+                    helperFunc.status(res,false,null,"can not upload image")
+                }else if(user){
+                    helperFunc.status(res,false,null,"email already in use")
+                }else if(checkPass(req)){
+                    helperFunc.status(res,false,null,"password and re-enter password did not match")
+                }else {
+ 
+                    const salt = await bcrypt.genSalt(10);
+                    const hashPass = await bcrypt.hash(req.body.password, salt);
+
+
+                    const newUser = await new UserAccount({
+                        email: req.body.email,
+                        name: req.body.name,
+                        password: hashPass,
+                        phone: req.body.phone,
+                        dob: req.body.dob,
+                        role: req.body.role,
+                        active : true
+
+                    });
+
+                    if (req.file) {
+                        newUser.avatar = `/static/images/avatar/${req.file.filename}`
+
+                     } 
+                    // else {
+                    //     if(req.body.url){
+                    //         if (isImage(req.body.url)) {
+                    //             newUser.avatar = req.body.url
+                    //         }
+                    //     }
+                    // }
+
+                    await newUser.save().then(()=>{
+                        helperFunc.status(res,true,null,"add user success")
+                    })
+                    
+                    
+                }
+            })
+
+        } catch (err) {
+            res.status(400).json(err.message);
+        }
+    },
+
+
     addUser: async (req, res) => {
         try {
             uploadAvatar(req, res, async(err) => {
@@ -136,7 +198,8 @@ const userController = {
 
                     if (req.file) {
                         newUser.avatar = `/static/images/avatar/${req.file.filename}`
-                    } else {
+                    }
+                    else {
                         if (isImage(req.body.url)) {
                             newUser.avatar = req.body.url
                         }
