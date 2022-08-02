@@ -1,6 +1,6 @@
 <template>
    <div class="flexible-content">
-     <SlideBar/>
+    <SlideBar/>
   <section id="dashboard">
    
     <mdb-card class="mb-4">

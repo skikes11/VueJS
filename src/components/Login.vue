@@ -73,7 +73,6 @@
 import "../assets/styles/index.css";
 import "../assets/styles/tailwind.css";
 import api from "../api/apiServices.ts";
-import router from "../router";
 export default {
   name: "Login",
 
@@ -87,20 +86,25 @@ export default {
     async login() {
       try {
         // console.warn(this.email, this.password)
-        let apiLogin = await api
+        await api
           .post("/api/auth/login", {
             email: this.email,
             password: this.password,
           })
-          .then(() => {
-            localStorage.setItem("b", "aaaaaaaaavac");
-            console.warn(apiLogin.data);
-            console.warn("success: " + apiLogin.data.success);
-            if (apiLogin.data.success) {
-              localStorage.setItem("userToken", apiLogin.data.userToken);
-              router.go({ name: "Dashboard" });
+          .then((res) => {
+            console.log(res);
+            if(res.data.success){
+            localStorage.setItem("userToken", res.data.userToken);
+            //localStorage.setItem("userToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyY2JmNmNjYWY2ZWE2ODMyODc2MDk2MCIsInJvbGUiOnsiX2lkIjoiNjJjNjljNDFmNTg5ZDY5YTk5YjYzNmRhIiwibmFtZSI6ImFkbWluIn0sImlhdCI6MTY1OTQxMzI5MCwiZXhwIjoxNjkwOTQ5MjkwfQ.MVf3EdfExKv2QKFyFcE7yySIjSeTI8U7zTHH-g15nOg");
+            this.$router.go({ name: "Dashboard" });
+            }else{
+            this.$router.go();
             }
+          }).catch((err)=>{
+              console.warn(err)
           });
+
+        
       } catch (err) {
         console.error(err);
       }

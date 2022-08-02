@@ -9,6 +9,8 @@ import Index from '../components/Index.vue'
 import auth from '../../auth'
 import Product from '../components/Products.vue'
 import Role from '../components/Role.vue'
+import AddUser from '../components/AddUser.vue'
+import EditUser from '../components/EditUser.vue'
 
 
 Vue.use(Router);
@@ -70,7 +72,16 @@ const router = new Router({
       component: Role
     },
 
-
+    {
+      path: '/users/add',
+      name: 'addUser',
+      component: AddUser
+    },
+    {
+      path: '/users/edit',
+      name: 'editUser',
+      component: EditUser
+    },
     {
       path: '/404',
       name: 'BadGateway',

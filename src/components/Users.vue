@@ -54,6 +54,7 @@
               type="button"
               class="btn btn-outline-primary"
               data-mdb-ripple-color="dark"
+              v-on:click="editUser(user._id)"
             >
               Edit
             </button>
@@ -76,18 +77,24 @@
 import { ref } from "vue";
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
-//import AddUserDiaLog from "./AddUserDiaLog.vue"
+
 //import axios from "axios";
 export default {
   name: "Users",
   components: {
     SlideBar,
-   // AddUserDiaLog
 },
 
   methods : {
-    addUser() { 
-    }
+    addUser() {
+       this.$router.push("/users/add");
+    }, 
+    editUser(idUser) {
+       this.$router.push({
+        name : "editUser",
+        params : {id : idUser }
+       });
+    }, 
     
   },
 

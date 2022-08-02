@@ -6,12 +6,10 @@
       type="button"
       class="btn btn-outline-success"
       data-mdb-ripple-color="dark"
-      v-on:click="addUser()"
+      v-on:click="addProduct()"
     >
       Add product
     </button>
-
-   
 
     <table class="table align-middle mb-0 bg-white">
       <thead class="bg-light">
@@ -33,13 +31,12 @@
                 style="width: 45px; height: 45px"
               />
               <div class="ms-3">
-                <p class="fw-bold mb-1">{{ product.name }} </p>  
+                <p class="fw-bold mb-1">{{ product.name }}</p>
               </div>
             </div>
           </td>
           <td>
             <p class="fw-normal mb-1">{{ product.price }}</p>
-            
           </td>
           <td>
             <p class="fw-normal mb-1">{{ product.total_quantity }}</p>
@@ -57,6 +54,7 @@
               type="button"
               class="btn btn-outline-danger"
               data-mdb-ripple-color="dark"
+              v-on:click="deleteProduct(product._id)"
             >
               Delete
             </button>
@@ -77,15 +75,27 @@ export default {
   name: "Products",
   components: {
     SlideBar,
-   // AddUserDiaLog
-},
-
-  methods : {
-    addUser() { 
-    }
-    
+    // AddUserDiaLog
   },
 
+  methods: {
+    addProduct() {
+      this.$dialog
+        .confirm("Please confirm to continue")
+        .then(function () {
+          console.log("Clicked on proceed");
+        })
+        .catch(function () {
+          console.log("Clicked on cancel");
+        });
+    },
+    deleteProduct(id) {
+      api.delete(`/api/admin/products/${id}`).then(() => {
+        console.log("delete success");
+        this.$router.go();
+      });
+    },
+  },
 
   setup() {
     const products = ref([]);

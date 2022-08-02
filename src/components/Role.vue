@@ -11,10 +11,8 @@
       Add Role
     </button>
 
-   
-
     <table class="table align-middle mb-0 bg-white">
-      <thead class="bg-light">
+      <thead class="bg-light" >
         <tr>
           <th>Name</th>
           <th>Action</th>
@@ -23,7 +21,7 @@
       <tbody>
         <tr v-for="role in roles" :key="role._id">
           <td>
-                <p class="fw-bold mb-1">{{ role.name }} </p>  
+                <p class="fw-bold mb-1" style="font-size: 20px;"  >{{ role.name }} </p>  
                 
           </td>
           <td>
@@ -76,7 +74,7 @@ export default {
       try {
         const res = await api.get("/api/admin/roles");
         console.log(res.data);
-        roles.value = res.data;
+        roles.value = res.data.data;
       } catch (error) {
         console.log(error);
       }
