@@ -33,6 +33,31 @@ userRouter.get("/", async (req, res) => {
     }
 });
 
+//Get USER by ID (auth: ADMIN)
+userRouter.get("/:id", async (req, res) => {
+
+    const userToken = await middlewareController.verifyToken(req, res)
+    console.log(userToken)
+    if (!userToken) {
+        return res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        });
+    }
+ 
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+    console.log(userToken.role._id)
+    console.log(permission)
+    if (permission[0]) {
+        userController.getUserById(req,res,req.params.id);
+    } else {
+        res.status(403).json({
+            "success": false,
+            "message": "permission deny"
+        })
+    }
+});
+
 
 //ADD USER (auth: ADMIN)
 userRouter.post("/", async (req, res) => {

@@ -56,8 +56,8 @@ app.use(auditLogMiddleware({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// app.use(express.urlencoded({ extended: true }));
- app.use(express.json());
+//  app.use(express.urlencoded({ extended: true }));
+//  app.use(express.json());
 
 
 app.use(bodyParser.json());
@@ -107,7 +107,6 @@ app.use("/api", myRouter);
 app.use("/", homeRouter);
 app.use("/", viewRouter);
 
-// app.use("/userInfor", userInforRoute);
         
 app.listen(8000, ()=>{
     console.log("Server is running..");
