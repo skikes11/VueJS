@@ -1,41 +1,38 @@
 <template>
     <div class="flexible-content">
         <SlideBar />
-        <h2 class="title"> Add User </h2>
+        <h2 class="title"> Add product </h2>
         <div class="flex">
 
             <div class="img_block">
-                <h4 style="text-align: center; margin: 20px;"> User avatar </h4>
+                <h4 style="text-align: center; margin: 20px;"> Image product </h4>
                 <img class="img"  v-if="url" :src="url"   alt="IMG">
                 <input accept="image/*"  ref="file" type="file"  id="avatar" name="avatar" @change="onFileChange" />
             </div>
 
 
             <form class="form-input">
-                <label for="name" > User Name </label>
+                <label for="name" > Product Name </label>
                 <input type="text" id="fname" name="fname" v-model="name">
 
-                <label for="lname"> Email </label>
-                <input type="text" id="lname" name="lname" v-model="email">
+                <label for="lname"> Price </label>
+                <input type="text" id="lname" name="lname" v-model="price">
 
-                <label for="fname">Password</label>
-                <input type="text" id="fname" name="fname" v-model="password">
+                <label for="fname">Total quantity</label>
+                <input type="text" id="fname" name="fname" v-model="total_quantity">
 
-                <label for="fname">Re Enter Password </label>
-                <input type="text" id="fname" name="fname" v-model="rePassword">
+                <label for="fname">Brand </label>
+                <input type="text" id="fname" name="fname" v-model="brand">
 
-                <label for="lname">Phone</label>
-                <input type="text" id="lname" name="lname" v-model="phone">
+                <label for="lname">Origin</label>
+                <input type="text" id="lname" name="lname" v-model="origin">
 
-                <label for="lname">Role</label>
-                <select class="option-control" :required="true" v-model="role" >
-                    <option v-for="role in roles" :value="role._id" v-bind:key="role.id" :selected="role =='user'" >{{ role.name }}
-                    </option>
-                </select>
+                <label for="lname">Description</label>
+                <input type="text" id="lname" name="lname" style="height: 100px" v-model="des">
 
-                <div class="fm-btn flex"> 
-                    <button type="button" class="btn btn-primary"   v-on:click="addUser()" > Save </button>
-                    <button type="button" class="btn btn-secondary"> Close </button>
+                <div class="fm-btn flex" style="margin-top: 20px">
+                    <button type="button" class="btn btn-primary" v-on:click="editUser()">Save</button>
+                    <button type="button" class="btn btn-secondary">Close</button>
                 </div>
 
             </form>
@@ -44,7 +41,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
@@ -58,6 +54,7 @@ export default {
 
     data() {
         return {
+
             url: null,
             name: "",
             email: "",
@@ -67,6 +64,9 @@ export default {
             phone: "",
             avatar: ""
         }
+    },
+    created(){
+
     },
     methods: {
         onFileChange(e) {
@@ -100,28 +100,16 @@ export default {
         }
     },
 
+    getAllProducts() {
+      api.get("/api/admin/products").then(res => {
+        console.log(res.data);
+        
 
-    setup() {
-        const roles = ref([]);
-
-        const getAllRoles = async () => {
-            try {
-                const res = await api.get("/api/admin/roles");
-                console.log(res.data);
-
-                roles.value = res.data.data;
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        getAllRoles();
-
-        return {
-            roles,
-        };
+      })
     },
-};
+
+
+}
 
 
 

@@ -17,6 +17,10 @@
           <th>Name</th>
           <th>Price</th>
           <th>Total quantity</th>
+          <th>Brand</th>
+          <th>Price</th>
+          <th>Description</th>
+          
           <th>Actions</th>
         </tr>
       </thead>
@@ -31,21 +35,33 @@
                 style="width: 45px; height: 45px"
               />
               <div class="ms-3">
-                <p class="fw-bold mb-1">{{ product.name }}</p>
+                <p class="fw-bold mb-1" v-if="product.name">{{ product.name }}</p>
               </div>
             </div>
           </td>
           <td>
-            <p class="fw-normal mb-1">{{ product.price }}</p>
+            <p class="fw-normal mb-1"  v-if="product.price">{{ product.price }}</p>
           </td>
           <td>
-            <p class="fw-normal mb-1">{{ product.total_quantity }}</p>
+            <p class="fw-normal mb-1" v-if="product.total_quantity">{{ product.total_quantity }}</p>
           </td>
           <td>
+            <p class="fw-normal mb-1"  v-if="product.price">{{ product.brand }}</p>
+          </td>
+          <td>
+            <p class="fw-normal mb-1" v-if="product.total_quantity">{{ product.origin }}</p>
+          </td>
+          <td>
+            <p class="fw-normal mb-1" v-if="product.total_quantity">{{ product.description }}</p>
+          </td>
+          <td>  
+            
+
             <button
               type="button"
               class="btn btn-outline-primary"
               data-mdb-ripple-color="dark"
+              v-on:click="editProduct(product._id)"
             >
               Edit
             </button>
@@ -81,19 +97,18 @@ export default {
 
   methods: {
     addProduct() {
-      this.$dialog
-        .confirm("Please confirm to continue")
-        .then(function () {
-          console.log("Clicked on proceed");
-        })
-        .catch(function () {
-          console.log("Clicked on cancel");
-        });
+      this.$router.push({ name: "addProduct"})
     },
     deleteProduct(id) {
       api.delete(`/api/admin/products/${id}`).then(() => {
         console.log("delete success");
         this.$router.go();
+      });
+    },
+    editProduct(idProduct) {
+      this.$router.push({
+        name: "editProduct",
+        params: { id: idProduct }
       });
     },
   },
@@ -105,7 +120,7 @@ export default {
       try {
         const res = await api.get("/api/admin/products");
         console.log(res.data);
-        products.value = res.data;
+        products.value = res.data.data;
       } catch (error) {
         console.log(error);
       }

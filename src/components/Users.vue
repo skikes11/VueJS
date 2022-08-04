@@ -20,7 +20,7 @@
         <tr v-for="user in users" :key="user._id">
           <td>
             <div class="d-flex align-items-center">
-              <img src="https://mdbootstrap.com/img/new/avatars/7.jpg" class="rounded-circle" alt=""
+              <img :src="'http://localhost:8000'+user.avatar" class="rounded-circle" alt=""
                 style="width: 45px; height: 45px" />
               <div class="ms-3">
                 <p class="fw-bold mb-1">{{ user.name }}</p>
@@ -44,7 +44,8 @@
               Edit
             </button>
 
-            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">
+            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark"
+              v-on:click="deleteUser(user._id)">
               Delete
             </button>
           </td>
@@ -64,12 +65,13 @@ export default {
   components: {
     SlideBar,
   },
-  data(){
-    return{
-      users: []
+  data() {
+    return {
+      users: [],
+      url: []
     }
   },
-  created(){
+  created() {
     this.getAllUser();
   },
 
@@ -77,19 +79,39 @@ export default {
     addUser() {
       this.$router.push("/users/add");
     },
+    deleteUser(id) {
+
+      this.$dialog
+        .confirm("Please confirm to continue delete user")
+        .then(function () {
+          api.delete(`/api/admin/users/${id}`).then(() => {
+          console.log("delete success");
+         // this.$router.go()
+          window.location.reload();
+          });
+          
+        })
+        .catch(function () {
+          console.log("Clicked on cancel");
+        });
+        
+
+    },
     editUser(idUser) {
       this.$router.push({
         name: "editUser",
         params: { id: idUser }
       });
     },
-     getAllUser(){
+    getAllUser() {
       try {
-        api.get("/api/admin/users").then(res=>{
-            console.log(res.data);
-            this.users = res.data;
+        api.get("/api/admin/users").then(res => {
+          console.log(res.data);
+          this.users = res.data;
+          
+          
         })
-        
+
       } catch (error) {
         console.log(error);
       }

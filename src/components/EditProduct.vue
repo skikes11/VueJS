@@ -1,41 +1,38 @@
 <template>
     <div class="flexible-content">
         <SlideBar />
-        <h2 class="title"> Add User </h2>
+        <h2 class="title"> Edit product </h2>
         <div class="flex">
 
             <div class="img_block">
-                <h4 style="text-align: center; margin: 20px;"> User avatar </h4>
-                <img class="img"  v-if="url" :src="url"   alt="IMG">
-                <input accept="image/*"  ref="file" type="file"  id="avatar" name="avatar" @change="onFileChange" />
+                <h4 style="text-align: center; margin: 20px;"> Image product </h4>
+                <img class="img" v-if="url" :src="url" alt="IMG">
+                <input accept="image/*" ref="file" type="file" id="avatar" name="avatar" @change="onFileChange" />
             </div>
 
 
             <form class="form-input">
-                <label for="name" > User Name </label>
+                <label for="name"> Product Name </label>
                 <input type="text" id="fname" name="fname" v-model="name">
 
-                <label for="lname"> Email </label>
-                <input type="text" id="lname" name="lname" v-model="email">
+                <label for="lname"> Price </label>
+                <input type="text" id="lname" name="lname" v-model="price">
 
-                <label for="fname">Password</label>
-                <input type="text" id="fname" name="fname" v-model="password">
+                <label for="fname">Total quantity</label>
+                <input type="text" id="fname" name="fname" v-model="total_quantity">
 
-                <label for="fname">Re Enter Password </label>
-                <input type="text" id="fname" name="fname" v-model="rePassword">
+                <label for="fname">Brand </label>
+                <input type="text" id="fname" name="fname" v-model="brand">
 
-                <label for="lname">Phone</label>
-                <input type="text" id="lname" name="lname" v-model="phone">
+                <label for="lname">Origin</label>
+                <input type="text" id="lname" name="lname" v-model="origin">
 
-                <label for="lname">Role</label>
-                <select class="option-control" :required="true" v-model="role" >
-                    <option v-for="role in roles" :value="role._id" v-bind:key="role.id" :selected="role =='user'" >{{ role.name }}
-                    </option>
-                </select>
+                <label for="lname">Description</label>
+                <input type="text" id="lname" name="lname" style="height: 100px" v-model="des">
 
-                <div class="fm-btn flex"> 
-                    <button type="button" class="btn btn-primary"   v-on:click="addUser()" > Save </button>
-                    <button type="button" class="btn btn-secondary"> Close </button>
+                <div class="fm-btn flex" style="margin-top: 20px">
+                    <button type="button" class="btn btn-primary" v-on:click="editUser()">Save</button>
+                    <button type="button" class="btn btn-secondary">Close</button>
                 </div>
 
             </form>
@@ -44,7 +41,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
@@ -60,21 +56,25 @@ export default {
         return {
             url: null,
             name: "",
-            email: "",
-            password: "",
-            rePassword: "",
-            role: "",
-            phone: "",
-            avatar: ""
+            price: "",
+            total_quantity: "",
+            brand: "",
+            origin: "",
+            des: "",
+            image: ""
         }
     },
+    created(){
+        this.getProductById();
+    }
+    ,
     methods: {
         onFileChange(e) {
             const file = e.target.files[0];
             this.url = URL.createObjectURL(file);
-            
+
         },
-        addUser(){
+        addUser() {
 
             let formData = new FormData();
             this.avatar = this.$refs.file.files[0]
@@ -87,40 +87,40 @@ export default {
             formData.append('avatar', this.avatar)
 
             console.log(formData)
-            api.post("/api/admin/users",formData).then(res=>{
+            api.post("/api/admin/users", formData).then(res => {
                 console.log(res.data)
-                if(res.data.success){
-                    this.$router.push({name: "Users"})
-                }else{
+                if (res.data.success) {
+                    this.$router.push({ name: "Users" })
+                } else {
                     this.$router.go()
                 }
-            }).catch(err=>{
+            }).catch(err => {
                 console.log(err)
             })
-        }
-    },
-
-
-    setup() {
-        const roles = ref([]);
-
-        const getAllRoles = async () => {
-            try {
-                const res = await api.get("/api/admin/roles");
+        },
+        getProductById() {
+            api.get(`/api/admin/products/${this.$route.params.id}`).then(res => {
                 console.log(res.data);
+                const product = res.data.data
+                this.name = product.name
+                this.price = product.price
+                this.total_quantity = product.total_quantity
+                this.brand = product.brand
+                this.origin = product.origin
+                this.des = product.des
 
-                roles.value = res.data.data;
-            } catch (error) {
-                console.log(error);
-            }
-        };
+                if(product.image){
+                    this.url = "localhost:8000" + product.image
+                    console.log(this.url)
+                }
+                
 
-        getAllRoles();
+            })
+        }
 
-        return {
-            roles,
-        };
-    },
+
+
+    }
 };
 
 
@@ -153,7 +153,7 @@ input[type=text] {
 .form-input {
     margin: auto;
     width: 40%;
- 
+
     padding: 10px;
     margin-top: 30px;
 }
@@ -171,10 +171,10 @@ input[type=text] {
     width: 220px;
     margin: auto;
     margin-bottom: 20px;
-    
-}
-.img_block{
-    margin-left: 180px;
+
 }
 
+.img_block {
+    margin-left: 180px;
+}
 </style>

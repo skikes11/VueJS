@@ -5,45 +5,34 @@
     <div class="flex">
       <div class="img_block">
         <h4 style="text-align: center; margin: 20px">User avatar</h4>
-        <img class="img" v-if="url"  :src="url" alt="IMG" />
-        <input
-          accept="image/*"
-          type="file"
-          id="avatar"
-          name="avatar"
-          ref="file"
-          @change="onFileChange"
-        />
+        <img class="img" v-if="url" :src="url" alt="IMG" />
+        <input accept="image/*" type="file" id="avatar" name="avatar" ref="file" @change="onFileChange" />
       </div>
 
       <form class="form-input">
         <label for="name"> User Name </label>
-        <input type="text" id="fname" name="fname"  v-model="user.name"/>
+        <input type="text" id="fname" name="fname" v-model="name" />
         <label for="lname"> Email </label>
-        <input type="text" id="lname" name="lname"  v-model="user.email"/>
+        <input type="text" id="lname" name="lname" v-model="email" />
 
         <label for="fname">Password</label>
-        <input type="text" id="fname" name="fname" v-model="user.password"/>
+        <input type="text" id="fname" name="fname" v-model="password" />
 
         <label for="fname">Re Enter Password </label>
-        <input type="text" id="fname" name="fname" v-model="user.rePassword"/>
+        <input type="text" id="fname" name="fname" v-model="rePassword" />
 
         <label for="lname">Phone</label>
-        <input type="text" id="lname" name="lname"  v-model="user.phone"/>
+        <input type="text" id="lname" name="lname" v-model="phone" />
 
-        <label for="lname">Role: {{user.role.name}} </label>
-        <select class="option-control" :required="true" v-model="user.role">
-          <option
-            v-for="role in roles"
-            v-bind:key="role.id"
-            :selected="role == 'user'"
-          >
+        <label for="lname">Role: {{ role.name }} </label>
+        <select class="option-control" :value="role._id" :required="true" v-model="role">
+          <option v-for="role in roles" v-bind:key="role.id" :selected="role == 'user'">
             {{ role.name }}
           </option>
         </select>
 
-        <label for="lname">Activate: {{user.active}} </label>
-        <select class="option-control" :required="true" v-model="user.active" >
+        <label for="lname">Activate: {{ active }} </label>
+        <select class="option-control" :required="true" v-model="active">
           <option value="true">true</option>
           <option value="false">false</option>
         </select>
@@ -51,7 +40,7 @@
 
         <div class="fm-btn flex">
           <button type="button" class="btn btn-primary" v-on:click="editUser()">Save</button>
-          <button type="button" class="btn btn-secondary" >Close</button>
+          <button type="button" class="btn btn-secondary">Close</button>
         </div>
       </form>
     </div>
@@ -65,74 +54,102 @@ import SlideBar from "./SlideBar.vue";
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
 //import axios from "axios";
 export default {
-    name: "Products",
-    components: {
-        SlideBar,
-        // AddUserDiaLog
-    },
+  name: "Products",
+  components: {
+    SlideBar,
+    // AddUserDiaLog
+  },
 
-    data() {
-        return {
-            url: null,
-            roles: [],
-            user: null
+  data() {
+    return {
+      url: null,
+      roles: [],
+      name: "",
+      email: "",
+      password: "",
+      rePassword: "",
+      role: "",
+      phone: "",
+      avatar: "",
+      active: ""
+    }
+  },
+  created() {
+    console.warn("params", this.$route.params.id)
+    this.getAllRoles();
+    this.getUserByID();
+
+  },
+  methods: {
+    onFileChange(e) {
+      const file = e.target.files[0];
+      this.url = URL.createObjectURL(file);
+
+    },
+    getAllRoles() {
+      api.get("/api/admin/roles").then(res => {
+        console.log(res.data);
+        this.roles = res.data.data;
+
+      })
+    },
+    getUserByID() {
+      api.get(`/api/admin/users/${this.$route.params.id}`).then(res => {
+        console.log(res.data);
+
+        const user = res.data.data
+
+        this.name = user.name
+        this.email = user.email
+        this.password = user.password
+        this.rePassword = user.rePassword
+        this.role = user.role
+        this.phone = user.phone
+        this.active = user.active
+
+        if(user.avatar){
+        this.url = "localhost:8000/" + user.avatar
         }
+
+        console.log(this.url)
+
+
+      })
     },
-    created() {
-        console.warn("params", this.$route.params.id)
-        this.getAllRoles();
-        this.getUserByID();
+    editUser() {
 
-    },
-    methods: {
-        onFileChange(e) {
-            const file = e.target.files[0];
-            this.url = URL.createObjectURL(file);
+      let formData = new FormData();
+      this.avatar = this.$refs.file.files[0]
 
-        },
-        getAllRoles() {
-             api.get("/api/admin/roles").then(res => {
-                console.log(res.data);
-                this.roles = res.data.data;
-                
-            })
-        },
-        getUserByID(){
-            api.get(`/api/admin/users/${this.$route.params.id}`).then(res => {
-                console.log(res.data);
-                this.user = res.data.data;
-                this.url = res.data.data.avatar
-            })
-        },
-        editUser(){
-
-            let formData = new FormData();
-            this.avatar = this.$refs.file.files[0]
-            formData.append('name', this.user.name)
-            formData.append('email', this.user.email)
-            formData.append('password', this.user.password)
-            formData.append('rePassword', this.user.rePassword)
-            formData.append('role', this.user.role)
-            formData.append('phone', this.user.phone)
-            formData.append('avatar', this.user.avatar)
-
-            console.log(formData)
-
-            api.put(`/api/admin/users/${this.$route.params.id}`,formData).then(res=>{
-                console.log(res.data)
-                if(res.data.success){
-                    this.$router.push({name: "Users"})
-                }else{
-                    this.$router.go()
-                }
-            }).catch(err=>{
-                console.log(err)
-            })
-        }
-    },
-
+      formData.append('name', this.name)
+      formData.append('email', this.email)
+      formData.append('password', this.password)
+      formData.append('rePassword', this.rePassword)
+      formData.append('role', this.role)
+      formData.append('phone', this.phone)
+      formData.append('avatar', this.avatar)
+      formData.append('active', this.active)
+      console.log("this name ", this.name)
+      console.log(formData)
 
     
+      api({
+        method: 'post',
+        url: `/api/admin/users/${this.$route.params.id}`,
+        data: formData,
+        headers: {
+          'Content-Type': `multipart/form-data`,
+        },
+      }).then(res=>{
+        console.log(res.data)
+      })
+
+
+    }
+  },
+
+
+
 };
 </script>
 
