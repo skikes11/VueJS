@@ -33,6 +33,32 @@ productRouter.get("/", async (req, res) => {
     }
 });
 
+//Get All Product (auth: ADMIN)
+productRouter.get("/:id", async (req, res) => {
+
+    const userToken = await middlewareController.verifyToken(req, res)
+    console.log(userToken)
+    if (!userToken) {
+        return res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        });
+    }
+
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+
+    console.log(permission)
+    if (permission[0]) {
+        productController.getProductById(req,res,req.params.id);
+    } else {
+        res.status(403).json({
+            "success": false,
+            "message": "permission deny"
+        })
+    }
+});
+
+
 //ADD Product (auth: ADMIN)
 productRouter.post("/", async (req, res) => {
 

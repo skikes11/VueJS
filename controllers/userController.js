@@ -86,9 +86,10 @@ const userController = {
       res.status(500).json(err.message);
     }
   },
-  UpdateUserByID: async (req, res, id, idUser) => {
+  UpdateUserByID: async (req, res, id) => {
     try {
 
+      console.log("bodyy", req.body)
       const user = await UserAccount.findById(id);
       if (!user) {
         return res.status(500).json({
@@ -173,19 +174,17 @@ const userController = {
         console.log(req.body);
         console.log("####check Pass : " + checkPass(req));
         console.log("##file", req.file)
+        console.log(err, user)
         if (err) {
-          return res.status(404).json({
-            message: "can not upload file image",
-          });
+          helperFunc.status(res, false, null, "can not upload image");
         } else if (user) {
-          return res.render("register", {
-            mess: "email already in use",
-          });
-        } else if (checkPass(req)) {
-          return res.render("register", {
-            mess: "password did not match",
-          });
+
+          helperFunc.status(res, false, null, "email already in use");
+
+        } else if (!checkPass(req)) {
+          helperFunc.status(res, false,null,"password and re-enter password did not match" );
         } else {
+          console.log("check")
           const salt = await bcrypt.genSalt(10);
           const hashPass = await bcrypt.hash(req.body.password, salt);
 
@@ -199,6 +198,7 @@ const userController = {
             dob: req.body.dob,
             role: req.body.role,
           });
+          console.log("newUser", newUser)
 
           if (req.file) {
             newUser.avatar = `/static/images/avatar/${req.file.filename}`;
@@ -207,6 +207,8 @@ const userController = {
               newUser.avatar = req.body.url;
             }
           }
+
+          console.log("newUser", newUser)
 
           const tokenActivate = jwt.sign(
             {

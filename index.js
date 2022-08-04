@@ -1,8 +1,7 @@
 const passport = require('passport');
 const express = require("express");
-
+const multer = require('multer');
 require('./controllers/passport')(passport);
-const session = require('express-session');
 const cors = require("cors");
 const app = express();
 const { format } = require('date-fns');
@@ -14,7 +13,7 @@ const myRouter = require("./routes/index");
 const viewRouter = require("./routes/viewRouter");
 const homeRouter = require("./routes/homeRouter")
 const cookieParser = require('cookie-parser');
-const auditLogMiddleware = require('@ozawa/express-audit-log-middleware');
+
 
 mongoose.plugin(require('./controllers/auditlog/plugin'))
 
@@ -30,57 +29,31 @@ mongoose.connect((process.env.MONGODB_URL),()=>{
     console.log("connected database");
 });
 
-app.use(auditLogMiddleware({
-    routes: [
-      {
-        methods: [
-          'POST',
-          'PUT',
-          'DELETE',
-        ],
-        uris: [
-          '**',
-        ],
-      },
-    ],
-    extractorFunctions: {
-      actor        : (req) => req.auth,
-      ipAddress    : (req) => req.ip,
-      correlationID: (req) => req.headers['x-correlation-id'] || undefined,
-    },
-    filename: `${__dirname}/auditLogs/audit_log.json`,
-  }));
+
+
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({extended: true}))
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
+
+
+// app.use(session({secret: 'ilovescodetheworld'})); // chuối bí mật đã mã hóa coookie
+// app.use(passport.initialize());
+// app.use(passport.session()); // persistent login sessions
+// app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-//  app.use(express.urlencoded({ extended: true }));
-//  app.use(express.json());
-
-
-app.use(bodyParser.json());
+// app.use(cookieParser());
 
 
 
-app.use(session({secret: 'ilovescodetheworld'})); // chuối bí mật đã mã hóa coookie
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
-
-
-
-app.use(cookieParser());
-
-
-app.use(bodyParser.urlencoded({ extended: true }))
 //Static files
 app.use(express.static(__dirname + '/public'));
 
 // cau hinh engine ejs
-app.set("view engine", "ejs");
-app.set("views","./view");
+// app.set("view engine", "ejs");
+// app.set("views","./view");
 
 app.use('/static', express.static('public'))
 

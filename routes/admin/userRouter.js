@@ -71,7 +71,7 @@ userRouter.post("/", async (req, res) => {
         });
     }
  
-      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+    const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
     console.log(userToken.role._id)
     console.log(permission)
     if (permission[0]) {
@@ -89,7 +89,7 @@ userRouter.post("/", async (req, res) => {
 
 
 //UPDATE USER(auth: ADMIN)
-userRouter.put("/:id", async (req, res) => {
+userRouter.post("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     console.log(userToken)
@@ -104,7 +104,7 @@ userRouter.put("/:id", async (req, res) => {
 
     console.log(permission)
     if (permission[0]) {
-       userController.UpdateUserByID(req,res,req.params.id, userToken.id);
+       userController.UpdateUserByID(req,res,req.params.id);
     } else {
         res.status(403).json({
             "success": false,
