@@ -20,7 +20,8 @@ const RoleController = {
         auditLog.url = fullUrl;
         auditLog.save();
 
-        res.status(200).json(Role);
+        helperFunc.status(res,true,Role,null)
+        
       });
     } catch (err) {
       res.status(400).json(err.message);

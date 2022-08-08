@@ -88,28 +88,45 @@ const userController = {
   },
   UpdateUserByID: async (req, res, id) => {
     try {
+      uploadAvatar(req, res, async (err) => {
+        console.log("bodyy", req.body)
+        const user = await UserAccount.findById(id);
+        if (err) {
+          helperFunc.status(res, false, null, "can not upload image");
+        }else if (!user) {
+          return res.status(500).json({
+            success: false,
+            message: "did not found user",
+          });
+        }
+         else if (!checkPass(req)) {
+          helperFunc.status(res, false,null,"password and re-enter password did not match" );
+        }else{
 
-      console.log("bodyy", req.body)
-      const user = await UserAccount.findById(id);
-      if (!user) {
-        return res.status(500).json({
-          success: false,
-          message: "did not found user",
+        user.name = req.body.name;
+        user.phone = req.body.phone;
+        user.dob = req.body.dob;
+        user.email = req.body.email
+        if(req.body.password !== ""){
+        user.password= req.body.password
+        }
+
+        user.role = req.body.role
+        user.active = req.body.active
+
+        if (req.file) {
+          user.avatar = `/static/images/avatar/${req.file.filename}`;
+        }
+  
+        await user.save().then(console.log(user));
+        res.status(200).json({
+          success: true,
+          data: user,
         });
       }
-      user.name = req.body.name;
-      user.phone = req.body.phone;
-      user.dob = req.body.dob;
-      user.email = req.body.email
-      user.password= req.body.password
-      user.role = req.body.role
-      user.active = req.body.active
-
-      await user.save().then(console.log(user));
-      res.status(200).json({
-        success: true,
-        data: user,
-      });
+        
+      })
+    
     } catch (err) {
       res.status(404).json({
         success: false,
@@ -132,7 +149,10 @@ const userController = {
           helperFunc.status(res, false, null, "email already in use");
         } else if (!checkPass(req)) {
           helperFunc.status(res, false,null,"password and re-enter password did not match" );
-        } else {
+        }else if (!req.body.email) {
+          helperFunc.status(res, false, null, "email is require" );
+        }
+         else {
           const salt = await bcrypt.genSalt(10);
           const hashPass = await bcrypt.hash(req.body.password, salt);
 
@@ -158,7 +178,7 @@ const userController = {
           }
 
           await newUser.save().then(() => {
-            helperFunc.status(res, true, null, "add user success");
+            helperFunc.status(res, true, newUser, "add user success");
           });
         }
       });

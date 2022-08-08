@@ -138,7 +138,7 @@ const permissionController = {
     },
     getPermissionByRoleID: async (req, res, id) => {
         try {
-            const permission = await Permission.findOne({ Role_ID: id });
+            const permission = await Permission.find({ Role_ID: id });
             if (!permission) {
                 return res.status(500).json({
                     "success": false,

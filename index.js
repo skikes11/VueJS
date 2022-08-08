@@ -13,7 +13,7 @@ const myRouter = require("./routes/index");
 const viewRouter = require("./routes/viewRouter");
 const homeRouter = require("./routes/homeRouter")
 const cookieParser = require('cookie-parser');
-
+var forms = multer();
 
 mongoose.plugin(require('./controllers/auditlog/plugin'))
 
@@ -31,10 +31,15 @@ mongoose.connect((process.env.MONGODB_URL),()=>{
 
 
 
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({extended: true}))
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json());
+  // app.use(bodyParser.json())
+  // app.use(bodyParser.urlencoded({extended: true}))
+  // app.use(express.urlencoded({ extended: true }));
+  // app.use(express.json());
+
+
+app.use(bodyParser.json());
+app.use(forms.array()); 
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // app.use(session({secret: 'ilovescodetheworld'})); // chuối bí mật đã mã hóa coookie
