@@ -29,7 +29,7 @@
           <td>
             <div class="d-flex align-items-center">
               <img
-                src="https://mdbootstrap.com/img/new/avatars/7.jpg"
+                :src="url_vue + product.image"
                 class="rounded-circle"
                 alt=""
                 style="width: 45px; height: 45px"
@@ -82,7 +82,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
 
@@ -94,7 +93,17 @@ export default {
     SlideBar,
     // AddUserDiaLog
   },
+  data() {
+    return {
+      url: null,
+      url_vue : process.env.VUE_APP_URL,
+      products: [],
+    }
+  },
+  created() {
+    this.getAllProduct();
 
+  },
   methods: {
     addProduct() {
       this.$router.push({ name: "addProduct"})
@@ -111,27 +120,15 @@ export default {
         params: { id: idProduct }
       });
     },
+    getAllProduct(){
+    api.get("/api/admin/products").then(res=>{
+        console.log(res.data)
+        this.products = res.data.data
+    })
   },
-
-  setup() {
-    const products = ref([]);
-
-    const getAllProduct = async () => {
-      try {
-        const res = await api.get("/api/admin/products");
-        console.log(res.data);
-        products.value = res.data.data;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getAllProduct();
-
-    return {
-      products,
-    };
   },
+  
+
 };
 </script>
 

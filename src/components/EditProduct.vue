@@ -12,6 +12,7 @@
 
 
             <form class="form-input">
+                <h5 style="color:red;text-align:center" v-if ="msg"> {{msg}}</h5>
                 <label for="name"> Product Name </label>
                 <input type="text" id="fname" name="fname" v-model="name">
 
@@ -31,8 +32,8 @@
                 <input type="text" id="lname" name="lname" style="height: 100px" v-model="des">
 
                 <div class="fm-btn flex" style="margin-top: 20px">
-                    <button type="button" class="btn btn-primary" v-on:click="editUser()">Save</button>
-                    <button type="button" class="btn btn-secondary">Close</button>
+                    <button type="button" class="btn btn-primary" v-on:click="editProduct()">Save</button>
+                    <button type="button" class="btn btn-secondary" v-on:click="close()" >Close</button>
                 </div>
 
             </form>
@@ -61,7 +62,9 @@ export default {
             brand: "",
             origin: "",
             des: "",
-            image: ""
+            image: "",
+            msg : null,
+            url_vue : process.env.VUE_APP_URL,
         }
     },
     created(){
@@ -74,23 +77,22 @@ export default {
             this.url = URL.createObjectURL(file);
 
         },
-        addUser() {
+        editProduct() {
 
             let formData = new FormData();
-            this.avatar = this.$refs.file.files[0]
             formData.append('name', this.name)
-            formData.append('email', this.email)
-            formData.append('password', this.password)
-            formData.append('rePassword', this.rePassword)
-            formData.append('role', this.role)
-            formData.append('phone', this.phone)
-            formData.append('avatar', this.avatar)
+            formData.append('price', this.price)
+            formData.append('total_quantity', this.total_quantity)
+            formData.append('brand', this.brand)
+            formData.append('origin', this.origin)
+            formData.append('des', this.des)
+            formData.append('avatar', this.$refs.file.files[0])
 
             console.log(formData)
-            api.post("/api/admin/users", formData).then(res => {
+            api.put(`/api/admin/products/${this.$route.params.id}`, formData).then(res => {
                 console.log(res.data)
                 if (res.data.success) {
-                    this.$router.push({ name: "Users" })
+                    this.$router.push({ name: "Product" })
                 } else {
                     this.$router.go()
                 }
@@ -110,12 +112,15 @@ export default {
                 this.des = product.des
 
                 if(product.image){
-                    this.url = "localhost:8000" + product.image
+                    this.url = this.url_vue + product.image
                     console.log(this.url)
                 }
                 
 
             })
+        },
+        close(){
+                this.$router.push({ name: "Product" })
         }
 
 

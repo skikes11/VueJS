@@ -10,6 +10,7 @@
       </div>
 
       <form class="form-input">
+        <h5 style="color:red;text-align:center" v-if ="msg"> {{msg}}</h5>
         <label for="name"> User Name </label>
         <input type="text" id="fname" name="fname" v-model="name" />
         <label for="lname"> Email </label>
@@ -25,8 +26,8 @@
         <input type="text" id="lname" name="lname" v-model="phone" />
 
         <label for="lname">Role: {{ role.name }} </label>
-        <select class="option-control" :value="role._id" :required="true" v-model="role">
-          <option v-for="role in roles" v-bind:key="role.id" :selected="role == 'user'">
+        <select class="option-control"  :required="true" v-model="role">
+          <option v-for="role in roles"  :value="role._id" v-bind:key="role._id" :selected="role == 'user'">
             {{ role.name }}
           </option>
         </select>
@@ -71,7 +72,9 @@ export default {
       role: "",
       phone: "",
       avatar: "",
-      active: ""
+      active: "",
+      msg: null,
+      url_vue : process.env.VUE_APP_URL
     }
   },
   created() {
@@ -103,15 +106,16 @@ export default {
         this.email = user.email
         this.password = user.password
         this.rePassword = user.rePassword
-        this.role = user.role
+        this.role = user.role._id
         this.phone = user.phone
         this.active = user.active
 
         if(user.avatar){
-        this.url = "localhost:8000/" + user.avatar
+        this.url = this.url_vue + user.avatar
         }
 
-        console.log(this.url)
+        console.log(this.role)
+        
 
 
       })
@@ -133,16 +137,18 @@ export default {
       console.log(formData)
 
     
-      api({
-        method: 'post',
-        url: `/api/admin/users/${this.$route.params.id}`,
-        data: formData,
-        headers: {
-          'Content-Type': `multipart/form-data`,
-        },
-      }).then(res=>{
-        console.log(res.data)
-      })
+      api.post(`/api/admin/users/${this.$route.params.id}`,formData).then(res=>{
+                    console.log(res.data)
+                    if(res.data.success){
+                    this.$router.push({name: "Users"});
+                    }else{
+                      this.msg = res.data.message
+                      this.$route.go();
+                    }
+                
+            }).catch(err=>{
+                console.log(err)
+            })
 
 
     }

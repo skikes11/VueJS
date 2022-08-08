@@ -13,7 +13,7 @@ import AddUser from '../components/AddUser.vue'
 import EditUser from '../components/EditUser.vue'
 import AddProduct from '../components/AddProduct.vue'
 import EditProduct from '../components/EditProduct.vue'
-
+import AddRole from '../components/AddRole.vue'
 
 
 Vue.use(Router);
@@ -94,6 +94,11 @@ const router = new Router({
       path: '/users/products/:id',
       name: 'editProduct',
       component: EditProduct
+    },
+    {
+      path: '/roles/add',
+      name: 'addRole',
+      component: AddRole
     },
     {
       path: '/404',

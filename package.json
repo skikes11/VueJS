@@ -9,8 +9,10 @@
     "start": "vue-cli-service serve --open"
   },
   "dependencies": {
+    "@vueform/multiselect": "^2.5.2",
     "axios": "^0.27.2",
     "core-js": "^3.4.4",
+    "dotenv-webpack": "^8.0.0",
     "github-markdown-css": "^5.1.0",
     "mdb-ui-kit": "^4.3.0",
     "mdb-vue-ui-kit": "^2.0.0",
@@ -19,6 +21,7 @@
     "vue": "^2.6.11",
     "vue-axios": "^3.4.1",
     "vue-markdown": "^2.2.4",
+    "vue-multiselect": "^2.1.6",
     "vue-prism": "^1.0.5",
     "vue2-google-maps": "^0.10.7",
     "vuejs-dialog": "^1.4.2"

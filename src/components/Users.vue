@@ -20,23 +20,23 @@
         <tr v-for="user in users" :key="user._id">
           <td>
             <div class="d-flex align-items-center">
-              <img :src="'http://localhost:8000'+user.avatar" class="rounded-circle" alt=""
+              <img :src="url_vue+user.avatar" class="rounded-circle" alt=""
                 style="width: 45px; height: 45px" />
               <div class="ms-3">
-                <p class="fw-bold mb-1">{{ user.name }}</p>
-                <p class="text-muted mb-0">{{ user.email }}</p>
+                <p class="fw-bold mb-1" v-if="user.name"> {{ user.name }}</p>
+                <p class="text-muted mb-0"  v-if="user.email" >{{ user.email }}</p>
               </div>
             </div>
           </td>
           <td>
-            <p class="fw-normal mb-1">{{ user.phone }}</p>
+            <p class="fw-normal mb-1" v-if="user.phone" >{{ user.phone }}</p>
 
           </td>
           <td>
-            <span class="badge badge-warning rounded-pill d-inline">{{ user.active }}</span>
+            <span class="badge badge-warning rounded-pill d-inline" v-if="user.active" >{{ user.active }}</span>
           </td>
           <td>
-            <p class="fw-normal mb-1">{{ user.role.name }}</p>
+            <p class="fw-normal mb-1"  v-if="user.role" >{{ user.role.name }}</p>
           </td>
           <td>
             <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark"
@@ -68,7 +68,8 @@ export default {
   data() {
     return {
       users: [],
-      url: []
+      url: [],
+      url_vue : process.env.VUE_APP_URL
     }
   },
   created() {
