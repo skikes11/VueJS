@@ -23,24 +23,24 @@
           </td>
 
           <td>
-            <p class="fw-normal mb-1" style="font-size: 20px;">{{ role.description }} </p>
+            <p class="fw-normal mb-1" style="font-size: 15px;">{{ role.description }} </p>
 
           </td>
 
           <td>
-            <p class="fw-normal mb-1"  v-for="permission in role.permission" v-bind:key="permission._id">
-              endpoint: {{ permission.endpoint }}, method: {{ permission.method }}       
-            </p>
+            <div class="fw-normal mb-1"  v-for="permission in role.permission" v-bind:key="permission._id">
+              <p v-if="permission.endpoint && permission.method"> endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p>
+            </div> 
             
 
           </td>
 
           <td>
-            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark" v-on:click="addRole()">
+            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark" v-on:click="editRole(role._id)">
               Edit
             </button>
 
-            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark">
+            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark" v-on:click="deleteRole(role._id)">
               Delete
             </button>
           </td>
@@ -68,17 +68,30 @@ export default {
       url: null,
       url_vue: process.env.VUE_APP_URL,
       roles: [],
-      permission: null
+      permission: []
     }
   },
   async created() {
     await this.getAllRoles();
     console.log(this.roles)
-    this.fillPermission();
+    await this.fillPermission();
+     console.log("roles filled", this.roles)
   },
   methods: {
     addRole() {
       this.$router.push({ name: "addRole"})
+    },
+    editRole(idRole) {
+      this.$router.push({
+        name: "editRole",
+        params: { id: idRole }
+      });
+    },
+    deleteRole(id) {
+      api.delete(`/api/admin/roles/${id}`).then(() => {
+        console.log("delete success");
+        this.$router.go();
+      });
     },
     getAllRoles() {
       return api.get("/api/admin/roles").then(res => {
@@ -90,6 +103,7 @@ export default {
     getPermissionByRoleID(id) {
       return api.get(`/api/admin/permissions/${id}`).then((res) => {
         this.permission = res.data.data
+        console.log("per$$$",res.data)
       })
     },
 
@@ -97,11 +111,13 @@ export default {
       console.log("rolesLength: ", this.roles.length)
       for (let i = 0; i < this.roles.length; i++) {
         await this.getPermissionByRoleID(this.roles[i]._id)
+        if(typeof( this.permission) == 'object'){
+          this.permission = JSON.parse(JSON.stringify(this.permission));
+        }
         this.roles[i].permission = this.permission
-        console.log("permission: ", this.getPermissionByRoleID(this.roles[i]._id))
       }
 
-      console.log("roles filled", this.roles)
+     
 
     }
 

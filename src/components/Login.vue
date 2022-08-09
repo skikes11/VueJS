@@ -86,11 +86,13 @@ export default {
     async login() {
       try {
         // console.warn(this.email, this.password)
-        await api
-          .post("/api/auth/login", {
-            email: this.email,
-            password: this.password,
-          })
+
+        let formData = new FormData();
+            formData.append('email', this.email)
+            formData.append('password', this.password)
+
+         api
+          .post("/api/auth/login", formData)
           .then((res) => {
             console.log(res);
             if(res.data.success){

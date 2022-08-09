@@ -88,20 +88,20 @@ export default {
                 this.permission = res.data.data[0]
             })
         },
-        addRole() {
+       async addRole() {
             
             let formData = new FormData();
             formData.append('name', this.name)
             formData.append('description', this.des)
             
-            api.post(`/api/admin/roles`,formData).then(res => {
+            api.post(`/api/admin/roles`,formData).then(async(res) => {
                 console.log(res.data)
                 if (res.data.success) {
 
                     const role = res.data.data
 
                     for(let i=0; i< this.selected.length; i++){
-                        this.addPermissionToRole(role._id, this.selected[i].method, this.selected[i].endpoint)
+                        await this.addPermissionToRole(role._id, this.selected[i].method, this.selected[i].endpoint)
                     }
 
                     this.$router.push({ name: "Role" });

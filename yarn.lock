@@ -8991,7 +8991,7 @@ vue2-google-maps@^0.10.7:
     babel-runtime "^6.26.0"
     marker-clusterer-plus "^2.1.4"
 
-vue2-perfect-scrollbar@^1.2.1:
+vue2-perfect-scrollbar@^1.2.1, vue2-perfect-scrollbar@^1.5.5:
   version "1.5.5"
   resolved "https://registry.yarnpkg.com/vue2-perfect-scrollbar/-/vue2-perfect-scrollbar-1.5.5.tgz#1946cdd8f3b757517ea176c30dc77ba19031508e"
   integrity sha512-po1QGUlgGFL1aS8xC7IcGEUeySKFjk+qT7aVU9htOfGeVcmwOqZuFV3vIQaizDDBNwsbSE8kOO/p4DjAej0zNQ==
