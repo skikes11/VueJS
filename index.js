@@ -38,7 +38,7 @@ mongoose.connect((process.env.MONGODB_URL),()=>{
 
 
 app.use(bodyParser.json());
-app.use(forms.array()); 
+//app.use(forms.array()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 

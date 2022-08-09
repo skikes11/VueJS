@@ -40,12 +40,26 @@ const RoleController = {
         success: false,
         message: "did not found any userrole" + err.message,
       });
-      logger.info({
+    }
+  },
+
+  getRoleByID: async (req, res, id) => {
+    try {
+      const userrole = await Userrole.findById(id);
+      if (!userrole) {
+        helperFunc.status(res,false,null,"did not found any role");
+      } else {
+        helperFunc.status(res,true,userrole,null);
+      }
+    } catch (err) {
+      res.status(500).json({
         success: false,
-        message: "did not found any userrole",
+        message: "did not found any userrole" + err.message,
       });
     }
   },
+
+
   UpdateRoleByID: async (req, res, id, idUser) => {
     try {
       const role = await Userrole.findById(id);

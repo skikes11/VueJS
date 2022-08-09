@@ -24,8 +24,6 @@ permissionRouter.get("/", async (req, res) => {
 
     const permission = await Permission.find({ Role_ID : userToken.role._id  , endpoint : endpoint, method : req.method });
 
-
-
     console.log(userToken.role._id);
     console.log(permission)
     if (permission[0]) {
@@ -92,6 +90,38 @@ permissionRouter.post("/", async (req, res) => {
 
     if (permission[0]) {
         permissionController.addPermission(req,res, userToken.id);
+    } else {
+        res.status(403).json({
+            "success": false,
+            "message": "permission deny"
+        })
+    }
+});
+
+
+//UPDATE ROLE PERMISSION (auth: ADMIN)
+permissionRouter.post("/updateRole", async (req, res) => {
+
+    const userToken = await middlewareController.verifyToken(req, res)
+    console.log(userToken)
+    if (!userToken) {
+        return res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        });
+    }
+
+    console.log(userToken.role._id);
+
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+
+    console.log(permission)
+
+    console.log(endpoint)
+
+
+    if (permission[0]) {
+        permissionController.deletePermissionInRoleByID(req,res, userToken.id);
     } else {
         res.status(403).json({
             "success": false,

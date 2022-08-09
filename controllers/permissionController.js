@@ -1,5 +1,7 @@
 const { Permission } = require("../model/userModel");
-const {AuditLog} = require("../model/auditLogModel")
+const {AuditLog} = require("../model/auditLogModel");
+const helperFunc = require("./helperFunc");
+const { findById } = require("../model/tokenModel");
 
 const permissionController = {
 
@@ -26,6 +28,10 @@ const permissionController = {
             res.status(400).json(err.message);
         }
     },
+
+
+
+
     UpdatePermissionByID: async (req, res, id, idUser) => {
         try {
             const permission = await Permission.findById(id);
@@ -136,6 +142,79 @@ const permissionController = {
 
         }
     },
+
+    deletePermissionInRoleByID: async (req, res, idUser) => {
+        try {
+
+
+            
+
+            const permission_del = JSON.parse( req.body.data_del)
+            const permission_add = JSON.parse( req.body.data_add)
+            const id_Role = req.body.id
+            console.log("add" , permission_add, "del", permission_del)
+        
+            for(let i = 0; i < permission_del.length; i++){
+                const check_per = await Permission.findById(permission_del[i]._id)
+                if(check_per){
+                    
+                    Permission.findByIdAndDelete(permission_del[i]._id).then(console.log(`delete success`))
+                }
+            }
+
+            for(let i = 0; i < permission_add.length; i++){ 
+                console.log("check variable",  permission_add[i].method)
+
+                const permission = new Permission();
+                permission.endpoint = permission_add[i].endpoint
+                permission.method = permission_add[i].method
+                
+                permission.Role_ID = id_Role
+
+                console.log("id@@@", permission.Role_ID, permission_add[i])
+
+                permission.save().then(()=>{
+                    console.log("update permission ", permission)
+                })
+
+            }
+
+            res.status(200).json({
+                "message" : "update success"
+            })
+
+
+
+            // const permission = await Permission.findById(id);
+            //   //CREATE AUDIT LOG
+            //  const auditLog = new AuditLog();
+            //   auditLog.method = req.method
+            //   const oldPermission = await Permission.findById(id);
+            //   console.log("#old"+oldPermission)
+              
+                  
+            // if (permission) {
+            //      // SAVE OLD ITEM
+            //     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            //     auditLog.User_ID = idUser
+            //     auditLog.oldItem = permission
+            //     auditLog.url = fullUrl
+            //     Permission.findByIdAndDelete(id).then(()=>{
+            //         auditLog.save();
+            //         console.log(auditLog)
+            //     }) 
+            //     res.status(200).json("DELETE PERMISSION SUSCESS");
+            // } else {
+            //     res.status(200).json({
+            //         "success": false,
+            //         "message": "did not found permission"
+            //     });
+            // }
+        } catch (err) {
+            res.status(402).json(err.message);
+
+        }
+    },
     getPermissionByRoleID: async (req, res, id) => {
         try {
             const permission = await Permission.find({ Role_ID: id });
@@ -146,11 +225,7 @@ const permissionController = {
                 });
             }
 
-            // Update InforUserID for user
-            res.status(200).json({
-                "success": true,
-                "data": permission
-            });
+            helperFunc.status(res,true,permission,null)
         } catch (err) {
             res.status(500).json({
                 "success": false,
