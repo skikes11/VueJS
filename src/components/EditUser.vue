@@ -26,6 +26,7 @@
         <input type="text" id="lname" name="lname" v-model="phone" />
 
         <label for="lname">Role: {{ role.name }} </label>
+        
         <select class="option-control"  :required="true" v-model="role">
           <option v-for="role in roles"  :value="role._id" v-bind:key="role._id" :selected="role == 'user'">
             {{ role.name }}
@@ -93,7 +94,6 @@ export default {
       api.get("/api/admin/roles").then(res => {
         console.log(res.data);
         this.roles = res.data.data;
-
       })
     },
     getUserByID() {

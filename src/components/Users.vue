@@ -85,11 +85,11 @@ export default {
       this.$dialog
         .confirm("Please confirm to continue delete user")
         .then(function () {
-          api.delete(`/api/admin/users/${id}`).then(() => {
-          console.log("delete success");
-         // this.$router.go()
+          api.delete(`/api/admin/users/${id}`).then((res) => {
+          console.log(res.data);
           window.location.reload();
-          });
+          })
+          
           
         })
         .catch(function () {

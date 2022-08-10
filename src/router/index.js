@@ -15,7 +15,7 @@ import AddProduct from '../components/AddProduct.vue'
 import EditProduct from '../components/EditProduct.vue'
 import AddRole from '../components/AddRole.vue'
 import EditRole from '../components/EditRole.vue'
-
+import Order from '../components/Order.vue'
 
 Vue.use(Router);
 
@@ -107,14 +107,20 @@ const router = new Router({
       component: EditRole
     },
     {
+      path: '/orders',
+      name: 'Orders',
+      props: { page: 5 },
+      component: Order
+    },
+    {
       path: '/404',
       name: 'BadGateway',
-      props: { page: 5 },
+      props: { page: 6 },
       component: BadGateway
     },
     {
       path: '*',
-      props: { page: 5 },
+      props: { page: 6 },
       redirect: '/404'
     }
   ]

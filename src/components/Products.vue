@@ -109,10 +109,21 @@ export default {
       this.$router.push({ name: "addProduct"})
     },
     deleteProduct(id) {
-      api.delete(`/api/admin/products/${id}`).then(() => {
-        console.log("delete success");
-        this.$router.go();
-      });
+
+       
+      this.$dialog
+        .confirm("Please confirm to continue delete user")
+        .then(function () {
+            api.delete(`/api/admin/products/${id}`).then((res) => {
+          console.log(res.data);
+          window.location.reload();
+          }) 
+        })
+        .catch(function () {
+          console.log("Clicked on cancel");
+        });
+        
+          
     },
     editProduct(idProduct) {
       this.$router.push({

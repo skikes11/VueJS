@@ -3423,8 +3423,8 @@ select {
   text-transform: lowercase;
 }
 
-.capitalize {
-  text-transform: capitalize;
+.cAPItalize {
+  text-transform: cAPItalize;
 }
 
 .normal-case {

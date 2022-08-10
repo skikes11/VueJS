@@ -110,7 +110,7 @@ export default {
                 this.brand = product.brand
                 this.origin = product.origin
                 this.des = product.des
-
+                
                 if(product.image){
                     this.url = this.url_vue + product.image
                     console.log(this.url)

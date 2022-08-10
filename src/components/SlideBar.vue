@@ -48,10 +48,18 @@
           >
         </router-link>
 
-        <router-link to="/404" @click.native="activeItem = 5">
+        <router-link to="/orders" @click.native="activeItem = 5">
           <mdb-list-group-item
             :action="true"
             :class="activeItem === 5 && 'active'"
+            ><mdb-icon icon="cart-plus" class="mr-3" />Orders</mdb-list-group-item
+          >
+        </router-link>
+
+        <router-link to="/404" @click.native="activeItem = 6">
+          <mdb-list-group-item
+            :action="true"
+            :class="activeItem === 6 && 'active'"
             ><mdb-icon
               icon="exclamation"
               class="mr-3"
@@ -97,7 +105,7 @@ export default {
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
+@import url("https://fonts.googleAPIs.com/css?family=Roboto:300,400,500,700&display=swap");
 .navbar-light .navbar-brand {
   margin-left: 15px;
   color: #2196f3 !important;

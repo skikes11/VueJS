@@ -64,6 +64,7 @@ export default {
             url: null,
             name: "",
             permissions: [],
+            permissions_clone: [],
             permission: "",
             selected: [],
             des: "",
@@ -85,6 +86,7 @@ export default {
             api.get("/api/admin/permissions").then(res => {
                 console.log(res.data);
                 this.permissions = res.data.data
+                this.permissions_clone = res.data.data.slice()
                 this.permission = res.data.data[0]
             })
         },
@@ -94,7 +96,10 @@ export default {
             formData.append('name', this.name)
             formData.append('description', this.des)
             
-            api.post(`/api/admin/roles`,formData).then(async(res) => {
+            api.post(`/api/admin/roles`,{
+                name: this.name,
+                description: this.description
+            }).then(async(res) => {
                 console.log(res.data)
                 if (res.data.success) {
 
@@ -118,19 +123,19 @@ export default {
         },
         addPermission(){
             this.selected.push(this.permission)
-            console.log("selected: ", this.selected)
+            this.permissions = this.permissions_clone.filter((o1) => !this.selected.some((o2) => o1._id === o2._id));
         },
         deleteSelected(id){
             this.selected = this.selected.filter(item => item._id !== id);
+            this.permissions = this.permissions_clone.filter((o1) => !this.selected.some((o2) => o1._id === o2._id));
             console.log("deleted: ", this.selected)
         },
         addPermissionToRole(roleID, method, endpoint){
-            let formData = new FormData();
-            formData.append('Role_ID', roleID)
-            formData.append('method', method)
-            formData.append('endpoint', endpoint)
-
-            return api.post(`/api/admin/permissions`, formData).then(res=>{
+            return api.post(`/api/admin/permissions`, {
+                Role_ID: roleID,
+                method: method,
+                endpoint: endpoint
+            }).then(res=>{
                 console.log(res.data)
             })
         }

@@ -28,10 +28,11 @@
           </td>
 
           <td>
-            <div class="fw-normal mb-1"  v-for="permission in role.permission" v-bind:key="permission._id">
-              <p v-if="permission.endpoint && permission.method"> endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p>
-            </div> 
-            
+            <perfect-scrollbar>
+              <div class="fw-normal mb-1"  v-for="permission in role.permission" v-bind:key="permission._id">
+                <p v-if="permission.endpoint && permission.method"> endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p>
+              </div> 
+            </perfect-scrollbar>
 
           </td>
 
@@ -53,14 +54,14 @@
 <script>
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
-
+import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
 //import axios from "axios";
 export default {
   name: "Products",
   components: {
     SlideBar,
-
+    PerfectScrollbar
     // AddUserDiaLog
   },
   data() {
@@ -73,7 +74,7 @@ export default {
   },
   async created() {
     await this.getAllRoles();
-    console.log(this.roles)
+    await this.getAllPermission();
     await this.fillPermission();
      console.log("roles filled", this.roles)
   },
@@ -88,10 +89,18 @@ export default {
       });
     },
     deleteRole(id) {
-      api.delete(`/api/admin/roles/${id}`).then(() => {
-        console.log("delete success");
-        this.$router.go();
-      });
+
+      this.$dialog
+        .confirm("Please confirm to continue delete user")
+        .then(function () {
+         api.delete(`/api/admin/roles/${id}`).then((res) => {
+          console.log(res.data);
+          window.location.reload();
+          })      
+        })
+        .catch(function () {
+          console.log("Clicked on cancel");
+        });
     },
     getAllRoles() {
       return api.get("/api/admin/roles").then(res => {
@@ -99,33 +108,40 @@ export default {
         this.roles = res.data.data;
       })
     },
-
-    getPermissionByRoleID(id) {
-      return api.get(`/api/admin/permissions/${id}`).then((res) => {
-        this.permission = res.data.data
-        console.log("per$$$",res.data)
+    getAllPermission(){
+      return api.get("/api/admin/permissions").then(res => {
+        console.log(res.data);
+        this.permission = res.data.data;
       })
     },
 
+    getAllPermissionByRoleID(id) {
+      const permissions = []
+      for(let i =0; i< this.permission.length; i++){
+        if(this.permission[i].Role_ID == id){
+          permissions.push(this.permission[i])
+        }
+      }
+      return permissions
+    },
+
     async fillPermission() {
+
       console.log("rolesLength: ", this.roles.length)
       for (let i = 0; i < this.roles.length; i++) {
-        await this.getPermissionByRoleID(this.roles[i]._id)
-        if(typeof( this.permission) == 'object'){
-          this.permission = JSON.parse(JSON.stringify(this.permission));
-        }
-        this.roles[i].permission = this.permission
+        const id = this.roles[i]._id
+        const permissions = await this.getAllPermissionByRoleID(id)
+        this.roles[i].permission = permissions
+
       }
 
-     
-
-    }
-
+    console.log("role filled", this.roles)
   }
-};
+}};
+
 
 </script>
-
+<style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css";
@@ -136,7 +152,12 @@ export default {
 
 
 
-
+.ps{
+  background-color: white;
+  width: 100%;
+  height: 150px;
+  padding: 5px;
+}
 .card.card-cascade .view.gradient-card-header {
   padding: 1rem 1rem;
   text-align: center;
