@@ -99,8 +99,9 @@ const productController = {
         if (req.body.price) product.price = req.body.price;
         if (req.file) product.image = `/static/images/avatar/${req.file.filename}`;
         if (req.body.brand) product.brand = req.body.brand;
-        if (req.body.total_quantity)
+        if (req.body.total_quantity){
           product.total_quantity = req.body.total_quantity;
+        }
         if (req.body.origin) product.origin = req.body.origin;
         if (req.body.description) product.description = req.body.description;
 

@@ -28,12 +28,12 @@ const  OrderItemsSchema= new mongoose.Schema({
     Order_ID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
-        default: null
+        require: true
     },
     Product_ID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        default: null
+        require: true
     },
     quantity: {
         type : Number,

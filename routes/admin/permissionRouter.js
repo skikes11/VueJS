@@ -13,7 +13,7 @@ const endpoint = '/permissions'
 permissionRouter.get("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -41,7 +41,6 @@ permissionRouter.get("/", async (req, res) => {
 permissionRouter.get("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -71,7 +70,6 @@ permissionRouter.get("/:id", async (req, res) => {
 permissionRouter.post("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -103,7 +101,6 @@ permissionRouter.post("/", async (req, res) => {
 permissionRouter.post("/updateRole", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -135,7 +132,7 @@ permissionRouter.post("/updateRole", async (req, res) => {
 permissionRouter.put("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -170,7 +167,7 @@ permissionRouter.put("/:id", async (req, res) => {
 permissionRouter.delete("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,

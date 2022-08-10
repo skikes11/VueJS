@@ -75,7 +75,10 @@ const userController = {
   deleteUserByID: async (req, res, id, idUser) => {
     try {
       if (await UserAccount.findByIdAndDelete(id)) {
-        res.status(200).json("DELETE USER SUSCESS");
+        res.status(200).json({
+          "success" : true,
+          "message" : "delete success"
+        });
       } else {
         res.status(200).json({
           success: false,
@@ -107,8 +110,12 @@ const userController = {
         user.phone = req.body.phone;
         user.dob = req.body.dob;
         user.email = req.body.email
+
+
         if(req.body.password !== ""){
-        user.password= req.body.password
+        const salt = await bcrypt.genSalt(10);
+        const hashPass = await bcrypt.hash(req.body.password, salt);
+        user.password= hashPass
         }
 
         user.role = req.body.role

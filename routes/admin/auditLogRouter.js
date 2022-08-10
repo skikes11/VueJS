@@ -12,7 +12,7 @@ const endpoint = '/auditlog'
 auditLogRouter.get("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,

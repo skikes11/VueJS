@@ -1,6 +1,6 @@
 
 const { Order, OrderItems } = require("../model/orderModel");
-
+const helperFunc = require("./helperFunc");
 
 
 const orderItemsController = { 
@@ -8,7 +8,7 @@ const orderItemsController = {
     getOrderItems_ByOrderID: async (req, res, id) => {
         try {
             try {
-                const orderItems = await OrderItems.findOne({ Order_ID: id }).populate('Order_ID').populate('Product_ID');
+                const orderItems = await OrderItems.findOne({ Order_ID: id }).populate('Product_ID');
                 res.status(200).json(orderItems);
             } catch (err) {
                 res.status(400).json(err.message);
@@ -22,11 +22,10 @@ const orderItemsController = {
     getAllOrderItems: async (req, res) => {
         try {
             try {
-                const orderItems = await OrderItems.find().populate('Order_ID').populate('Product_ID');
-                res.status(200).json(orderItems);
+                const orderItems = await OrderItems.find().populate('Product_ID');
+                helperFunc.status(res,true,orderItems,null)
             } catch (err) {
                 res.status(400).json(err.message);
-
             }
 
         } catch (err) {

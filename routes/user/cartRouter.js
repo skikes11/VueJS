@@ -10,7 +10,7 @@ const { Product } = require("../../model/productModel");
 // GET ALL PRODUCT IN USER CART
 cartRouter.get("/", async (req, res) => {
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         logger.info({
             "success": false,
@@ -29,7 +29,7 @@ cartRouter.get("/", async (req, res) => {
 //DELETE ORDER ITEM IN CART
 cartRouter.get("/delete/:id", async (req, res) => {
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         logger.info({
             "success": false,

@@ -37,17 +37,17 @@ const userAuthController = {
             console.log("@@user", user)
             if (!user) {
                 
-                helperFunc.status(res,false, null, 'did not found any user')
+                helperFunc.status_error(res,'did not found any user')
 
             } else {
                 const checkPass = await bcrypt.compare(req.body.password, user.password);
                 if (!checkPass) {
 
-                    helperFunc.status(res,false, null, 'user or password does not match')
+                    helperFunc.status_error(res, 'user or password does not match')
                 } else {
                     if (!user.active) {
 
-                        helperFunc.status(res,false, null, 'your account does not activate or got blocked')
+                        helperFunc.status_error(res, 'your account does not activate or got blocked')
                        
                     } else {
 

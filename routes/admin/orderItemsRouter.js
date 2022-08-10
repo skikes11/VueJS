@@ -12,7 +12,7 @@ const endpoint = '/orderItems'
 orderItemsRouter.get("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -38,7 +38,7 @@ orderItemsRouter.get("/:id", async (req, res) => {
 orderItemsRouter.get("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -66,7 +66,7 @@ orderItemsRouter.get("/", async (req, res) => {
 orderItemsRouter.post("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -91,7 +91,7 @@ orderItemsRouter.post("/", async (req, res) => {
 orderItemsRouter.put("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -117,7 +117,7 @@ orderItemsRouter.put("/:id", async (req, res) => {
 orderItemsRouter.delete("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,

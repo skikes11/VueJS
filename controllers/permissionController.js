@@ -88,7 +88,7 @@ const permissionController = {
     },
     getAllPermission: async (req, res) => {
         try {
-            const permission = await Permission.find().populate('Role_ID');
+            const permission = await Permission.find();
             if (!permission) {
                 return res.status(500).json({
                     "success": false,
@@ -146,12 +146,10 @@ const permissionController = {
     deletePermissionInRoleByID: async (req, res, idUser) => {
         try {
 
-
-            
-
-            const permission_del = JSON.parse( req.body.data_del)
-            const permission_add = JSON.parse( req.body.data_add)
+            const permission_del = JSON.parse(req.body.data_del)
+            const permission_add = JSON.parse(req.body.data_add)
             const id_Role = req.body.id
+            console.log(id_Role)
             console.log("add" , permission_add, "del", permission_del)
         
             for(let i = 0; i < permission_del.length; i++){
@@ -163,7 +161,7 @@ const permissionController = {
             }
 
             for(let i = 0; i < permission_add.length; i++){ 
-                console.log("check variable",  permission_add[i].method)
+                
 
                 const permission = new Permission();
                 permission.endpoint = permission_add[i].endpoint
@@ -171,7 +169,7 @@ const permissionController = {
                 
                 permission.Role_ID = id_Role
 
-                console.log("id@@@", permission.Role_ID, permission_add[i])
+                
 
                 permission.save().then(()=>{
                     console.log("update permission ", permission)
@@ -183,33 +181,6 @@ const permissionController = {
                 "message" : "update success"
             })
 
-
-
-            // const permission = await Permission.findById(id);
-            //   //CREATE AUDIT LOG
-            //  const auditLog = new AuditLog();
-            //   auditLog.method = req.method
-            //   const oldPermission = await Permission.findById(id);
-            //   console.log("#old"+oldPermission)
-              
-                  
-            // if (permission) {
-            //      // SAVE OLD ITEM
-            //     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            //     auditLog.User_ID = idUser
-            //     auditLog.oldItem = permission
-            //     auditLog.url = fullUrl
-            //     Permission.findByIdAndDelete(id).then(()=>{
-            //         auditLog.save();
-            //         console.log(auditLog)
-            //     }) 
-            //     res.status(200).json("DELETE PERMISSION SUSCESS");
-            // } else {
-            //     res.status(200).json({
-            //         "success": false,
-            //         "message": "did not found permission"
-            //     });
-            // }
         } catch (err) {
             res.status(402).json(err.message);
 

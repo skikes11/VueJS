@@ -1,6 +1,6 @@
 
 const { Order } = require("../model/orderModel");
-
+const helperFunc = require("./helperFunc");
 
 
 const orderController = {
@@ -23,11 +23,10 @@ const orderController = {
     getAllOrder: async (req, res) => {
         try {
             try {
-                const order = await Order.find({ status : [1,2]  }).populate('User_ID');
-                res.status(200).json(order);
+                const order = await Order.find().populate('User_ID');
+                helperFunc.status(res,true,order,null)
             } catch (err) {
                 res.status(400).json(err.message);
-
             }
 
         } catch (err) {

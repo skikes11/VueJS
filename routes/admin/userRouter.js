@@ -12,7 +12,7 @@ const endpoint = '/users'
 userRouter.get("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -37,7 +37,7 @@ userRouter.get("/", async (req, res) => {
 userRouter.get("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -63,7 +63,7 @@ userRouter.get("/:id", async (req, res) => {
 userRouter.post("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -92,7 +92,7 @@ userRouter.post("/", async (req, res) => {
 userRouter.post("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -118,7 +118,7 @@ userRouter.post("/:id", async (req, res) => {
 userRouter.delete("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,

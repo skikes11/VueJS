@@ -8,7 +8,7 @@ const middlewareController = require("../../controllers/middlewareController");
 // GET ALL ORDER BY USER TOKEN
 orderRouter.get("/", async (req, res) => {
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         logger.info({
             "success": false,
@@ -27,7 +27,7 @@ orderRouter.get("/", async (req, res) => {
 // PAYMENT ORDER 
 orderRouter.get("/payment", async (req, res) => {
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         logger.info({
             "success": false,

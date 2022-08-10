@@ -12,7 +12,7 @@ const endpoint = '/roles'
 roleRouter.get("/" ,  async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -39,7 +39,7 @@ roleRouter.get("/" ,  async (req, res) => {
 roleRouter.get("/:id" ,  async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -65,7 +65,7 @@ roleRouter.get("/:id" ,  async (req, res) => {
 roleRouter.post("/", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -92,7 +92,7 @@ roleRouter.post("/", async (req, res) => {
 roleRouter.put("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -118,7 +118,7 @@ roleRouter.put("/:id", async (req, res) => {
 roleRouter.delete("/:id", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,

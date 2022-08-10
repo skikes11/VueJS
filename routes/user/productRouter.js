@@ -9,7 +9,7 @@ const middlewareController = require("../../controllers/middlewareController");
 // Get All PRODUCT HAVE TOTAL QUANTITY GREATER 0
 productRouter.get("/", async (req, res) => {
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
@@ -25,7 +25,7 @@ productRouter.get("/", async (req, res) => {
 // USER CLICK BUY PRODUCT <=> ADD PRODUCT TO CART 
 productRouter.get("/buy/:id", async (req, res) => {
     const userToken = await middlewareController.verifyToken(req, res)
-    console.log(userToken)
+    
     if (!userToken) {
         return res.status(401).json({
             "success": false,
