@@ -145,7 +145,7 @@ const permissionController = {
 
     deletePermissionInRoleByID: async (req, res, idUser) => {
         try {
-
+            console.log("###",req.body)
             const permission_del = JSON.parse(req.body.data_del)
             const permission_add = JSON.parse(req.body.data_add)
             const id_Role = req.body.id

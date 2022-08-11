@@ -71,6 +71,39 @@ const orderItemsController = {
         }
     },
 
+    UpdateOrderItemsByOrderID: async (req, res, id, idUser) => {
+        try {
+            
+            
+            const items = JSON.parse(req.body.items)
+            const idOrder = req.body.orderID
+
+            await OrderItems.deleteMany({ Order_ID : idOrder })
+
+            for(let i=0; i<items.length; i++){
+                
+                const orderItem = new OrderItems();
+                orderItem.Order_ID = items[i].Order_ID
+                orderItem.Product_ID = items[i].Product_ID._id
+                orderItem.quantity = items[i].quantity
+    
+                orderItem.save().then(console.log("save success"))
+                
+            }
+
+
+            console.log(items)
+
+            res.status(200).json({
+                "success" : true
+            });
+        } catch (err) {
+            res.status(400).json(err.message);
+        }
+    },
+
+
+
     DeleteOrderItemsByID: async(req,res,id, idUser) => {
         if(await OrderItems.findByIdAndDelete(id)){
             res.status(200).json({

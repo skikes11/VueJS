@@ -112,6 +112,31 @@ orderItemsRouter.put("/:id", async (req, res) => {
     }
 });
 
+//UPDATE ORDER ITEM BY ORDERID (auth: ADMIN)
+orderItemsRouter.post("/updateOrder", async (req, res) => {
+
+    const userToken = await middlewareController.verifyToken(req, res)
+    
+    if (!userToken) {
+        return res.status(401).json({
+            "success": false,
+            "message": "authentication fail"
+        });
+    }
+
+      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+
+    console.log(permission)
+    if (permission[0]) {
+        orderItemsController.UpdateOrderItemsByOrderID(req,res,req.params.id, userToken.id);
+    } else {
+        res.status(403).json({
+            "success": false,
+            "message": "permission deny"
+        })
+    }
+});
+
 
 //DELETE Product (auth: ADMIN)
 orderItemsRouter.delete("/:id", async (req, res) => {

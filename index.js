@@ -13,6 +13,8 @@ const myRouter = require("./routes/index");
 const viewRouter = require("./routes/viewRouter");
 const homeRouter = require("./routes/homeRouter")
 const cookieParser = require('cookie-parser');
+const formidable = require('express-formidable');
+const formData = require('express-form-data');
 var forms = multer();
 
 mongoose.plugin(require('./controllers/auditlog/plugin'))
@@ -38,7 +40,10 @@ mongoose.connect((process.env.MONGODB_URL),()=>{
 
 
 app.use(bodyParser.json());
+//app.use(formData.parse());
+//app.use(formidable());
 //app.use(forms.array()); 
+//app.use(bodyParser.urlencoded());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -46,6 +51,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(passport.initialize());
 // app.use(passport.session()); // persistent login sessions
 // app.use(flash()); // use connect-flash for flash messages stored in session
+
 
 
 
