@@ -39,7 +39,7 @@
 
             <div class="fm-btn flex">
                 <button type="button" class="btn btn-primary" v-on:click="editRole()">Save</button>
-                <button type="button" class="btn btn-secondary">Close</button>
+                <button type="button" class="btn btn-secondary" v-on:click="close()">Close</button>
             </div>
         </form>
 
@@ -49,8 +49,7 @@
 <script>
 //import { ref } from "vue";
 import api from "../api/apiServices.ts";
-//import apiFormData from "../api/apiFormdata.ts";
-import axios from "axios";
+import apiJson from "../api/apiJson.ts";
 import SlideBar from "./SlideBar.vue";
 import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
 //import Multiselect from 'vue-multiselect'
@@ -117,6 +116,9 @@ export default {
 
             })
         },
+        close(){
+          this.$router.push({name: "Role"})
+        },
         async editRole() {
 
             console.log("$$old per", this.role_permissions)
@@ -134,25 +136,11 @@ export default {
 
 
 
-            let formData_update = new FormData();
+            // let formData_update = new FormData();
 
-            formData_update.append('data_del', JSON.stringify(delete_permission));
-            formData_update.append('data_add', JSON.stringify(add_permission));
-            formData_update.append('id', this.$route.params.id)
-
-
-            axios({
-                method: "post",
-                url: `${process.env.VUE_APP_URL}/api/admin/permissions/updateRole`,
-                data: formData_update,
-                headers: { "Content-Type": "multipart/form-data" },
-            }).then(function (response) {
-                //handle success
-                console.log(response);
-            }).catch(function (response) {
-                //handle error
-                console.log(response);
-            });
+            // formData_update.append('data_del', JSON.stringify(delete_permission));
+            // formData_update.append('data_add', JSON.stringify(add_permission));
+            // formData_update.append('id', this.$route.params.id)
 
             // apiFormData.post(`/api/admin/permissions/updateRole`,formData_update).then(res=>{
             //     console.log(res.data)
@@ -160,6 +148,20 @@ export default {
             //     this.$router.go();
             //     }
             // })
+
+            const data = {
+                data_del : delete_permission,
+                data_add: add_permission,
+                id : this.$route.params.id
+            }
+            console.log('data before send', data)
+
+            apiJson.post(`/api/admin/permissions/updateRole`,JSON.stringify(data)).then(res=>{
+                console.log(res.data)
+               if(res.data.success){
+                this.$router.go();
+                }
+            })
 
 
 

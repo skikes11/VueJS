@@ -40,7 +40,7 @@
             </div>
           </td>
           <td>
-            <p class="fw-normal mb-1"  v-if="product.price">{{ product.price }}</p>
+            <p class="fw-normal mb-1"  v-if="product.price">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price) }}</p>
           </td>
           <td>
             <p class="fw-normal mb-1" v-if="product.total_quantity">{{ product.total_quantity }}</p>

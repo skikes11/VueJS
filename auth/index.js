@@ -1,6 +1,7 @@
 import api from "../src/api/apiServices.ts";
 import apiFormData from "../src/api/apiFormdata.ts"
 import axios from "axios";
+import apiJson from "../src/api/apiJson.ts"
 export default {
     loggedIn: false,
     user: null,
@@ -9,6 +10,7 @@ export default {
             api.defaults.headers.common['token'] = 'Bearer ' + localStorage.getItem('userToken')
             apiFormData.defaults.headers.common['token'] = 'Bearer ' + localStorage.getItem('userToken')
             axios.defaults.headers.common['token'] = 'Bearer ' + localStorage.getItem('userToken')
+            apiJson.defaults.headers.common['token'] = 'Bearer ' + localStorage.getItem('userToken')
             this.loggedIn = true
         }
     }

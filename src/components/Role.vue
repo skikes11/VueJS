@@ -16,7 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="role in roles" :key="role._id">
+        <tr v-for="role in this.roles" :key="role._id">
           <td>
             <p class="fw-bold mb-1" style="font-size: 20px;">{{ role.name }} </p>
 
@@ -30,7 +30,8 @@
           <td>
             <perfect-scrollbar>
               <div class="fw-normal mb-1"  v-for="permission in role.permission" v-bind:key="permission._id">
-                <p v-if="permission.endpoint && permission.method"> endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p>
+                <!-- <p v-if="permission.endpoint && permission.method"> endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p> -->
+                <p>endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p>
               </div> 
             </perfect-scrollbar>
 
@@ -68,15 +69,22 @@ export default {
     return {
       url: null,
       url_vue: process.env.VUE_APP_URL,
+      roles1: [],
       roles: [],
       permission: []
     }
   },
   async created() {
     await this.getAllRoles();
+    console.log("roles filled before 1", this.roles1)
     await this.getAllPermission();
+    console.log("roles filled before", this.roles)
     await this.fillPermission();
-     console.log("roles filled", this.roles)
+    // console.log("rolesLength: ", this.roles.length)
+    console.log("roles filled after", this.roles)
+  },
+  async beforeMount(){
+
   },
   methods: {
     addRole() {
@@ -104,14 +112,18 @@ export default {
     },
     getAllRoles() {
       return api.get("/api/admin/roles").then(res => {
-        console.log(res.data);
-        this.roles = res.data.data;
+        console.log('getAllRoles', res.data);
+        this.roles1 = res.data.data.slice(0);
+        console.log('getAllRoles roles1', this.roles1);
+        // for(var i=0;i < this.roles.length; i++){
+        //   this.roles[i].permission = [];
+        // }
       })
     },
     getAllPermission(){
       return api.get("/api/admin/permissions").then(res => {
-        console.log(res.data);
-        this.permission = res.data.data;
+        console.log('getAllPermission', res.data);
+        this.permission = res.data.data.slice(0);
       })
     },
 
@@ -127,15 +139,19 @@ export default {
 
     async fillPermission() {
 
-      console.log("rolesLength: ", this.roles.length)
-      for (let i = 0; i < this.roles.length; i++) {
-        const id = this.roles[i]._id
+      console.log("rolesLength: ", this.roles1.length)
+      for (let i = 0; i < this.roles1.length; i++) {
+        const id = this.roles1[i]._id
         const permissions = await this.getAllPermissionByRoleID(id)
-        this.roles[i].permission = permissions
-
+        this.roles.push({
+          permission: permissions,
+          _id: this.roles1[i]._id,
+          name: this.roles1[i].name
+        })
+        // this.roles[i].permission = permissions
       }
 
-    console.log("role filled", this.roles)
+      console.log("role filled", this.roles)
   }
 }};
 

@@ -42,7 +42,7 @@
 
         <div class="fm-btn flex">
           <button type="button" class="btn btn-primary" v-on:click="editUser()">Save</button>
-          <button type="button" class="btn btn-secondary">Close</button>
+          <button type="button" class="btn btn-secondary" v-on:click="close()" >Close</button>
         </div>
       </form>
     </div>
@@ -95,6 +95,9 @@ export default {
         console.log(res.data);
         this.roles = res.data.data;
       })
+    },
+    close(){
+      this.$router.push({name: "Users"})
     },
     getUserByID() {
       api.get(`/api/admin/users/${this.$route.params.id}`).then(res => {

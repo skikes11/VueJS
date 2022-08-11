@@ -36,7 +36,7 @@
 
         <div class="fm-btn flex">
           <button type="button" class="btn btn-primary" v-on:click="addUser()">Save</button>
-          <button type="button" class="btn btn-secondary">Close</button>
+          <button type="button" class="btn btn-secondary" v-on:click="close()" >Close</button>
         </div>
       </form>
     </div>
@@ -114,6 +114,9 @@ export default {
             }).catch(err=>{
                 console.log(err)
             })
+    },
+    close(){
+      this.$router.push({name: "Users"})
     }
 
   },

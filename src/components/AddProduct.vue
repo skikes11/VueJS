@@ -33,7 +33,7 @@
 
                 <div class="fm-btn flex" style="margin-top: 20px">
                     <button type="button" class="btn btn-primary" v-on:click="addProduct()">Save</button>
-                    <button type="button" class="btn btn-secondary">Close</button>
+                    <button type="button" class="btn btn-secondary" v-on:click="close()">Close</button>
                 </div>
 
             </form>
@@ -74,6 +74,9 @@ export default {
             const file = e.target.files[0];
             this.url = URL.createObjectURL(file);
             
+        },
+        close(){
+          this.$router.push({name: "Product"})
         },
         addProduct(){
 
