@@ -87,10 +87,7 @@ const RoleController = {
         auditLog.save();
       });
 
-      res.status(500).json({
-        success: true,
-        data: role,
-      });
+      helperFunc.status(res,true,role,"update success")
     } catch (err) {
       res.status(404).json({
         success: false,

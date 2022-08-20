@@ -10,7 +10,7 @@ const helperFunc = {
        
     },
     status_error : async(res, message) =>{        
-        res.status(500).json({
+        res.status(403).json({
             "success" : false,
             "message" : message
         });

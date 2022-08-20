@@ -22,7 +22,7 @@ orderRouter.get("/", async (req, res) => {
 
      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
        orderController.getAllOrder(req,res);
     } else {
@@ -47,7 +47,7 @@ orderRouter.post("/", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderController.addOrder(req,res, userToken.id);
     } else {
@@ -73,7 +73,7 @@ orderRouter.put("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderController.UpdateOrder(req,res,req.params.id, userToken.id);
     } else {
@@ -99,7 +99,7 @@ orderRouter.delete("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderController.deleteOrder(req,res,req.params.id, userToken.id);
     } else {

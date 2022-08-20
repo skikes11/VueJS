@@ -145,12 +145,11 @@ const permissionController = {
 
     deletePermissionInRoleByID: async (req, res, idUser) => {
         try {
-            console.log("###",req.body)
-            const permission_del = JSON.parse(req.body.data_del)
-            const permission_add = JSON.parse(req.body.data_add)
-            const id_Role = req.body.id
-            console.log(id_Role)
-            console.log("add" , permission_add, "del", permission_del)
+            
+            const permission_del = req.body.data_del
+            const permission_add = req.body.data_add
+           
+            console.log("body", req.body)
         
             for(let i = 0; i < permission_del.length; i++){
                 const check_per = await Permission.findById(permission_del[i]._id)
@@ -160,26 +159,23 @@ const permissionController = {
                 }
             }
 
+
             for(let i = 0; i < permission_add.length; i++){ 
                 
-
                 const permission = new Permission();
                 permission.endpoint = permission_add[i].endpoint
                 permission.method = permission_add[i].method
-                
-                permission.Role_ID = id_Role
-
+                permission.Role_ID = req.body.id_role
                 
 
                 permission.save().then(()=>{
                     console.log("update permission ", permission)
+                
                 })
-
             }
+            
+          helperFunc.status(res,true,null,"update successfully")
 
-            res.status(200).json({
-                "message" : "update success"
-            })
 
         } catch (err) {
             res.status(402).json(err.message);

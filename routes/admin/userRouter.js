@@ -22,7 +22,7 @@ userRouter.get("/", async (req, res) => {
  
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
     console.log(userToken.role._id)
-    console.log(permission)
+    
     if (permission[0]) {
         userController.getAllUser(req,res);
     } else {
@@ -47,7 +47,7 @@ userRouter.get("/:id", async (req, res) => {
  
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
     console.log(userToken.role._id)
-    console.log(permission)
+    
     if (permission[0]) {
         userController.getUserById(req,res,req.params.id);
     } else {
@@ -73,7 +73,7 @@ userRouter.post("/", async (req, res) => {
  
     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
     console.log(userToken.role._id)
-    console.log(permission)
+    
     if (permission[0]) {
         userController.addUserByAdmin(req,res);
     } else {
@@ -102,7 +102,7 @@ userRouter.post("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
        userController.UpdateUserByID(req,res,req.params.id);
     } else {
@@ -130,7 +130,7 @@ userRouter.delete("/:id", async (req, res) => {
 
      
     console.log(userToken.role)
-    console.log(permission)
+    
     if (permission[0]) {
         userController.deleteUserByID(req,res,req.params.id, userToken.id);
     } else {

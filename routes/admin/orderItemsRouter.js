@@ -23,7 +23,7 @@ orderItemsRouter.get("/:id", async (req, res) => {
 
      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderItemsController.getOrderItems_ByOrderID(req,res,req.params.id);
     } else {
@@ -49,7 +49,7 @@ orderItemsRouter.get("/", async (req, res) => {
 
      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderItemsController.getAllOrderItems(req,res);
     } else {
@@ -76,7 +76,7 @@ orderItemsRouter.post("/", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
        orderItemsController.addOrderItems(req,res, userToken.id);
     } else {
@@ -101,7 +101,7 @@ orderItemsRouter.put("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderItemsController.UpdateOrderItemsByID(req,res,req.params.id, userToken.id);
     } else {
@@ -126,7 +126,7 @@ orderItemsRouter.post("/updateOrder", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderItemsController.UpdateOrderItemsByOrderID(req,res,req.params.id, userToken.id);
     } else {
@@ -152,7 +152,7 @@ orderItemsRouter.delete("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         orderItemsController.DeleteOrderItemsByID(req,res,req.params.id, userToken.id);
     } else {

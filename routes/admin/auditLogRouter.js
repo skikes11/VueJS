@@ -22,7 +22,7 @@ auditLogRouter.get("/", async (req, res) => {
 
     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
     console.log(userToken.role._id)
-    console.log(permission)
+    
     if (permission[0]) {
         auditlogController.GetAllAuditLog(req,res)
     } else {

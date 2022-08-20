@@ -75,8 +75,10 @@ const orderItemsController = {
         try {
             
             
-            const items = JSON.parse(req.body.items)
+            const items = req.body.items
             const idOrder = req.body.orderID
+            
+            console.log("updateItems Req", req.body)
 
             await OrderItems.deleteMany({ Order_ID : idOrder })
 

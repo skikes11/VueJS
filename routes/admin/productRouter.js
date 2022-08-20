@@ -22,7 +22,7 @@ productRouter.get("/", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         productController.getAllProduct(req,res);
     } else {
@@ -47,7 +47,7 @@ productRouter.get("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         productController.getProductById(req,res,req.params.id);
     } else {
@@ -73,7 +73,7 @@ productRouter.post("/", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         productController.addProduct(req,res, userToken.id);
     } else {
@@ -98,7 +98,7 @@ productRouter.put("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         productController.updateProduct(req,res,req.params.id, userToken.id);
     } else {
@@ -124,7 +124,7 @@ productRouter.delete("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         productController.deleteProduct(req,res,req.params.id, userToken.id);
     } else {

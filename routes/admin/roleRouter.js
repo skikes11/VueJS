@@ -22,7 +22,7 @@ roleRouter.get("/" ,  async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log("****" + permission[0])
+   
 
     if (permission[0]) {
         roleController.getAllRole(req,res);
@@ -49,7 +49,7 @@ roleRouter.get("/:id" ,  async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log("****" + permission[0])
+   
 
     if (permission[0]) {
         roleController.getRoleByID(req,res,req.params.id);
@@ -102,7 +102,7 @@ roleRouter.put("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         roleController.UpdateRoleByID(req,res, req.params.id, userToken.id);
     } else {
@@ -128,7 +128,7 @@ roleRouter.delete("/:id", async (req, res) => {
 
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
-    console.log(permission)
+    
     if (permission[0]) {
         roleController.deleteRoleByID(req, res,req.params.id, userToken.id);
     } else {

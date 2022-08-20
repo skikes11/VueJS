@@ -41,6 +41,7 @@ const userAuthController = {
 
             } else {
                 const checkPass = await bcrypt.compare(req.body.password, user.password);
+                console.log("passCheck", checkPass)
                 if (!checkPass) {
 
                     helperFunc.status_error(res, 'user or password does not match')
