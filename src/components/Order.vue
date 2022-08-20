@@ -15,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(order, index) in orders" :key="order._id">
+                <tr v-for="(order, index) in pageOfItems" :key="order._id">
                     <td>
                         <p class="fw-normal mb-1" v-if="order.User_ID.name">{{ order.User_ID.name }}</p>
 
@@ -35,7 +35,7 @@
                     <td>
                         <perfect-scrollbar>
 
-                            <div v-for="(item) in order.items" v-bind:key="item._id">
+                            <div v-for="item in order.items" v-bind:key="item._id">
 
                                 <div class="flex">
                                     <div class="d-flex align-items-center">
@@ -63,7 +63,7 @@
 
                                 </div>
 
-                            </div>
+                            </div> 
 
                         </perfect-scrollbar>
 
@@ -85,6 +85,9 @@
                 </tr>
             </tbody>
         </table>
+        <div class="pagination">
+            <jw-pagination :items="orders_tmp" @changePage="onChangePage"   :labels="customLabels" ></jw-pagination>
+         </div>
     </div>
 </template>
 
@@ -94,6 +97,28 @@ import SlideBar from "./SlideBar.vue";
 import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
 //import axios from "axios";
+
+
+
+const customStyles = {
+    ul: {
+        border: '5px solid red'
+    },
+    li: {
+        display: 'inline-block',
+        border: '2px dotted green'
+    },
+    a: {
+        color: 'blue'
+    }
+};
+const customLabels = {
+    first: '<<',
+    last: '>>',
+    previous: '<',
+    next: '>'
+};
+
 export default {
     name: "Products",
     components: {
@@ -106,15 +131,22 @@ export default {
             url: null,
             url_vue: process.env.VUE_APP_URL,
             orders: [],
+            orders_tmp: [],
             users: [],
             items: [],
-            totalPrice: null
+            totalPrice: null,
+            pageOfItems: [],
+            customStyles,
+            customLabels
         }
     },
     async created() {
         await this.getAllOrder();
         await this.getAllOrderItems();
-        await this.fillOrderItemsToOrder();
+        this.orders_tmp = await this.fillOrderItemsToOrder();
+
+        console.log("order filled", this.orders_tmp)
+
 
     },
     methods: {
@@ -122,7 +154,7 @@ export default {
         editOrder(idOrder, index) {
             this.$router.push({
                 name: "editOrder",
-                query: { orders: JSON.stringify(this.orders[index]) },
+                query: { orders: JSON.stringify(this.orders_tmp[index]) },
                 params: { id: idOrder }
             });
         },
@@ -139,6 +171,10 @@ export default {
                 console.log("items", this.items)
             })
         },
+         onChangePage(pageOfItems) {
+            // update page of items
+            this.pageOfItems = pageOfItems;
+       },
 
         getAllOrderItemsByOrderID(id, element) {
             const items = []
@@ -170,7 +206,8 @@ export default {
             for (let i = 0; i < this.orders.length; i++) {
                 this.orders[i].items = await this.getAllOrderItemsByOrderID(this.orders[i]._id, i)
             }
-            console.log("order filled", this.orders)
+            return this.orders
+            
         }
     },
 
@@ -189,7 +226,9 @@ export default {
     padding: 1rem 1rem;
     text-align: center;
 }
-
+.pagination{
+    margin: auto;
+}
 .card.card-cascade h3,
 .card.card-cascade h4 {
     margin-bottom: 0;

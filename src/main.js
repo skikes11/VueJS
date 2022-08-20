@@ -15,7 +15,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import JwPagination from 'jw-vue-pagination';
+Vue.component('jw-pagination', JwPagination);
+
 Vue.component('vue-markdown', VueMarkdown);
+
 Vue.use(VuePrism)
 Vue.use(VuejsDialog);
 Vue.use(VuejsDialogMixin);

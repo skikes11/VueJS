@@ -17,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user._id">
+        <tr v-for="user in pageOfItems" :key="user._id">
           <td>
             <div class="d-flex align-items-center">
               <img :src="url_vue+user.avatar" class="rounded-circle" alt=""
@@ -52,12 +52,35 @@
         </tr>
       </tbody>
     </table>
+     <div >
+            <jw-pagination :items="users" @changePage="onChangePage"   :labels="customLabels" ></jw-pagination>
+    </div>
+
   </div>
 </template>
 
 <script>
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
+
+const customStyles = {
+    ul: {
+        border: '5px solid red'
+    },
+    li: {
+        display: 'inline-block',
+        border: '2px dotted green'
+    },
+    a: {
+        color: 'blue'
+    }
+};
+const customLabels = {
+    first: '<<',
+    last: '>>',
+    previous: '<',
+    next: '>'
+};
 
 //import axios from "axios";
 export default {
@@ -69,7 +92,10 @@ export default {
     return {
       users: [],
       url: [],
-      url_vue : process.env.VUE_APP_URL
+      url_vue : process.env.VUE_APP_URL,
+      pageOfItems: [],
+      customStyles,
+      customLabels
     }
   },
   created() {
@@ -79,6 +105,10 @@ export default {
   methods: {
     addUser() {
       this.$router.push("/users/add");
+    },
+    onChangePage(pageOfItems) {
+            // update page of items
+            this.pageOfItems = pageOfItems;
     },
     deleteUser(id) {
 

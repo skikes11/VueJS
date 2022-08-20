@@ -48,6 +48,7 @@
 
 <script>
 //import { ref } from "vue";
+import axios from "axios";
 import api from "../api/apiServices.ts";
 import apiJson from "../api/apiJson.ts";
 import SlideBar from "./SlideBar.vue";
@@ -116,8 +117,8 @@ export default {
 
             })
         },
-        close(){
-          this.$router.push({name: "Role"})
+        close() {
+            this.$router.push({ name: "Role" })
         },
         async editRole() {
 
@@ -131,37 +132,36 @@ export default {
             const delete_permission = this.check_different_permission(this.role_permissions, same_permission)
 
             const add_permission = this.check_different_permission(this.role_permissions_change, same_permission)
-            // id: 1, type: 'add'
-            // id: 2. type: 'del'
 
+            const data_role = {
+                name: this.name,
+                description: this.des
+            }
 
-
-            // let formData_update = new FormData();
-
-            // formData_update.append('data_del', JSON.stringify(delete_permission));
-            // formData_update.append('data_add', JSON.stringify(add_permission));
-            // formData_update.append('id', this.$route.params.id)
-
-            // apiFormData.post(`/api/admin/permissions/updateRole`,formData_update).then(res=>{
-            //     console.log(res.data)
-            //    if(res.data.success){
-            //     this.$router.go();
-            //     }
-            // })
 
             const data = {
-                data_del : delete_permission,
+                data_del: delete_permission,
                 data_add: add_permission,
-                id : this.$route.params.id
+                id_role: this.$route.params.id
             }
             console.log('data before send', data)
 
-            apiJson.post(`/api/admin/permissions/updateRole`,JSON.stringify(data)).then(res=>{
-                console.log(res.data)
-               if(res.data.success){
-                this.$router.go();
+            // apiJson.post(`/api/admin/permissions/updateRole`, JSON.stringify(data)).then(res => {
+            //     console.log(res.data)
+            //     if (res.data.success) {
+            //         this.msg = res.data.message
+            //     }
+            // })
+
+            axios.all([apiJson.post(`/api/admin/permissions/updateRole`, JSON.stringify(data)),
+            apiJson.put(`/api/admin/roles/${this.$route.params.id}`, JSON.stringify(data_role))
+            ]).then(axios.spread((res1, res2) => {
+                if(res1.data.success && res2.data.success){
+                    this.msg = "update successfully"
                 }
-            })
+            }));
+
+
 
 
 
@@ -205,6 +205,7 @@ export default {
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css">
 </style>
+
 
 <style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

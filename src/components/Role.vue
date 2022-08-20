@@ -16,7 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="role in this.roles" :key="role._id">
+        <tr v-for="role in roles_tmp" :key="role._id">
           <td>
             <p class="fw-bold mb-1" style="font-size: 20px;">{{ role.name }} </p>
 
@@ -29,20 +29,22 @@
 
           <td>
             <perfect-scrollbar>
-              <div class="fw-normal mb-1"  v-for="permission in role.permission" v-bind:key="permission._id">
+              <div class="fw-normal mb-1" v-for="permission in role.permission" v-bind:key="permission._id">
                 <!-- <p v-if="permission.endpoint && permission.method"> endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p> -->
                 <p>endpoint: {{ permission.endpoint }}, method: {{ permission.method }} </p>
-              </div> 
+              </div>
             </perfect-scrollbar>
 
           </td>
 
           <td>
-            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark" v-on:click="editRole(role._id)">
+            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark"
+              v-on:click="editRole(role._id)">
               Edit
             </button>
 
-            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark" v-on:click="deleteRole(role._id)">
+            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark"
+              v-on:click="deleteRole(role._id)">
               Delete
             </button>
           </td>
@@ -56,6 +58,7 @@
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
 import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
+
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
 //import axios from "axios";
 export default {
@@ -69,26 +72,30 @@ export default {
     return {
       url: null,
       url_vue: process.env.VUE_APP_URL,
-      roles1: [],
       roles: [],
+      roles_tmp: [],
       permission: []
     }
   },
   async created() {
     await this.getAllRoles();
-    console.log("roles filled before 1", this.roles1)
+
     await this.getAllPermission();
     console.log("roles filled before", this.roles)
-    await this.fillPermission();
-    // console.log("rolesLength: ", this.roles.length)
-    console.log("roles filled after", this.roles)
-  },
-  async beforeMount(){
+     
+    
+    this.roles_tmp = await this.fillPermission();
+
+    console.log("roles filled after", this.roles_tmp)
 
   },
+  // async updated() {
+  //   console.log("roles filled updated", this.roles)
+  // },
+ 
   methods: {
     addRole() {
-      this.$router.push({ name: "addRole"})
+      this.$router.push({ name: "addRole" })
     },
     editRole(idRole) {
       this.$router.push({
@@ -101,10 +108,10 @@ export default {
       this.$dialog
         .confirm("Please confirm to continue delete user")
         .then(function () {
-         api.delete(`/api/admin/roles/${id}`).then((res) => {
-          console.log(res.data);
-          window.location.reload();
-          })      
+          api.delete(`/api/admin/roles/${id}`).then((res) => {
+            console.log(res.data);
+            window.location.reload();
+          })
         })
         .catch(function () {
           console.log("Clicked on cancel");
@@ -113,14 +120,11 @@ export default {
     getAllRoles() {
       return api.get("/api/admin/roles").then(res => {
         console.log('getAllRoles', res.data);
-        this.roles1 = res.data.data.slice(0);
-        console.log('getAllRoles roles1', this.roles1);
-        // for(var i=0;i < this.roles.length; i++){
-        //   this.roles[i].permission = [];
-        // }
+        this.roles = res.data.data.slice(0);
+
       })
     },
-    getAllPermission(){
+    getAllPermission() {
       return api.get("/api/admin/permissions").then(res => {
         console.log('getAllPermission', res.data);
         this.permission = res.data.data.slice(0);
@@ -129,8 +133,8 @@ export default {
 
     getAllPermissionByRoleID(id) {
       const permissions = []
-      for(let i =0; i< this.permission.length; i++){
-        if(this.permission[i].Role_ID == id){
+      for (let i = 0; i < this.permission.length; i++) {
+        if (this.permission[i].Role_ID == id) {
           permissions.push(this.permission[i])
         }
       }
@@ -139,24 +143,20 @@ export default {
 
     async fillPermission() {
 
-      console.log("rolesLength: ", this.roles1.length)
-      for (let i = 0; i < this.roles1.length; i++) {
-        const id = this.roles1[i]._id
+      for (let i = 0; i < this.roles.length; i++) {
+        const id = this.roles[i]._id
         const permissions = await this.getAllPermissionByRoleID(id)
-        this.roles.push({
-          permission: permissions,
-          _id: this.roles1[i]._id,
-          name: this.roles1[i].name
-        })
-        // this.roles[i].permission = permissions
+        this.roles[i].permission = permissions
       }
 
-      console.log("role filled", this.roles)
+      return this.roles
+    }
   }
-}};
+};
 
 
 </script>
+
 <style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
@@ -168,12 +168,13 @@ export default {
 
 
 
-.ps{
+.ps {
   background-color: white;
   width: 100%;
   height: 150px;
   padding: 5px;
 }
+
 .card.card-cascade .view.gradient-card-header {
   padding: 1rem 1rem;
   text-align: center;

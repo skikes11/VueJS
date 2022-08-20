@@ -80,7 +80,7 @@
                     </thead>
                     <tbody>
                         
-                        <tr v-for="item in items" :key="item._id">
+                        <tr v-for="(item, index) in items" :key="item._id">
                             <td>
                                 <div class="d-flex align-items-center">
                                     <img :src="url_vue + item.Product_ID.image" class="rounded-circle" alt=""
@@ -94,7 +94,7 @@
                                 <p class="fw-normal mb-1" v-if="item.Product_ID.price"> {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.Product_ID.price) }} </p>
                             </td>
                             <td>
-                                <p class="fw-normal mb-1" v-if="item.quantity">  <i class="fas fa-plus" @click="plusItem(item._id)"></i>  {{ item.quantity }}  <i class="fas fa-minus" @click="minusItem(item._id)"></i> </p>
+                                <p class="fw-normal mb-1" v-if="item.quantity">  <i class="fas fa-plus" @click="plusItem(index)"></i>  {{ item.quantity }}  <i class="fas fa-minus" @click="minusItem(index)"></i> </p>
                             </td>
                             <td>
                                 <p class="fw-normal mb-1">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.Product_ID.price * item.quantity)}}</p>
@@ -103,7 +103,7 @@
 
                             <td>
                                 <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark"
-                                    v-on:click="deleteItemByID(item._id)">
+                                    v-on:click="deleteItemByID(item.Product_ID._id)">
                                     Delete
                                 </button>
                             </td>
@@ -130,8 +130,7 @@
 <script>
 //import { ref } from "vue";
 import api from "../api/apiServices.ts";
-
-import apiFormData from "../api/apiFormdata.ts";
+import apiJson from "../api/apiJson.ts"
 import SlideBar from "./SlideBar.vue";
 import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
 //import Multiselect from 'vue-multiselect'
@@ -176,31 +175,25 @@ export default {
                 this.products = res.data.data
             })
         },
-        async plusItem(id) {
-            for(let i=0; i<this.items.length; i++){
-                if(this.items[i]._id===id){
-                    this.items[i].quantity += 1
-                }
-            }
-
+        async plusItem(index) {
+            
+                    this.items[index].quantity += 1
+            
             await this.caculateTotalPrice();
         },
         async deleteItemByID(id) {
-            this.items = this.items.filter(item => item._id !== id);
+            this.items = this.items.filter(item => item.Product_ID._id !== id);
             await this.caculateTotalPrice();
         },
 
-        async minusItem(id) {
-            for(let i=0; i<this.items.length; i++){
-                if(this.items[i]._id===id){
-                    this.items[i].quantity -= 1
+        async minusItem(index) {
+            
+                    this.items[index].quantity -= 1
                     
-                    if(this.items[i].quantity <= 0){
-                        this.deleteItemByID(this.items[i]._id)
+                    if(this.items[index].quantity <= 0){
+                        this.deleteItemByID(this.items[index]._id)
                     }
 
-                }
-            }
             await this.caculateTotalPrice();
         },
         Check_If_Order_Exits_items(idProduct) {
@@ -254,17 +247,13 @@ export default {
         
         async updateOrder() {
 
-            // let formData_update = new FormData();
-
-            // formData_update.append('data_del', JSON.stringify(delete_permission));
-            // formData_update.append('data_add', JSON.stringify(add_permission));
-            // formData_update.append('id', this.$route.params.id)
-
-
-            apiFormData.post(`/api/admin/orderItems/updateOrder`, {
+            
+            const data = { 
                 orderID : this.$route.params.id,
-                items: JSON.stringify(this.items)
-            }).then(res => {
+                items: this.items
+            }
+
+            apiJson.post(`/api/admin/orderItems/updateOrder`, JSON.stringify(data)).then(res => {
                 console.log(res.data)
                 if (res.data.success) {
                    // this.$router.go();

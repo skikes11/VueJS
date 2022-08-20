@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="product in products" :key="product._id">
+        <tr v-for="product in pageOfItems" :key="product._id">
           <td>
             <div class="d-flex align-items-center">
               <img
@@ -78,6 +78,9 @@
         </tr>
       </tbody>
     </table>
+    <div >
+            <jw-pagination :items="products" @changePage="onChangePage"   :labels="customLabels" ></jw-pagination>
+    </div>
   </div>
 </template>
 
@@ -85,12 +88,32 @@
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
 
+const customStyles = {
+    ul: {
+        border: '5px solid red'
+    },
+    li: {
+        display: 'inline-block',
+        border: '2px dotted green'
+    },
+    a: {
+        color: 'blue'
+    }
+};
+const customLabels = {
+    first: '<<',
+    last: '>>',
+    previous: '<',
+    next: '>'
+};
+
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
 //import axios from "axios";
 export default {
   name: "Products",
   components: {
     SlideBar,
+    
     // AddUserDiaLog
   },
   data() {
@@ -98,15 +121,23 @@ export default {
       url: null,
       url_vue : process.env.VUE_APP_URL,
       products: [],
+      pageOfItems: [],
+      customStyles,
+      customLabels
     }
   },
   created() {
     this.getAllProduct();
+    console.log("pageOfItems: ",this.pageOfItems)
 
   },
   methods: {
     addProduct() {
       this.$router.push({ name: "addProduct"})
+    },
+    onChangePage(pageOfItems) {
+            // update page of items
+            this.pageOfItems = pageOfItems;
     },
     deleteProduct(id) {
 
