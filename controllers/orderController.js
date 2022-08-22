@@ -23,8 +23,24 @@ const orderController = {
     getAllOrder: async (req, res) => {
         try {
             try {
-                const order = await Order.find().populate('User_ID');
-                helperFunc.status(res,true,order,null)
+                
+
+                const page =  parseInt(req.params.page) - 1
+                const limit = parseInt(req.params.limit)
+          
+                const skip = page*limit  // skip element to get right page
+
+                const order = await Order.find().populate('User_ID').skip(skip).limit(limit);
+                
+
+                const orderCount = await Order.find().count();
+
+                res.status(200).json({
+                    "success" : true,
+                    "data" : order,
+                    "orderCount" : orderCount
+                  })
+              
             } catch (err) {
                 res.status(400).json(err.message);
             }

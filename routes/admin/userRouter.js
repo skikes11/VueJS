@@ -9,7 +9,7 @@ const userController = require("../../controllers/userController");
 const endpoint = '/users'
 
 //Get All USER (auth: ADMIN)
-userRouter.get("/", async (req, res) => {
+userRouter.get("/:page/:limit", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     

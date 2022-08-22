@@ -47,8 +47,23 @@ const productController = {
   },
   getAllProduct: async (req, res) => {
     try {
-      const product = await Product.find();
-      helperFunc.status(res, true, product, null);
+
+      const page =  parseInt(req.params.page) - 1
+      const limit = parseInt(req.params.limit)
+
+      const skip = page*limit  // skip element to get right page
+
+      const product = await Product.find().skip(skip).limit(limit);
+
+      const productCount = await Product.find().count();
+
+      res.status(200).json({
+        "success" : true,
+        "data" : product,
+        "productCount" : productCount
+      })
+
+      //helperFunc.status(res, true, product, null);
     } catch (err) {
       res.status(400).json(err.message);
     }

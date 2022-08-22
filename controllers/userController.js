@@ -34,16 +34,26 @@ function checkPass(req) {
 const userController = {
   getAllUser: async (req, res) => {
     try {
-      const user = await UserAccount.find().populate("role");
+      
 
-      // // Update InforUserID for user
-      // const { password, ...others } = user._doc;
-      // res.status(200).json({
-      //     "success": true,
-      //     "data": { ...others }
-      // });
+      
 
-      res.status(200).json(user);
+      const page =  parseInt(req.params.page) - 1
+      const limit = parseInt(req.params.limit)
+
+      const skip = page*limit  // skip element to get right page
+
+      const user = await UserAccount.find().populate("role").skip(skip).limit(limit);
+
+      const userCount = await UserAccount.find().count();
+
+
+      res.status(200).json({
+        "success" : true,
+        "data" : user,
+        "userCount" : userCount
+      })
+
 
     } catch (err) {
       res.status(500).json({
