@@ -17,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in pageOfItems" :key="user._id">
+        <tr v-for="user in users" :key="user._id">
           <td>
             <div class="d-flex align-items-center">
               <img :src="url_vue+user.avatar" class="rounded-circle" alt=""
@@ -52,9 +52,9 @@
         </tr>
       </tbody>
     </table>
-     <div >
-            <jw-pagination :items="users" @changePage="onChangePage"   :labels="customLabels" ></jw-pagination>
-    </div>
+     <paginate :pageCount="pageCount" :containerClass="'pagination'"  :prev-text="'Prev'"
+      :next-text="'Next'" :clickHandler="clickCallback">
+      </paginate>
 
   </div>
 </template>
@@ -95,11 +95,14 @@ export default {
       url_vue : process.env.VUE_APP_URL,
       pageOfItems: [],
       customStyles,
-      customLabels
+      customLabels,
+      pageCount: null,
+      limit: 7,
+
     }
   },
-  created() {
-    this.getAllUser();
+  async created() {
+    await this.getAllUser();
   },
 
   methods: {
@@ -134,13 +137,24 @@ export default {
         params: { id: idUser }
       });
     },
-    getAllUser() {
+    clickCallback : async function(pageNum){
+
+        api.get(`/api/admin/users/${pageNum}/${this.limit}`).then(res => {
+          console.log(res.data)
+          if(res.data.success){
+            this.users = res.data.data
+          }
+        })
+
+    },
+     getAllUser() {
       try {
-        api.get("/api/admin/users").then(res => {
+       return api.get(`/api/admin/users/1/${this.limit}`).then(async(res) => {
           console.log(res.data);
-          this.users = res.data;
+          this.users = res.data.data;
+          this.pageCount = await Math.floor(res.data.userCount/this.limit) + 1
           
-          
+          console.log( "pageCount: ", this.pageCount)
         })
 
       } catch (error) {
@@ -159,6 +173,7 @@ export default {
 
 @import "https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.css";
 
+@import "https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.css";
 .card.card-cascade .view.gradient-card-header {
   padding: 1rem 1rem;
   text-align: center;

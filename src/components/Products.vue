@@ -2,12 +2,7 @@
   <div class="flexible-content">
     <SlideBar />
     <p class="h3" style="text-align: center">Products</p>
-    <button
-      type="button"
-      class="btn btn-outline-success"
-      data-mdb-ripple-color="dark"
-      v-on:click="addProduct()"
-    >
+    <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark" v-on:click="addProduct()">
       Add product
     </button>
 
@@ -20,33 +15,29 @@
           <th>Brand</th>
           <th>Price</th>
           <th>Description</th>
-          
+
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="product in pageOfItems" :key="product._id">
+        <tr v-for="product in products" :key="product._id">
           <td>
             <div class="d-flex align-items-center">
-              <img
-                :src="url_vue + product.image"
-                class="rounded-circle"
-                alt=""
-                style="width: 45px; height: 45px"
-              />
+              <img :src="url_vue + product.image" class="rounded-circle" alt="" style="width: 45px; height: 45px" />
               <div class="ms-3">
                 <p class="fw-bold mb-1" v-if="product.name">{{ product.name }}</p>
               </div>
             </div>
           </td>
           <td>
-            <p class="fw-normal mb-1"  v-if="product.price">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price) }}</p>
+            <p class="fw-normal mb-1" v-if="product.price">{{ new Intl.NumberFormat('vi-VN', { style: 'currency',
+            currency: 'VND' }).format(product.price) }}</p>
           </td>
           <td>
             <p class="fw-normal mb-1" v-if="product.total_quantity">{{ product.total_quantity }}</p>
           </td>
           <td>
-            <p class="fw-normal mb-1"  v-if="product.price">{{ product.brand }}</p>
+            <p class="fw-normal mb-1" v-if="product.price">{{ product.brand }}</p>
           </td>
           <td>
             <p class="fw-normal mb-1" v-if="product.total_quantity">{{ product.origin }}</p>
@@ -54,57 +45,50 @@
           <td>
             <p class="fw-normal mb-1" v-if="product.total_quantity">{{ product.description }}</p>
           </td>
-          <td>  
-            
+          <td>
 
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-mdb-ripple-color="dark"
-              v-on:click="editProduct(product._id)"
-            >
+
+            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-color="dark"
+              v-on:click="editProduct(product._id)">
               Edit
             </button>
 
-            <button
-              type="button"
-              class="btn btn-outline-danger"
-              data-mdb-ripple-color="dark"
-              v-on:click="deleteProduct(product._id)"
-            >
+            <button type="button" class="btn btn-outline-danger" data-mdb-ripple-color="dark"
+              v-on:click="deleteProduct(product._id)">
               Delete
             </button>
           </td>
         </tr>
       </tbody>
     </table>
-    <div >
-            <jw-pagination :items="products" @changePage="onChangePage"   :labels="customLabels" ></jw-pagination>
+    <div>
+      <paginate :pageCount="pageCount" :containerClass="'pagination'"  :prev-text="'Prev'"
+      :next-text="'Next'" :clickHandler="clickCallback">
+      </paginate>
     </div>
   </div>
 </template>
-
 <script>
 import api from "../api/apiServices.ts";
 import SlideBar from "./SlideBar.vue";
 
 const customStyles = {
-    ul: {
-        border: '5px solid red'
-    },
-    li: {
-        display: 'inline-block',
-        border: '2px dotted green'
-    },
-    a: {
-        color: 'blue'
-    }
+  ul: {
+    border: '5px solid red'
+  },
+  li: {
+    display: 'inline-block',
+    border: '2px dotted green'
+  },
+  a: {
+    color: 'blue'
+  }
 };
 const customLabels = {
-    first: '<<',
-    last: '>>',
-    previous: '<',
-    next: '>'
+  first: '<<',
+  last: '>>',
+  previous: '<',
+  next: '>'
 };
 
 //import AddUserDiaLog from "./AddUserDiaLog.vue"
@@ -113,48 +97,60 @@ export default {
   name: "Products",
   components: {
     SlideBar,
-    
+
     // AddUserDiaLog
   },
   data() {
     return {
       url: null,
-      url_vue : process.env.VUE_APP_URL,
+      url_vue: process.env.VUE_APP_URL,
       products: [],
       pageOfItems: [],
       customStyles,
-      customLabels
+      customLabels,
+      pageCount: null,
+      limit: 7
+
     }
   },
   created() {
     this.getAllProduct();
-    console.log("pageOfItems: ",this.pageOfItems)
+    
 
   },
   methods: {
     addProduct() {
-      this.$router.push({ name: "addProduct"})
+      this.$router.push({ name: "addProduct" })
     },
     onChangePage(pageOfItems) {
-            // update page of items
-            this.pageOfItems = pageOfItems;
+      // update page of items
+      this.pageOfItems = pageOfItems;
+    }, 
+    clickCallback : async function(pageNum){
+
+        api.get(`/api/admin/products/${pageNum}/${this.limit}`).then(res => {
+          console.log(res.data)
+          if(res.data.success){
+            this.products = res.data.data
+          }
+        })
+
     },
     deleteProduct(id) {
 
-       
+
       this.$dialog
         .confirm("Please confirm to continue delete user")
         .then(function () {
-            api.delete(`/api/admin/products/${id}`).then((res) => {
-          console.log(res.data);
-          window.location.reload();
-          }) 
+          api.delete(`/api/admin/products/${id}`).then((res) => {
+            console.log(res.data);
+            window.location.reload();
+          })
         })
         .catch(function () {
           console.log("Clicked on cancel");
         });
-        
-          
+
     },
     editProduct(idProduct) {
       this.$router.push({
@@ -162,14 +158,16 @@ export default {
         params: { id: idProduct }
       });
     },
-    getAllProduct(){
-    api.get("/api/admin/products").then(res=>{
+    getAllProduct() {
+      api.get(`/api/admin/products/1/${this.limit}`).then(res => {
         console.log(res.data)
         this.products = res.data.data
-    })
+        this.pageCount = Math.floor(res.data.productCount/this.limit) + 1
+        console.log( "pageCount: ", this.pageCount)
+      })
+    },
   },
-  },
-  
+
 
 };
 </script>
@@ -182,12 +180,19 @@ export default {
 
 @import "https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.css";
 
+@import "https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.css";
+
+@import "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/menu.min.css";
+
 .card.card-cascade .view.gradient-card-header {
   padding: 1rem 1rem;
   text-align: center;
 }
+
 .card.card-cascade h3,
 .card.card-cascade h4 {
   margin-bottom: 0;
 }
+
+
 </style>

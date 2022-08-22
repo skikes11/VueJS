@@ -26,7 +26,8 @@
     "vue-prism": "^1.0.5",
     "vue2-google-maps": "^0.10.7",
     "vue2-perfect-scrollbar": "^1.5.5",
-    "vuejs-dialog": "^1.4.2"
+    "vuejs-dialog": "^1.4.2",
+    "vuejs-paginate": "^2.1.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.9",

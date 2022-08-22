@@ -15,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(order, index) in pageOfItems" :key="order._id">
+                <tr v-for="(order, index) in orders_tmp" :key="order._id">
                     <td>
                         <p class="fw-normal mb-1" v-if="order.User_ID.name">{{ order.User_ID.name }}</p>
 
@@ -63,7 +63,7 @@
 
                                 </div>
 
-                            </div> 
+                            </div>
 
                         </perfect-scrollbar>
 
@@ -85,9 +85,11 @@
                 </tr>
             </tbody>
         </table>
-        <div class="pagination">
-            <jw-pagination :items="orders_tmp" @changePage="onChangePage"   :labels="customLabels" ></jw-pagination>
-         </div>
+        <div>
+            <paginate :pageCount="pageCount" :containerClass="'pagination'" :prev-text="'Prev'" :next-text="'Next'"
+                :clickHandler="clickCallback">
+            </paginate>
+        </div>
     </div>
 </template>
 
@@ -100,24 +102,7 @@ import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
 
 
 
-const customStyles = {
-    ul: {
-        border: '5px solid red'
-    },
-    li: {
-        display: 'inline-block',
-        border: '2px dotted green'
-    },
-    a: {
-        color: 'blue'
-    }
-};
-const customLabels = {
-    first: '<<',
-    last: '>>',
-    previous: '<',
-    next: '>'
-};
+
 
 export default {
     name: "Products",
@@ -135,9 +120,9 @@ export default {
             users: [],
             items: [],
             totalPrice: null,
-            pageOfItems: [],
-            customStyles,
-            customLabels
+            pageCount: null,
+            limit: 4,
+
         }
     },
     async created() {
@@ -159,10 +144,13 @@ export default {
             });
         },
         getAllOrder() {
-            return api.get("/api/admin/orders").then(res => {
-
+            return api.get(`/api/admin/orders/1/${this.limit}`).then(res => {
+                console.log("order res", res.data)
                 this.orders = res.data.data
-                console.log("order", this.orders)
+
+                this.pageCount = Math.floor(res.data.orderCount/this.limit) + 1
+                console.log( "pageCount: ", this.pageCount)
+
             })
         },
         getAllOrderItems() {
@@ -171,11 +159,16 @@ export default {
                 console.log("items", this.items)
             })
         },
-         onChangePage(pageOfItems) {
-            // update page of items
-            this.pageOfItems = pageOfItems;
-       },
+        clickCallback: async function (pageNum) {
 
+            api.get(`/api/admin/orders/${pageNum}/${this.limit}`).then(res => {
+                console.log(res.data)
+                if (res.data.success) {
+                    this.orders_tmp = res.data.data
+                }
+            })
+
+        },
         getAllOrderItemsByOrderID(id, element) {
             const items = []
 
@@ -207,7 +200,7 @@ export default {
                 this.orders[i].items = await this.getAllOrderItemsByOrderID(this.orders[i]._id, i)
             }
             return this.orders
-            
+
         }
     },
 
@@ -222,13 +215,17 @@ export default {
 
 @import "https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.3.0/mdb.min.css";
 
+@import "https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.css";
+
 .card.card-cascade .view.gradient-card-header {
     padding: 1rem 1rem;
     text-align: center;
 }
-.pagination{
+
+.pagination {
     margin: auto;
 }
+
 .card.card-cascade h3,
 .card.card-cascade h4 {
     margin-bottom: 0;

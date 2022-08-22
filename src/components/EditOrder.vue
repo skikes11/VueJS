@@ -170,15 +170,14 @@ export default {
             this.$router.push({ name: "Orders" })
         },
         getAllProduct() {
-            return api.get("/api/admin/products").then(res => {
-                console.log(res.data)
+            return api.get("/api/admin/products/1/100").then(res => {
+                console.log("product", res.data)
                 this.products = res.data.data
             })
         },
         async plusItem(index) {
-            
-                    this.items[index].quantity += 1
-            
+
+                  this.items[index].quantity += 1
             await this.caculateTotalPrice();
         },
         async deleteItemByID(id) {
