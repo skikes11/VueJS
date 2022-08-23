@@ -170,7 +170,7 @@ export default {
             this.$router.push({ name: "Orders" })
         },
         getAllProduct() {
-            return api.get("/api/admin/products/1/100").then(res => {
+            return api.get("/api/admin/products/1/0/1").then(res => {
                 console.log("product", res.data)
                 this.products = res.data.data
             })

@@ -2,9 +2,25 @@
   <div class="flexible-content">
     <SlideBar />
     <p class="h3" style="text-align: center">Products</p>
-    <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark" v-on:click="addProduct()">
-      Add product
-    </button>
+
+      <div class="flex" > 
+
+      <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark" v-on:click="addProduct()">
+        Add product
+      </button>
+
+      <h6 style="padding: 10px; margin-left: 20px"> Sort By </h6>
+
+      <select class="option-control" v-model="sortSelected" @change="onChange" :required="true">
+        <option value="1">Newest</option>
+        <option value="2">Oldest</option>
+        <option value="3">Price Up</option>
+        <option value="4">Price Down</option>
+      </select>
+
+    </div>
+    
+
 
     <table class="table align-middle mb-0 bg-white">
       <thead class="bg-light">
@@ -13,7 +29,7 @@
           <th>Price</th>
           <th>Total quantity</th>
           <th>Brand</th>
-          <th>Price</th>
+          <th>Origin</th>
           <th>Description</th>
 
           <th>Actions</th>
@@ -109,14 +125,13 @@ export default {
       customStyles,
       customLabels,
       pageCount: null,
-      limit: 7
+      limit: 7,
+      sortSelected: 1
 
     }
   },
   created() {
     this.getAllProduct();
-    
-
   },
   methods: {
     addProduct() {
@@ -128,17 +143,24 @@ export default {
     }, 
     clickCallback : async function(pageNum){
 
-        api.get(`/api/admin/products/${pageNum}/${this.limit}`).then(res => {
+        api.get(`/api/admin/products/${pageNum}/${this.limit}/${this.sortSelected}`).then(res => {
           console.log(res.data)
           if(res.data.success){
             this.products = res.data.data
           }
         })
+    },
+    onChange() {
 
+    api.get(`/api/admin/products/1/${this.limit}/${this.sortSelected}`).then(res => {
+          console.log(res.data)
+          if(res.data.success){
+            this.products = res.data.data
+          }
+        })
+       
     },
     deleteProduct(id) {
-
-
       this.$dialog
         .confirm("Please confirm to continue delete user")
         .then(function () {
@@ -159,7 +181,7 @@ export default {
       });
     },
     getAllProduct() {
-      api.get(`/api/admin/products/1/${this.limit}`).then(res => {
+      api.get(`/api/admin/products/1/${this.limit}/1`).then(res => {
         console.log(res.data)
         this.products = res.data.data
         this.pageCount = Math.floor(res.data.productCount/this.limit) + 1
@@ -193,6 +215,16 @@ export default {
 .card.card-cascade h4 {
   margin-bottom: 0;
 }
+.option-control {
+    width: 100%;
+    padding: 6px 13px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
 
+.flex {
+    display: inline-flex;
+    padding: 10px;
+}
 
 </style>

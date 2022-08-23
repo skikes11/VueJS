@@ -2,9 +2,21 @@
   <div class="flexible-content">
     <SlideBar />
     <p class="h3" style="text-align: center">Users</p>
+
+    
+    <div style="display: inline-flex; padding: 10px;"> 
     <button type="button" class="btn btn-outline-success" data-mdb-ripple-color="dark" v-on:click="addUser()">
       Add user
     </button>
+
+     <h6 style="padding: 10px; margin-left: 20px"> Sort By </h6>
+
+      <select class="option-control" v-model="sortSelected" @change="onChange" :required="true">
+        <option value="1">Newest</option>
+        <option value="2">Oldest</option>
+      </select>
+
+    </div>  
 
     <table class="table align-middle mb-0 bg-white">
       <thead class="bg-light">
@@ -98,7 +110,7 @@ export default {
       customLabels,
       pageCount: null,
       limit: 7,
-
+      sortSelected: 1
     }
   },
   async created() {
@@ -109,9 +121,13 @@ export default {
     addUser() {
       this.$router.push("/users/add");
     },
-    onChangePage(pageOfItems) {
-            // update page of items
-            this.pageOfItems = pageOfItems;
+    onChange() {
+        api.get(`/api/admin/users/1/${this.limit}/${this.sortSelected}`).then(res => {
+          console.log(res.data)
+          if(res.data.success){
+            this.users = res.data.data
+          }
+        })
     },
     deleteUser(id) {
 
@@ -139,7 +155,7 @@ export default {
     },
     clickCallback : async function(pageNum){
 
-        api.get(`/api/admin/users/${pageNum}/${this.limit}`).then(res => {
+        api.get(`/api/admin/users/${pageNum}/${this.limit}/${this.sortSelected}`).then(res => {
           console.log(res.data)
           if(res.data.success){
             this.users = res.data.data
@@ -149,7 +165,7 @@ export default {
     },
      getAllUser() {
       try {
-       return api.get(`/api/admin/users/1/${this.limit}`).then(async(res) => {
+       return api.get(`/api/admin/users/1/${this.limit}/${this.sortSelected}`).then(async(res) => {
           console.log(res.data);
           this.users = res.data.data;
           this.pageCount = await Math.floor(res.data.userCount/this.limit) + 1
@@ -182,5 +198,8 @@ export default {
 .card.card-cascade h3,
 .card.card-cascade h4 {
   margin-bottom: 0;
+}
+.option-control{
+  width: 150px;
 }
 </style>

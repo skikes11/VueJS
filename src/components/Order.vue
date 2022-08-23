@@ -3,6 +3,17 @@
         <SlideBar />
         <p class="h3" style="text-align: center">Orders</p>
 
+        <div style="display: inline-flex; padding: 10px;">
+
+            <h6 style="padding: 10px; "> Sort By </h6>
+
+            <select class="option-control" v-model="sortSelected" @change="onChange" :required="true">
+                <option value="1">Newest</option>
+                <option value="2">Oldest</option>
+            </select>
+
+        </div>
+
 
         <table class="table align-middle mb-0 bg-white">
             <thead class="bg-light">
@@ -122,6 +133,7 @@ export default {
             totalPrice: null,
             pageCount: null,
             limit: 4,
+            sortSelected : 1
 
         }
     },
@@ -144,12 +156,12 @@ export default {
             });
         },
         getAllOrder() {
-            return api.get(`/api/admin/orders/1/${this.limit}`).then(res => {
+            return api.get(`/api/admin/orders/1/${this.limit}/${this.sortSelected}`).then(res => {
                 console.log("order res", res.data)
                 this.orders = res.data.data
 
-                this.pageCount = Math.floor(res.data.orderCount/this.limit) + 1
-                console.log( "pageCount: ", this.pageCount)
+                this.pageCount = Math.floor(res.data.orderCount / this.limit) + 1
+                console.log("pageCount: ", this.pageCount)
 
             })
         },
@@ -161,14 +173,24 @@ export default {
         },
         clickCallback: async function (pageNum) {
 
-            api.get(`/api/admin/orders/${pageNum}/${this.limit}`).then(res => {
+            api.get(`/api/admin/orders/${pageNum}/${this.limit}/${this.sortSelected}`).then(async (res) => {
                 console.log(res.data)
                 if (res.data.success) {
-                    this.orders_tmp = res.data.data
+                    this.order = res.data.data
+                    this.orders_tmp = await this.fillOrderItemsToOrder();
                 }
             })
-
         },
+        onChange(){
+             api.get(`/api/admin/orders/1/${this.limit}/${this.sortSelected}`).then(async (res) => {
+                console.log(res.data)
+                if (res.data.success) {
+                    this.order = res.data.data
+                    this.orders_tmp = await this.fillOrderItemsToOrder();
+                }
+            })
+        },
+
         getAllOrderItemsByOrderID(id, element) {
             const items = []
 
@@ -240,5 +262,8 @@ export default {
     width: 100%;
     height: 150px;
     padding: 5px;
+}
+.option-control{
+  width: 150px;
 }
 </style>
