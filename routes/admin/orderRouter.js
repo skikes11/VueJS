@@ -9,7 +9,7 @@ const orderController = require ( "../../controllers/orderController")
 const endpoint = '/orders'
 
 //Get All ORDER (auth: ADMIN)
-orderRouter.get("/:page/:limit", async (req, res) => {
+orderRouter.get("/:page/:limit/:sort", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     

@@ -34,19 +34,23 @@ function checkPass(req) {
 const userController = {
   getAllUser: async (req, res) => {
     try {
-      
-
-      
-
+    
       const page =  parseInt(req.params.page) - 1
       const limit = parseInt(req.params.limit)
+      const sort = req.params.sort
+
 
       const skip = page*limit  // skip element to get right page
-
-      const user = await UserAccount.find().populate("role").skip(skip).limit(limit);
-
+    
+      let user
+      
+      if(sort == 1){
+        user = await UserAccount.find().populate("role").skip(skip).limit(limit).sort({createAt : 1});
+      }else if(sort == 2){ 
+        user = await UserAccount.find().populate("role").skip(skip).limit(limit).sort({createAt : 2});
+      }
+      
       const userCount = await UserAccount.find().count();
-
 
       res.status(200).json({
         "success" : true,

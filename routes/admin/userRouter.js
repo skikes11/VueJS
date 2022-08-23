@@ -9,7 +9,7 @@ const userController = require("../../controllers/userController");
 const endpoint = '/users'
 
 //Get All USER (auth: ADMIN)
-userRouter.get("/:page/:limit", async (req, res) => {
+userRouter.get("/:page/:limit/:sort", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     
@@ -20,7 +20,7 @@ userRouter.get("/:page/:limit", async (req, res) => {
         });
     }
  
-      const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
+    const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
     console.log(userToken.role._id)
     
     if (permission[0]) {

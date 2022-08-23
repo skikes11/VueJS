@@ -9,7 +9,7 @@ const productController = require ( "../../controllers/productController")
 const endpoint = '/products'
 
 //Get All Product (auth: ADMIN)
-productRouter.get("/:page/:limit", async (req, res) => {
+productRouter.get("/:page/:limit/:sort", async (req, res) => {
 
     const userToken = await middlewareController.verifyToken(req, res)
     

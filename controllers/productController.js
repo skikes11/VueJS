@@ -50,10 +50,21 @@ const productController = {
 
       const page =  parseInt(req.params.page) - 1
       const limit = parseInt(req.params.limit)
-
+      const sort = req.params.sort       //sort: 1 = newest, 2 = oldest, 3 = price up, 4 = price down 
       const skip = page*limit  // skip element to get right page
 
-      const product = await Product.find().skip(skip).limit(limit);
+      
+      let product
+      
+      if(sort == 1){
+        product = await Product.find().skip(skip).limit(limit).sort({createAt : 1});
+      }else if( sort == 2){
+        product = await Product.find().skip(skip).limit(limit).sort({createAt : -1});
+      }else if( sort == 3){
+        product = await Product.find().skip(skip).limit(limit).sort({price : 1});
+      }else if( sort == 4){
+        product = await Product.find().skip(skip).limit(limit).sort({price : -1});
+      }
 
       const productCount = await Product.find().count();
 

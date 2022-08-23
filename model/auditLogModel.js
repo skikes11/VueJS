@@ -26,6 +26,10 @@ const  auditLogSchema= new mongoose.Schema({
         newItem :{
             type: Schema.Types.Mixed,
         },
+        createAt : {
+            type : Date,
+            default: Date.now()
+          }
         
 });
 

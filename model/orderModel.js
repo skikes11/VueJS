@@ -18,9 +18,10 @@ const  OrderSchema= new mongoose.Schema({
             type : Number,
             default : 0
         },
-        created :{
-            type: String,
-        },
+        createAt : {
+            type : Date,
+            default: Date.now()
+        }
         
 });
 
@@ -39,6 +40,10 @@ const  OrderItemsSchema= new mongoose.Schema({
         type : Number,
         require:true
     },
+    createAt : {
+        type : Date,
+        default: Date.now()
+    }
 });
 
 
