@@ -216,10 +216,8 @@ export default {
   margin-bottom: 0;
 }
 .option-control {
-    width: 100%;
-    padding: 6px 13px;
-    margin: 5px 0;
-    box-sizing: border-box;
+    width: 150px;
+    
 }
 
 .flex {

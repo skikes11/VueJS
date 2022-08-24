@@ -17,10 +17,22 @@ import router from './router'
 import store from './store'
 import JwPagination from 'jw-vue-pagination';
 import Paginate from 'vuejs-paginate'
+// import * as io from "socket.io-client";
+// import VueSocketIO from "vue-socket.io";
+
+
 Vue.component('paginate', Paginate)
 
 Vue.component('jw-pagination', JwPagination);
 Vue.component('vue-markdown', VueMarkdown);
+
+// Vue.use(
+//   new VueSocketIO({
+//     debug: true,
+//     connection: io('http://localhost:3000'), // options object is Optional
+//   })
+// );
+
 
 Vue.use(VuePrism)
 Vue.use(VuejsDialog);
