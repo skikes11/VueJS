@@ -68,13 +68,13 @@
             <mdb-card cascade class="cascading-admin-card">
               <div class="admin-up">
 
-                <img src="https://cdn-icons-png.flaticon.com/512/7439/7439929.png" class="rounded-circle"
+                <img src="https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/256/Binance-Coin-BNB-icon.png" class="rounded-circle"
                   style="width: 60px; height: 60px" alt="Palm Springs Road" />
 
                 <div class="data">
-                  <p>{{ doge.symbol }}</p>
+                  <p>{{ bnb.symbol }}</p>
                   <h4>
-                    <strong>{{ doge.price }}</strong>
+                    <strong>{{ bnb.price }}</strong>
                   </h4>
                 </div>
               </div>
@@ -91,13 +91,13 @@
             <mdb-card cascade class="cascading-admin-card">
               <div class="admin-up">
 
-                <img src="https://cdn-icons-png.flaticon.com/512/7016/7016538.png" class="rounded-circle"
+                <img src="https://cryptologos.cc/logos/axie-infinity-axs-logo.png" class="rounded-circle"
                   style="width: 60px; height: 60px" alt="Palm Springs Road" />
 
                 <div class="data">
-                  <p>{{ shib.symbol }}</p>
+                  <p>{{ axs.symbol }}</p>
                   <h4>
-                    <strong>{{ shib.price }}</strong>
+                    <strong>{{ axs.price }}</strong>
                   </h4>
                 </div>
               </div>
@@ -112,20 +112,52 @@
           </mdb-col>
         </mdb-row>
       </section>
-      
-
-   
           <mdb-card class="mb-4">
             <mdb-card-header> 
-             <strong style="font-size: large; text-align: center; "> BTC Chart </strong>   
-              </mdb-card-header>
+             <strong style="font-size: large; text-align: center; "> BTC/USD Chart </strong>   
+            </mdb-card-header>
             <mdb-card-body>
               <div style=" height: 400px;">
-                <mdb-line-chart style="height: 400px" :data="lineChartData" ref="btcChart" :options="lineChartOptions" :height="200"/>
+                <mdb-line-chart style="height: 400px" :data="lineChartDataBTC" ref="btcChart" :options="lineChartOptions" :height="200"/>
               </div>
             </mdb-card-body>
           </mdb-card>
+
+          <mdb-card class="mb-4">
+            <mdb-card-header> 
+             <strong style="font-size: large; text-align: center; "> ETH/USD Chart </strong>   
+            </mdb-card-header>
+            <mdb-card-body>
+              <div style=" height: 400px;">
+                <mdb-line-chart style="height: 400px" :data="lineChartDataETH" ref="ethChart" :options="lineChartOptions" :height="200"/>
+              </div>
+            </mdb-card-body>
+          </mdb-card>
+
+          <mdb-card class="mb-4">
+            <mdb-card-header> 
+             <strong style="font-size: large; text-align: center; "> BNB/USD Chart </strong>   
+            </mdb-card-header>
+            <mdb-card-body>
+              <div style=" height: 400px;">
+                <mdb-line-chart style="height: 400px" :data="lineChartDataBNB" ref="bnbChart" :options="lineChartOptions" :height="200"/>
+              </div>
+            </mdb-card-body>
+          </mdb-card>
+
+          <mdb-card class="mb-4">
+            <mdb-card-header> 
+             <strong style="font-size: large; text-align: center; "> AXS/USD Chart </strong>   
+            </mdb-card-header>
+            <mdb-card-body>
+              <div style=" height: 400px;">
+                <mdb-line-chart style="height: 400px" :data="lineChartDataAXS" ref="axsChart" :options="lineChartOptions" :height="200"/>
+              </div>
+            </mdb-card-body>
+          </mdb-card>
+
       </section>
+      
   </div>
 </template>
 
@@ -166,19 +198,38 @@ export default {
         console.log(data)
         this.btc = data[0]
         this.eth = data[1],
-        this.doge = data[2],
-        this.shib = data[3]
+        this.bnb = data[2],
+        this.axs = data[3]
 
 
         //set data line chart btc
-        if(this.lineChartData.datasets[0].data.length > 19){
-          this.lineChartData.datasets[0].data.shift()
+        if(this.lineChartDataBTC.datasets[0].data.length > 19){
+          this.lineChartDataBTC.datasets[0].data.shift()
         }
+        this.lineChartDataBTC.datasets[0].data.push(parseInt(this.btc.price))
+        this.$refs.btcChart.renderChart(this.lineChartDataBTC, null);
 
-        this.lineChartData.datasets[0].data.push(parseInt(this.btc.price))
+        //set data line chart eth
+        if(this.lineChartDataETH.datasets[0].data.length > 19){
+          this.lineChartDataETH.datasets[0].data.shift()
+        }
+        this.lineChartDataETH.datasets[0].data.push(parseInt(this.eth.price))
+        this.$refs.ethChart.renderChart(this.lineChartDataETH, null);
 
-        this.$refs.btcChart.renderChart(this.lineChartData, null);
 
+        //set data line chart bnb
+        if(this.lineChartDataBNB.datasets[0].data.length > 19){
+          this.lineChartDataBNB.datasets[0].data.shift()
+        }
+        this.lineChartDataBNB.datasets[0].data.push(parseInt(this.bnb.price))
+        this.$refs.bnbChart.renderChart(this.lineChartDataBNB, null);
+
+        //set data line chart axs
+        if(this.lineChartDataAXS.datasets[0].data.length > 19){
+          this.lineChartDataAXS.datasets[0].data.shift()
+        }
+        this.lineChartDataAXS.datasets[0].data.push(parseInt(this.axs.price))
+        this.$refs.axsChart.renderChart(this.lineChartDataAXS, null);
       })
     }
 
@@ -191,8 +242,8 @@ export default {
 
       btc: null,
       eth: null,
-      doge: null,
-      shib: null,
+      bnb: null,
+      axs: null,
       showFrameModalTop: false,
       showFrameModalBottom: false,
       showSideModalTopRight: false,
@@ -207,7 +258,7 @@ export default {
       showFluidModalLeft: false,
       showFluidModalTop: false,
       showFluidModalBottom: false,
-      lineChartData: {
+      lineChartDataBTC: {
         labels: ['1', '2', '3', '4', '5', '6', '7','8','9','10','11','12','13','14','15','16','17','18','19','20'],
         datasets: 
           [{
@@ -216,6 +267,35 @@ export default {
             backgroundColor: 'rgb(176, 207, 197)',
           }]
       },
+      lineChartDataETH: {
+        labels: ['1', '2', '3', '4', '5', '6', '7','8','9','10','11','12','13','14','15','16','17','18','19','20'],
+        datasets: 
+          [{
+            label: '#ETH',
+            data: [],
+            backgroundColor: 'rgb(175, 195, 254)',
+          }]
+      },
+      lineChartDataBNB: {
+        labels: ['1', '2', '3', '4', '5', '6', '7','8','9','10','11','12','13','14','15','16','17','18','19','20'],
+        datasets: 
+          [{
+            label: '#BNB',
+            data: [],
+            backgroundColor: 'rgb(255, 254, 117)',
+          }]
+      },
+      lineChartDataAXS: {
+        labels: ['1', '2', '3', '4', '5', '6', '7','8','9','10','11','12','13','14','15','16','17','18','19','20'],
+        datasets: 
+          [{
+            label: '#AXS',
+            data: [],
+            backgroundColor: 'rgb(253, 199, 209)',
+          }]
+      },
+
+
       lineChartOptions: {
         responsive: true,
         maintainAspectRatio: false,
