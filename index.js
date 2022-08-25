@@ -27,8 +27,8 @@ axios.defaults.headers.common['upgrade-insecure-requests'] = "1";
 
 const btcapi = axios.get('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
 const ethapi = axios.get('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT');
-const dogeapi = axios.get('https://api.binance.com/api/v3/ticker/price?symbol=DOGEUSDT');
-const shibapi = axios.get('https://api.binance.com/api/v3/ticker/price?symbol=SHIBUSDT');
+const bnbapi = axios.get('https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT');
+const axsapi = axios.get('https://api.binance.com/api/v3/ticker/price?symbol=AXSUSDT');
 
 
 
@@ -36,45 +36,43 @@ io.on('connection', async (socket) => {
     console.log("connected")
 
     while(true){
-         axios.all([btcapi, ethapi, dogeapi, shibapi]).then(axios.spread(function(res1, res2, res3, res4) {
+         axios.all([btcapi, ethapi, bnbapi, axsapi]).then(axios.spread(function(res1, res2, res3, res4) {
 
-        
             let btc = res1.data
             let eth = res2.data
-            let doge = res3.data
-            let shib = res4.data
-
-           
+            let bnb = res3.data
+            let axs = res4.data
+       
             if(Math.random() < 0.5){
                 btc.price = String(parseFloat(btc.price) - Math.random()*btc.price*0.0005)
             }else{
                 btc.price = String(parseFloat(btc.price) + Math.random()*btc.price*0.0005)
             }
-            
+
             if(Math.random() < 0.5){
                 eth.price = String(parseFloat(eth.price) - Math.random()*eth.price*0.0005)
             }else{
                 eth.price = String(parseFloat(eth.price) + Math.random()*eth.price*0.0005)
             }
-           
+
             if(Math.random() < 0.5){
-                doge.price = String(parseFloat(doge.price) - Math.random()*doge.price*0.0005)
+                bnb.price = String(parseFloat(bnb.price) - Math.random()*bnb.price*0.005)
             }else{
-                doge.price = String(parseFloat(doge.price) + Math.random()*doge.price*0.0005)
+                bnb.price = String(parseFloat(bnb.price) + Math.random()*bnb.price*0.005)
             }
             
-            if(Math.random() < 0.5){
-                shib.price = String(parseFloat(shib.price) - Math.random()*shib.price*0.0015)
+            if(Math.random() < 0.5 && axs.price > 5){
+                axs.price = String(parseFloat(axs.price) - Math.random()*axs.price*0.055)
             }else{
-                shib.price = String(parseFloat(shib.price) + Math.random()*shib.price*0.0015)
+                axs.price = String(parseFloat(axs.price) + Math.random()*axs.price*0.055)
             }
 
             btc.price = parseFloat(btc.price).toFixed(3)
             eth.price = parseFloat(eth.price).toFixed(3)
-            doge.price = parseFloat(doge.price).toFixed(7)
-            shib.price = parseFloat(shib.price).toFixed(9)
+            bnb.price = parseFloat(bnb.price).toFixed(4)
+            axs.price = parseFloat(axs.price).toFixed(9)
 
-            const data = [btc, eth, doge, shib]
+            const data = [btc, eth, bnb, axs]
             console.log(data)
             socket.emit("data", data)
           }));
