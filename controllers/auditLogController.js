@@ -1,5 +1,6 @@
 const { AuditLog } = require("../model/auditLogModel")
 
+
 const auditLogController = {
     GetAllAuditLog : async(req,res) =>{
        

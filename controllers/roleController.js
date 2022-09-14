@@ -2,6 +2,7 @@ const { Userrole } = require("../model/userModel");
 const { AuditLog } = require("../model/auditLogModel");
 const helperFunc = require("../controllers/helperFunc")
 
+
 const RoleController = {
   addRole: async (req, res, idUser) => {
     try {

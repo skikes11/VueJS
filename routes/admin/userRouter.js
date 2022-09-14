@@ -21,7 +21,7 @@ userRouter.get("/:page/:limit/:sort", async (req, res) => {
     }
  
     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
-    console.log(userToken.role._id)
+
     
     if (permission[0]) {
         userController.getAllUser(req,res);
@@ -46,7 +46,6 @@ userRouter.get("/:id", async (req, res) => {
     }
  
       const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
-    console.log(userToken.role._id)
     
     if (permission[0]) {
         userController.getUserById(req,res,req.params.id);
@@ -72,8 +71,7 @@ userRouter.post("/", async (req, res) => {
     }
  
     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
-    console.log(userToken.role._id)
-    
+
     if (permission[0]) {
         userController.addUserByAdmin(req,res);
     } else {
@@ -129,7 +127,6 @@ userRouter.delete("/:id", async (req, res) => {
     const permission = await Permission.find({ Role_ID : userToken.role._id, endpoint : endpoint, method : req.method });
 
      
-    console.log(userToken.role)
     
     if (permission[0]) {
         userController.deleteUserByID(req,res,req.params.id, userToken.id);

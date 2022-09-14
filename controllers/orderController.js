@@ -1,6 +1,7 @@
 const { Order } = require("../model/orderModel");
 const helperFunc = require("./helperFunc");
 
+
 const orderController = {
   getAllOrder_User: async (req, res, id) => {
     try {
@@ -12,6 +13,7 @@ const orderController = {
         res.status(200).json(order);
       } catch (err) {
         res.status(400).json(err.message);
+        lokilogs.error({message : err.message, labels: {'dateTime' : new Date(), 'method': req.method, 'endpoint': '/users' } })
       }
     } catch (err) {
       res.status(400).json(err.message);

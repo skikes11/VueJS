@@ -8,9 +8,11 @@ const middlewareController = require("./middlewareController");
 const fs = require("fs");
 
 const { uploadAvatar } = require("./helpers");
-
+const errLogger = require("./auditlog/errLogger")
 const { AuditLog } = require("../model/auditLogModel");
 const helperFunc = require("./helperFunc");
+
+
 
 function isImage(url) {
   return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
@@ -31,6 +33,8 @@ function checkPass(req) {
   return true;
 }
 
+
+
 const userController = {
   getAllUser: async (req, res) => {
     try {
@@ -45,25 +49,30 @@ const userController = {
       let user
       
       if(sort == 1){
-        user = await UserAccount.find().populate("role").skip(skip).limit(limit).sort({createAt : 1});
+        user = await UserAccount.find().populate("role").skip(skip).limit(limit).sort({createAt : -1});
       }else if(sort == 2){ 
-        user = await UserAccount.find().populate("role").skip(skip).limit(limit).sort({createAt : 2});
+        user = await UserAccount.find().populate("role").skip(skip).limit(limit).sort({createAt :  1});
       }
       
       const userCount = await UserAccount.find().count();
-
+    
       res.status(200).json({
         "success" : true,
         "data" : user,
         "userCount" : userCount
       })
-
+      
+      
 
     } catch (err) {
-      res.status(500).json({
-        success: false,
-        message: "did not found any user",
-      });
+      
+        
+        res.status(500).json({
+          success: false,
+          message: "did not found any user",
+        });
+
+      
     }
   },
 

@@ -3,6 +3,7 @@ const { AuditLog } = require("../model/auditLogModel");
 const { uploadAvatar } = require("./helpers");
 const helperFunc = require("./helperFunc");
 
+
 const productController = {
   addProduct: async (req, res, idUser) => {
     try {

@@ -11,12 +11,11 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const myRouter = require("./routes/index");
 const viewRouter = require("./routes/viewRouter");
-const homeRouter = require("./routes/homeRouter")
+var responseTime = require('response-time')
 const cookieParser = require('cookie-parser');
-const formidable = require('express-formidable');
-const formData = require('express-form-data');
-var forms = multer();
 
+const errLogger = require("./controllers/auditlog/errLogger")
+const resTime = require("./controllers/auditlog/resTimeLogger")
 mongoose.plugin(require('./controllers/auditlog/plugin'))
 
 
@@ -53,6 +52,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(flash()); // use connect-flash for flash messages stored in session
 
 
+//Loki
+app.use(responseTime(resTime))
+app.use(errLogger)
 
 
 // app.use(cookieParser());
@@ -88,7 +90,6 @@ app.use(morgan('common', { stream: accessLogStream }))
 
 // API
 app.use("/api", myRouter);   
-app.use("/", homeRouter);
 app.use("/", viewRouter);
 
         
